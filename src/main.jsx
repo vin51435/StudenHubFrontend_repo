@@ -8,11 +8,11 @@ import '@src/assets/styles/main.scss';
 import store from '@src/redux/store.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <GoogleOAuthProvider clientId={`${import.meta.env.VITE_YOUR_GOOGLE_CLIENT_ID}`} >
+ <>
+   {/* <React.StrictMode> */}
       <Provider store={store}>
         <App />
       </Provider>
-    </GoogleOAuthProvider>
-  </React.StrictMode>,
+  {/* </React.StrictMode> */}
+ </>
 );

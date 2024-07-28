@@ -1,12 +1,16 @@
 $primary-color: #3498db;
 $secondary-color: #f8f9fa;
-$base-font-size: 16px;
+
+$danger:#dc3545;
+$success:#198754;
+$gray:gray;
+$disabled-color: #d8d8d8;
 
 $border-radius: 6px;
 $border-color: #747775;
 
-
 $breakpoints: (
+  'xsmall': 400px,
   'small': 576px,
   'medium': 768px,
   'large': 992px,
@@ -20,5 +24,5 @@ $btn-shadow-styles: (
 
 $border-styles: (
   border: 1px solid $border-color,
-  border-radius: $border-radius
+  border-radius: $border-radius,
 );

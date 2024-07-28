@@ -3,13 +3,13 @@
 @import 'mixins';
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  // font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  // font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  // color-scheme: light dark;
+  // color: rgba(255, 255, 255, 0.87);
+  // background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -32,7 +32,7 @@
 
 .sub-header_style {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
@@ -93,56 +93,7 @@
   }
 }
 
-form {
-  label{
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-  input[type='email'],
-  input[type='password'] {
-    appearance: none;
-    background-color: white !important;
-    color: black !important;
-    @include apply-styles($border-styles);
-    padding: 6px 8px;
-    position: relative;
-    transition: all 0.12s ease-in;
-    @include mediaMax(small) {
-      padding: 9px;
-    }
-    &:focus {
-      // @include apply-styles($btn-shadow-styles)
-      box-shadow: 0px 0px 0px 3px #057dcdb8;
-      border-color: #057dcdb8;
-    }
-    &:focus-visible {
-      outline: none;
-    }
-  }
-  input:-internal-autofill-selected {
-    appearance: none;
-  }
-
-  button {
-    background-color: $primary-color;
-    color: white;
-    font-weight: 600;
-    padding: 6px 8px;
-    @include apply-styles($border-styles);
-    &:hover {
-      @include apply-styles($btn-shadow-styles);
-    }
-    @include mediaMax(small) {
-      width: 100%;
-      padding: 8px;
-    }
-  }
-}
-
-.form-group {
-}
-
-// ?Login page css
+// ?Auth (login/signup) page css
 .auth-page_main {
   height: 100vh;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -164,8 +115,108 @@ form {
       padding: 2rem;
       justify-content: flex-start;
       gap: 0.8rem;
+      height: auto;
     }
-    .login_form {
+    .auth_form {
+      form {
+        label {
+          font-size: 1.1rem;
+          font-weight: 500;
+          @include mediaMax(small) {
+            font-size: 0.8rem;
+            font-weight: 600;
+          }
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        /* Firefox */
+        input[type='number'] {
+          -moz-appearance: textfield;
+        }
+        input:is(:-webkit-autofill, :autofill) {
+          background-color: white !important;
+        }        
+        input {
+          appearance: none;
+          background-color: white !important;
+          color: black !important;
+          @include apply-styles($border-styles);
+          padding: 6px 8px;
+          position: relative;
+          transition: all 0.12s ease-in;
+          @include mediaMax(small) {
+            padding: 9px;
+          }
+          &:focus {
+            box-shadow: 0px 0px 0px 3px #057dcdb8;
+            border-color: #057dcdb8;
+          }
+          &.wrongInput,
+          &.wrongInput:focus {
+            box-shadow: 0px 0px 0px 3px $danger !important;
+            border-color: $danger !important;
+          }
+          &.rightInput,
+          &.rightInput:focus {
+            box-shadow: 0px 0px 0px 3px $success !important;
+            border-color: $success !important;
+          }
+          &:focus-visible {
+            outline: none;
+          }
+          & + span {
+            display: block;
+            color: $danger;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+          }
+        }
+        input:-internal-autofill-selected {
+          appearance: none;
+        }
+        input:disabled {
+          background-color: $disabled-color !important;
+        }
+        .password_requirements {
+          span {
+            display: flex;
+            align-items: center;
+            color: $gray;
+            margin-top: 0.3rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.8rem;
+            & > svg {
+              height: 0.6rem;
+            }
+          }
+          span > svg {
+            margin-right: 0.3rem;
+          }
+        }
+        button {
+          background-color: $primary-color;
+          color: white;
+          font-weight: 600;
+          padding: 6px 8px;
+          @include apply-styles($border-styles);
+          &:hover {
+            @include apply-styles($btn-shadow-styles);
+          }
+          @include mediaMax(medium) {
+            width: 100%;
+            padding: 8px;
+          }
+        }
+      }
+    }
+    .signup_link {
+      font-weight: 600;
+      a {
+        text-decoration: none;
+      }
     }
   }
   .right_container {
@@ -186,7 +237,7 @@ form {
     -webkit-user-select: none;
     -ms-user-select: none;
     -webkit-appearance: none;
-    background-color: WHITE;
+    background-color: white;
     background-image: none;
     -webkit-border-radius: $border-radius;
     @include apply-styles($border-styles);
@@ -213,7 +264,7 @@ form {
     min-width: min-content;
     width: 100%;
     border-radius: $border-radius;
-    @include mediaMax(small) {
+    @include mediaMax(medium) {
       height: 42px;
       height: 3rem;
     }
@@ -298,5 +349,11 @@ form {
 
   .gsi-material-button:hover {
     @include apply-styles($btn-shadow-styles);
+  }
+}
+
+.auth-page_main.signup_page {
+  .row {
+    flex-direction: row-reverse;
   }
 }

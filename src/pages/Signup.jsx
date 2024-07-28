@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import Login from '@src/components/authComponents/LoginForm';
 import GitHubOAuth from '@src/components/authComponents/authButtons/GitHubOAuth';
 import GoogleSignup from '@src/components/authComponents/authButtons/GoogleOAuth';
 import useWindowSize from '@src/hooks/useWindowSize';
+import SignupForm from '@src/components/authComponents/SignupForm';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
 
-const Auth = () => {
+const Signup = () => {
   const windowSize = useWindowSize();
   const navigate = useNavigate();
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
@@ -24,21 +24,21 @@ const Auth = () => {
   }, [isAuthenticated]);
 
   return (
-    <div className='auth-page_main'>
+    <div className='auth-page_main signup_page'>
       <Row className='gx-0 h-100'>
         <Col xs={12} className={`top_container ${windowSize.medium ? 'd-block' : 'd-none'}`}>
           <div>
             <p>Know about StudenHub-</p>
           </div>
         </Col>
-        <Col xs={12} md='6' lg='4' className='left_container' >
+        <Col xs={12} md='5' lg='4' className='left_container' >
           <div className='w-100 my-2'>
             <div className='header_style'>StudenHub</div>
           </div>
           <div className='w-100 by-2'>
-            <span className='sub-header_style'>Log in to your account</span>
+            <span className='sub-header_style'>Create your account</span>
             <br />
-            <span className='body_style signup_link'>Don't have an account? <Link to='/signup'>Sign up</Link></span>
+            <span className='body_style signup_link'>Have an account? <Link to='/login'>Log in</Link></span>
           </div>
           <div className='w-100 my-2'>
             <GitHubOAuth />
@@ -50,10 +50,10 @@ const Auth = () => {
             </div>
           </div>
           <div className='w-100 my-2 '>
-            <Login />
+            <SignupForm />
           </div>
         </Col>
-        <Col xs={12} md='6' lg='8' className='right_container d-none d-md-block'>
+        <Col xs={12} md='7' lg='8' className='right_container d-none d-md-block'>
           <div className='auth-page_main_img'>
             image
           </div>
@@ -63,4 +63,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default Signup;

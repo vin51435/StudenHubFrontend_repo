@@ -6,6 +6,15 @@ const useWindowSize = () => {
     height: window.innerHeight,
   });
 
+  const breakpoints = {
+    'xsmall': 400,
+    'small': 576,
+    'medium': 768,
+    'large': 992,
+    'xlarge': 1200,
+    'xxlarge': 1400,
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setSize({
@@ -20,7 +29,17 @@ const useWindowSize = () => {
     };
   }, []);
 
-  return size;
+  const isSmallerThan = (breakpoint) => size.width < breakpoints[breakpoint];
+
+  return {
+    ...size,
+    xsmall: isSmallerThan('xsmall'),
+    small: isSmallerThan('small'),
+    medium: isSmallerThan('medium'),
+    large: isSmallerThan('large'),
+    xlarge: isSmallerThan('xlarge'),
+    xxlarge: isSmallerThan('xxlarge'),
+  };
 };
 
 export default useWindowSize;

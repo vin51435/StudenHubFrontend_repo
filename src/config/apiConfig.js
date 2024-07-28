@@ -1,44 +1,34 @@
 import axios from 'axios';
-import { getValueByKey } from './utils';
+import { getValueByKey } from '../utils';
+import store from '@src/redux/store';
 
 const dev = 'http://localhost:3001';
 const prod = 'https://test.com';
 
 const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? dev : prod;
 
-const apiBaseURL = `${activeHost}/api/v1/`;
-const googleAuthBaseURL = `${activeHost}/auth/google`;
-const githubAuthBaseURL = `${activeHost}/auth/github`;
-const githubAuthBaseURL2 = `https://github.com/login/oauth/`;
-const githubAuthBaseURL3 = `https://github.com/login/oauth/access_token`;
+const baseURLs = {
+  apiBaseURL: `${activeHost}/api/v1/`,
+  googleAuthBaseURL: `${activeHost}/auth/google`,
+  githubAuthBaseURL: `${activeHost}/auth/github`,
+  users: `${activeHost}/api/v1/users`
+};
 
-const urls = {
-  API_URL: `/api`,
-  OTHER_URL: `/other`,
+const baseURLsEndpoint = {
+  USER_INFO: `/info`,
+  USER_EMAIL_REG: '/emailReg',
+  USER_EMAIL_VERIFY: '/emailVerify',
+  USER_SIGNUP: '/signup',
 
   // Google OAuth
   GOOGLE_CALLBACK: '/callback',
   GITHUB_CALLBACK: '/callback',
 };
 
-const apiConfig = (token, baseURL, headers) => {
-  let selectedBaseURL;
+const apiConfig = (baseURL, headers) => {
   let selectedHeaders;
 
-  switch (baseURL) {
-    case 'apiBaseURL':
-      selectedBaseURL = apiBaseURL;
-      break;
-    case 'googleAuthBaseURL':
-      selectedBaseURL = googleAuthBaseURL;
-      break;
-    case 'githubAuthBaseURL':
-      selectedBaseURL = githubAuthBaseURL;
-      break;
-    default:
-      selectedBaseURL = baseURL;
-      break;
-  }
+  const selectedBaseURL = baseURLs[baseURL] || baseURL;
 
   if (Object.entries(headers).length === 0) {
     selectedHeaders = { 'Content-Type': 'application/json' };
@@ -53,7 +43,7 @@ const apiConfig = (token, baseURL, headers) => {
   // Add a request interceptor (optional)
   api.interceptors.request.use(
     (request) => {
-      // You can add authorization tokens here if needed
+      const token = store.getState().auth.token;
       if (token) {
         request.headers.Authorization = `Bearer ${token}`;
       }
@@ -70,6 +60,12 @@ const apiConfig = (token, baseURL, headers) => {
       return response;
     },
     (error) => {
+      if (error.response && error.response.status === 401) {
+        if (window.location.href !== '/login') {
+          console.log('Unauthorized access - redirecting to login');
+          window.location.href = '/login';
+        }
+      }
       // Handle errors globally
       return Promise.reject(error);
     }
@@ -79,10 +75,10 @@ const apiConfig = (token, baseURL, headers) => {
 };
 
 export const getData = async (apiEndpoint, options = {}) => {
-  const { token = null, baseURL, headers = {} } = options;
-  const api = apiConfig(token, baseURL, headers);
+  const { baseURL, headers = {} } = options;
+  const api = apiConfig(baseURL, headers);
   let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(urls, apiEndpoint); }
+  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
     const response = await api.get(endpoint);
     return response.data;
@@ -93,10 +89,10 @@ export const getData = async (apiEndpoint, options = {}) => {
 };
 
 export const postData = async (apiEndpoint, options = {}) => {
-  const { data = {}, token = null, baseURL, headers = {} } = options;
-  const api = apiConfig(token, baseURL, headers);
+  const { data = {}, baseURL, headers = {} } = options;
+  const api = apiConfig(baseURL, headers);
   let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(urls, apiEndpoint); }
+  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
     const response = await api.post(endpoint, data);
     return response.data;
@@ -107,10 +103,10 @@ export const postData = async (apiEndpoint, options = {}) => {
 };
 
 export const putData = async (apiEndpoint, options = {}) => {
-  const { data = {}, token = null, baseURL, headers = {} } = options;
-  const api = apiConfig(token, baseURL, headers);
+  const { data = {}, baseURL, headers = {} } = options;
+  const api = apiConfig(baseURL, headers);
   let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(urls, apiEndpoint); }
+  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
     const response = await api.put(endpoint, data);
     return response.data;
@@ -121,10 +117,10 @@ export const putData = async (apiEndpoint, options = {}) => {
 };
 
 export const deleteData = async (apiEndpoint, options = {}) => {
-  const { token = null, baseURL, headers = {} } = options;
-  const api = apiConfig(token, baseURL, headers);
+  const { baseURL, headers = {} } = options;
+  const api = apiConfig(baseURL, headers);
   let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(urls, apiEndpoint); }
+  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
     const response = await api.delete(endpoint);
     return response.data;
@@ -134,3 +130,4 @@ export const deleteData = async (apiEndpoint, options = {}) => {
   }
 };
 
+export const { githubAuthBaseURL, googleAuthBaseURL } = baseURLs;

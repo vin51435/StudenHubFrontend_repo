@@ -5,6 +5,7 @@
     "es2021": true
   },
   "extends": "airbnb",
+  // "extends": ["airbnb", "eslint:recommended"],
   "parserOptions": {
     "ecmaVersion": "latest"
   },

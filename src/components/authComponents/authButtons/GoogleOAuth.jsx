@@ -1,21 +1,27 @@
-import { getData } from '@src/apiConfig';
+import { getData, googleAuthBaseURL } from '@src/config/apiConfig';
+import { loginSuccess } from '@src/redux/auth';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const GoogleSignup = () => {
-  const handleLogin = async (code) => {
-    console.log('handleLogin ran');
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
+  const handleLogin = async (code) => {
     const response = await getData(`/callback?code=${code}`, {
       baseURL: 'googleAuthBaseURL'
     });
     console.log(response);
+    dispatch(loginSuccess({ token: response.token, user: response.data.user }));
+    navigate('/home')
   };
 
   const handleGoogleCallback = () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const code = urlParams.get('code');
-    console.log({ code });
 
     if (code) {
       handleLogin(code);
@@ -23,14 +29,14 @@ const GoogleSignup = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === '/login/auth/google/callback') handleGoogleCallback();
+    if ((location.pathname === '/login/auth/google/callback' || location.pathname === '/signup/auth/google/callback')) {
+      handleGoogleCallback();
+    }
   }, []);
 
-
   const btnClick = () => {
-    window.location.href = 'http://localhost:3001/auth/google';
+    window.location.href = googleAuthBaseURL;
   };
-
 
   return (
     <div className='auth_btn_container my-2'>

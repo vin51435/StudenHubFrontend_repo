@@ -1,15 +1,21 @@
-import { getData } from '@src/apiConfig';
+import { getData, githubAuthBaseURL } from '@src/config/apiConfig';
+import { loginSuccess } from '@src/redux/auth';
 import React, { useEffect, useState } from 'react';
-import { SiGithub } from "react-icons/si";
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const GitHubOAuth = () => {
-  const handleLogin = async (code) => {
-    console.log('handleLogin ran');
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
+  const handleLogin = async (code) => {
     const response = await getData(`/callback?code=${code}`, {
       baseURL: 'githubAuthBaseURL'
     });
     console.log(response);
+    dispatch(loginSuccess({ token: response.token, user: response.data.user }));
+    navigate('/home')
   };
 
   const handleGitHubCallback = () => {
@@ -23,11 +29,13 @@ const GitHubOAuth = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === '/login/auth/github/callback') handleGitHubCallback();
+    if ((location.pathname === '/login/auth/github/callback' || location.pathname === '/signup/auth/github/callback')) {
+      handleGitHubCallback();
+    }
   }, []);
 
   const btnClick = () => {
-    window.location.href = 'http://localhost:3001/auth/github';
+    window.location.href = githubAuthBaseURL;
   };
 
   return (
