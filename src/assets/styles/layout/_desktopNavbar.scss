@@ -1,0 +1,11 @@
+
+.desktop-nav_container {
+  position: fixed;
+  width: 100%;
+  background-color: $primary-color1;
+  overflow: hidden;
+
+  label {
+    position: absolute;
+  }
+}

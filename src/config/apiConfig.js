@@ -19,6 +19,8 @@ const baseURLsEndpoint = {
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',
   USER_SIGNUP: '/signup',
+  USER_FORGOT_PASSWORD: '/forgotPassword',
+  USER_LOGIN: '/login',
 
   // Google OAuth
   GOOGLE_CALLBACK: '/callback',
@@ -60,73 +62,88 @@ const apiConfig = (baseURL, headers) => {
       return response;
     },
     (error) => {
-      if (error.response && error.response.status === 401) {
-        if (window.location.href !== '/login') {
-          console.log('Unauthorized access - redirecting to login');
-          window.location.href = '/login';
+      if (error.response) {
+        if (error.response.status === 401) {
+          if (window.location.pathname !== '/login') {
+            console.log('Unauthorized access - redirecting to login');
+            window.location.href = '/login';
+          }
+        } else if (error.response.status === 500) {
+          console.error('Server error - please try again later');
+          // Optionally, show a user-friendly message
         }
+      } else {
+        console.error('Network error - please check your connection');
       }
-      // Handle errors globally
       return Promise.reject(error);
     }
+
   );
 
   return api;
 };
 
+const handleResponse = (response) => {
+  if (response.status === 204) return response;
+  return response.data;
+};
+
+const handleError = (error) => {
+  // Check if the error has a response and a message
+  if (error.response && error.response.data) {
+    console.error('Error:', error.response.data.message || error.response.data);
+    return error.response.data;
+  } else {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
+const getApiEndpoint = (apiEndpoint) => {
+  return apiEndpoint.includes('/') ? apiEndpoint : getValueByKey(baseURLsEndpoint, apiEndpoint);
+};
+
 export const getData = async (apiEndpoint, options = {}) => {
   const { baseURL, headers = {} } = options;
   const api = apiConfig(baseURL, headers);
-  let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
-    const response = await api.get(endpoint);
-    return response.data;
+    const response = await api.get(getApiEndpoint(apiEndpoint));
+    return handleResponse(response);
   } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
+    return handleError(error);
   }
 };
 
 export const postData = async (apiEndpoint, options = {}) => {
   const { data = {}, baseURL, headers = {} } = options;
   const api = apiConfig(baseURL, headers);
-  let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
-    const response = await api.post(endpoint, data);
-    return response.data;
+    const response = await api.post(getApiEndpoint(apiEndpoint), data);
+    return handleResponse(response);
   } catch (error) {
-    console.error('Error posting data:', error);
-    throw error;
+    return handleError(error);
   }
 };
 
 export const putData = async (apiEndpoint, options = {}) => {
   const { data = {}, baseURL, headers = {} } = options;
   const api = apiConfig(baseURL, headers);
-  let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
-    const response = await api.put(endpoint, data);
-    return response.data;
+    const response = await api.put(getApiEndpoint(apiEndpoint), data);
+    return handleResponse(response);
   } catch (error) {
-    console.error('Error putting data:', error);
-    throw error;
+    return handleError(error);
   }
 };
 
 export const deleteData = async (apiEndpoint, options = {}) => {
   const { baseURL, headers = {} } = options;
   const api = apiConfig(baseURL, headers);
-  let endpoint = apiEndpoint;
-  if (!apiEndpoint.includes('/')) { endpoint = getValueByKey(baseURLsEndpoint, apiEndpoint); }
   try {
-    const response = await api.delete(endpoint);
-    return response.data;
+    const response = await api.delete(getApiEndpoint(apiEndpoint));
+    return handleResponse(response);
   } catch (error) {
-    console.error('Error deleting data:', error);
-    throw error;
+    return handleError(error);
   }
 };
 

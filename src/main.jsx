@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Provider } from 'react-redux';
 import App from './App.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';

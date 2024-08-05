@@ -6,13 +6,18 @@ import NotFound from '@src/pages/NotFound';
 import Home from '@src/pages/Home';
 import Signup from '@src/pages/Signup';
 import Test from '@src/pages/Test';
+import WebsiteHome from '@src/pages/WebsiteHome';
+import WebsiteLayout from '@src/components/layouts/WebsiteLayout';
 
 const AllRoutes = () => {
   return (
     <Router>
       <Routes>
+        <Route element={<WebsiteLayout />}>
+          <Route path="/" element={<WebsiteHome />} />
+          <Route path="/test" element={<Test />} />
+        </Route>
         <Route element={<ProtectedRoutes />}>
-          <Route path="/" element={<Test />} />
           <Route path="/home" element={<Home />} />
         </Route>
         <Route path="/login/*" element={<Login />} />
