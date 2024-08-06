@@ -13,7 +13,6 @@ const GoogleSignup = () => {
     const response = await getData(`/callback?code=${code}`, {
       baseURL: 'googleAuthBaseURL'
     });
-    console.log(response);
     dispatch(loginSuccess({ token: response.token, user: response.data.user }));
     navigate('/home')
   };

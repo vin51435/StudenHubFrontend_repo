@@ -8,6 +8,7 @@ import Signup from '@src/pages/Signup';
 import Test from '@src/pages/Test';
 import WebsiteHome from '@src/pages/WebsiteHome';
 import WebsiteLayout from '@src/components/layouts/WebsiteLayout';
+import UserDetails from '@src/pages/UserDetails';
 
 const AllRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AllRoutes = () => {
           <Route path="/test" element={<Test />} />
         </Route>
         <Route element={<ProtectedRoutes />}>
+          <Route path='/userdetails' element={<UserDetails />} />
           <Route path="/home" element={<Home />} />
         </Route>
         <Route path="/login/*" element={<Login />} />

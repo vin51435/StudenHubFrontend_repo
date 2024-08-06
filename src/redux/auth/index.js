@@ -1,25 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { cookieExpiry } from '@src/config/config';
 import { getCookie, setCookie } from '@src/utils/cookieGetterSetter';
-import { jwtDecode } from 'jwt-decode';
 
-// Check for token in cookie
 const token = getCookie('accessToken');
-// const user = token ? jwtDecode(token) : null;
 
 const initialState = {
   isAuthenticated: false,
-  user: {},
+  user: null,
   token,
 };
-
-/* 
-const initialState = {
-  isAuthenticated: !!token, // Set to true if token exists
-  user: user, // Set to user if token exists
-  token: token, // Store token in state
-};
-*/
 
 const authSlice = createSlice({
   name: 'auth',

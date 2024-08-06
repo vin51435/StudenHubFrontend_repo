@@ -1,6 +1,8 @@
 import { postData } from '@src/config/apiConfig';
+import { loginSuccess } from '@src/redux/auth';
 import validateForm from '@src/utils/validators';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -9,6 +11,7 @@ const Login = () => {
   const [apiResponse, setApiResponse] = useState({ state: null, message: null });
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const formInfo = [
     { name: 'email', type: 'email', required: true, message: 'Enter a valid email address' },
@@ -56,6 +59,9 @@ const Login = () => {
       })
         .then(response => {
           if (response.status === 'success') {
+            const { data, token } = response;
+            const { user } = data;
+            dispatch(loginSuccess({ user, token }));
             navigate('/home');
           } else {
             setApiResponse({ state: 0, message: response.message });

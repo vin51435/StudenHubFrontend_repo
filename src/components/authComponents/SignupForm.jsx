@@ -65,7 +65,6 @@ const SignupForm = () => {
       setLoad(true);
       postData('USER_EMAIL_VERIFY', { baseURL: 'users', data: { email: signupForm.email, otp: Number(signupForm.verification) } })
         .then(response => {
-          console.log({ response });
           if (response.status === 'success') {
             setStep(3);
             setApiResponse(prev => ({ ...prev, otpVerifyMessage: response.message }));

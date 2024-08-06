@@ -22,6 +22,9 @@ const baseURLsEndpoint = {
   USER_FORGOT_PASSWORD: '/forgotPassword',
   USER_LOGIN: '/login',
 
+  // Get user's academic/education details
+  USER_ACADEMIC_PROGRAMS:'/academicprograms/academicdetails',
+  
   // Google OAuth
   GOOGLE_CALLBACK: '/callback',
   GITHUB_CALLBACK: '/callback',

@@ -13,7 +13,6 @@ const GitHubOAuth = () => {
     const response = await getData(`/callback?code=${code}`, {
       baseURL: 'githubAuthBaseURL'
     });
-    console.log(response);
     dispatch(loginSuccess({ token: response.token, user: response.data.user }));
     navigate('/home')
   };

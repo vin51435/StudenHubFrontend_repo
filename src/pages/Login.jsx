@@ -20,7 +20,6 @@ const Auth = () => {
     } else if (!isAuthenticated && user !== null && Object.keys(user).length === 0 && token !== null) {
       fetchUserInfo(dispatch);
     }
-
   }, [isAuthenticated]);
 
   return (
