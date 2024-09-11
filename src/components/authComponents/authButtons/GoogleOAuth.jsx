@@ -1,6 +1,6 @@
 import { getData, googleAuthBaseURL } from '@src/config/apiConfig';
 import { loginSuccess } from '@src/redux/auth';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -17,19 +17,14 @@ const GoogleSignup = () => {
     navigate('/home')
   };
 
-  const handleGoogleCallback = () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const code = urlParams.get('code');
-
-    if (code) {
-      handleLogin(code);
-    }
-  };
-
   useEffect(() => {
-    if ((location.pathname === '/login/auth/google/callback' || location.pathname === '/signup/auth/google/callback')) {
-      handleGoogleCallback();
+    const path = location.pathname;
+    if (path.includes('/login/auth/google/callback') || path.includes('/signup/auth/google/callback')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        handleLogin(code);
+      }
     }
   }, []);
 

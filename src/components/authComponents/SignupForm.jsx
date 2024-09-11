@@ -33,13 +33,8 @@ const SignupForm = () => {
 
   const formValidation = (formInfo, loginForm) => {
     const validatedForm = validateForm(formInfo, loginForm);
-    if (validatedForm.isValid) {
-      setValidationError({});
-      return true;
-    } else {
-      setValidationError(validatedForm);
-      return false;
-    }
+    setValidationError(validatedForm?.isValid ? {} : validateForm);
+    return validatedForm?.isValid;
   };
 
   const handleChange = (e) => {
@@ -49,11 +44,9 @@ const SignupForm = () => {
         ...prev,
         [name]: value
       };
-
       if (validationError?.invalidFields?.includes(name)) {
         formValidation(signupFormInfo, newFormState);
       }
-
       return newFormState;
     });
   };
@@ -197,11 +190,9 @@ const SignupForm = () => {
                   ...prev,
                   [name]: value
                 };
-
                 if (validationError?.invalidFields?.includes(name)) {
                   formValidation(emailCodeVerificationFormInfo, newFormState);
                 }
-
                 return newFormState;
               });
             }}
@@ -299,7 +290,8 @@ const SignupForm = () => {
             <LoadingSpinner height={'1.4rem'} />
           ) : (
             'Login'
-          )}</button>
+          )}
+        </button>
       </form >}
     </div >
   );

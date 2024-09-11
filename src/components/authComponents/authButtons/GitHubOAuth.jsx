@@ -1,6 +1,6 @@
 import { getData, githubAuthBaseURL } from '@src/config/apiConfig';
 import { loginSuccess } from '@src/redux/auth';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -17,19 +17,14 @@ const GitHubOAuth = () => {
     navigate('/home')
   };
 
-  const handleGitHubCallback = () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const code = urlParams.get('code');
-
-    if (code) {
-      handleLogin(code);
-    }
-  };
-
   useEffect(() => {
-    if ((location.pathname === '/login/auth/github/callback' || location.pathname === '/signup/auth/github/callback')) {
-      handleGitHubCallback();
+    const path = location.pathname;
+    if (path.includes('/login/auth/github/callback') || path.includes('/signup/auth/github/callback')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        handleLogin(code);
+      }
     }
   }, []);
 
@@ -40,7 +35,7 @@ const GitHubOAuth = () => {
   return (
     <div className='auth_btn_container my-2'>
       <button className="gsi-material-button" onClick={btnClick}>
-        <div className="gsi-material-button-state"></div>
+        <div className="gsi-material-button-state"/>
         <div className="gsi-material-button-content-wrapper">
           <div className="gsi-material-button-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" shapeRendering="geometricPrecision" textRendering="geometricPrecision">
