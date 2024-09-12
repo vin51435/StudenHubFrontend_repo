@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const GitHubOAuth = () => {
+const GitHubOAuth = ({ setLoaderFnc }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -29,6 +29,7 @@ const GitHubOAuth = () => {
   }, []);
 
   const btnClick = () => {
+    setLoaderFnc(true);
     window.location.href = githubAuthBaseURL;
   };
 

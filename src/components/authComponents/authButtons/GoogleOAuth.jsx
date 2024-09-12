@@ -4,17 +4,17 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const GoogleSignup = () => {
+const GoogleSignup = ({ setLoaderFnc }) => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogin = async (code) => {
     const response = await getData(`/callback?code=${code}`, {
       baseURL: 'googleAuthBaseURL'
     });
     dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-    navigate('/home')
+    navigate('/home');
   };
 
   useEffect(() => {
@@ -29,6 +29,7 @@ const GoogleSignup = () => {
   }, []);
 
   const btnClick = () => {
+    setLoaderFnc(true);
     window.location.href = googleAuthBaseURL;
   };
 

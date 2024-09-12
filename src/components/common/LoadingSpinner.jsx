@@ -18,12 +18,12 @@ const Spinner = () => {
   );
 };
 
-const BtnLoadingSpinner = ({ height }) => {
+const BtnLoadingSpinner = ({ height, backgroundColor }) => {
   return (
     <span className='w-100 d-flex justify-content-center align-items-center'
       style={{
         height: height,
-        // backgroundColor: '#00000025'
+        backgroundColor: '#00000000'
       }}>
       <Spinner />
     </span>
@@ -32,8 +32,20 @@ const BtnLoadingSpinner = ({ height }) => {
 
 const PageLoadingSpinner = () => {
   return (
-    <div className='page-load-spinner position-absolute d-flex justify-content-center align-items-center'
-      style={{ width: '100vw', height: '100vh', backgroundColor: 'rgba(255,255,255,0.8)' }}>
+    <div
+      className='page-load-spinner position-absolute d-flex justify-content-center align-items-center'
+      style={{
+        width: '100vw',
+        height: '100vh', 
+        backgroundColor: 'rgba(255,255,255,0.8)',
+        zIndex: 9999,
+        pointerEvents: 'auto'
+      }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
       <span style={{
         display: 'block',
         height: '50px',
