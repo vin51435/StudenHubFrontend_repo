@@ -34,7 +34,7 @@ const Signup = () => {
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/home');
-    } else if (!isAuthenticated && user !== null && Object.keys(user).length === 0 && token !== null) {
+    } else if (!isAuthenticated && token !== null) {
       fetchUserInfo(dispatch);
     }
 
