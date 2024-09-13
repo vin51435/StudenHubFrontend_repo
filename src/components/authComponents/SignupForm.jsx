@@ -32,7 +32,7 @@ const SignupForm = () => {
 
   const formValidation = (formInfo, loginForm) => {
     const validatedForm = validateForm(formInfo, loginForm);
-    setValidationError(validatedForm?.isValid ? {} : validateForm);
+    setValidationError(validatedForm?.isValid ? {} : validatedForm);
     return validatedForm?.isValid;
   };
 
@@ -291,7 +291,7 @@ const SignupForm = () => {
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
           ) : (
-            'Login'
+            'Signup'
           )}
         </button>
       </form >}

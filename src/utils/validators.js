@@ -37,7 +37,7 @@ const validators = {
     if (required && !value.trim()) {
       return 'This field is required';
     }
-    if (value!==formData.password) {
+    if (value !== formData.password) {
       return 'Password does not match.';
     }
     return null;
@@ -55,7 +55,7 @@ const validateForm = (formInfo, formData) => {
     const validator = validators[type];
 
     if (validator) {
-      const error = validator(value, { required ,formData});
+      const error = validator(value, { required, formData });
       if (error) {
         errors[name] = message || error;
         invalidFields.push(name);
