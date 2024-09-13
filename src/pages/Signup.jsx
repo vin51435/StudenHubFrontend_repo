@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import GitHubOAuth from '@src/components/authComponents/authButtons/GitHubOAuth';
@@ -47,32 +47,34 @@ const Signup = () => {
   return (
     <div className='auth-page_main signup_page'>
       {loader && <PageLoadingSpinner />}
-      <Row className='gx-0 h-100'>
+      <Row className='gx-0 vh-100 d-flex'>
         <Col xs={12} className={`top_container ${windowSize.medium ? 'd-block' : 'd-none'}`}>
           <div>
             <p>Know about StudenHub-</p>
           </div>
         </Col>
-        <Col xs={12} md='5' lg='4' className='left_container' >
-          <div className='w-100 my-2'>
-            <div className='header_style'>StudenHub</div>
-          </div>
-          <div className='w-100 by-2'>
-            <span className='sub-header_style'>Create your account</span>
-            <br />
-            <span className='body_style signup_link'>Have an account? <Link to='/login'>Log in</Link></span>
-          </div>
-          <div className='w-100 my-2'>
-            <GitHubOAuth setLoaderFnc={setLoaderFnc} />
-            <GoogleSignup setLoaderFnc={setLoaderFnc} />
-          </div>
-          <div className='w-100 my-0 my-sm-2'>
-            <div className='w-100 text-divider'>
-              <span >Or with email and password</span>
+        <Col xs={12} md='5' lg='4' className='left_container overflow-y-auto' >
+          <div className='m-auto'>
+            <div className='w-100 my-2'>
+              <div className='header_style'>StudenHub</div>
             </div>
-          </div>
-          <div className='w-100 my-2 '>
-            <SignupForm />
+            <div className='w-100 by-2'>
+              <span className='sub-header_style'>Create your account</span>
+              <br />
+              <span className='body_style signup_link'>Have an account? <Link to='/login'>Log in</Link></span>
+            </div>
+            <div className='w-100 my-2'>
+              <GitHubOAuth setLoaderFnc={setLoaderFnc} />
+              <GoogleSignup setLoaderFnc={setLoaderFnc} />
+            </div>
+            <div className='w-100 my-0 my-sm-2'>
+              <div className='w-100 text-divider'>
+                <span >Or with email and password</span>
+              </div>
+            </div>
+            <div className='w-100 my-2 '>
+              <SignupForm />
+            </div>
           </div>
         </Col>
         <Col xs={12} md='7' lg='8' className='right_container d-none d-md-block'>

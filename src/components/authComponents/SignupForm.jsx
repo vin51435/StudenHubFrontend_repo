@@ -1,10 +1,9 @@
 import { postData } from '@src/config/apiConfig';
 import { loginSuccess } from '@src/redux/auth';
 import validateForm from '@src/utils/validators';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '@src/components/common/LoadingSpinner.jsx';
-
 
 const SignupForm = () => {
   const [signupForm, setSignupForm] = useState({ email: '', password: '', confirmPassword: '', verification: '', firstName: '', lastName: '' });
@@ -89,7 +88,6 @@ const SignupForm = () => {
           setLoad(false);
         });
     };
-
   };
 
   const signUp = (e) => {
@@ -112,7 +110,6 @@ const SignupForm = () => {
             setLoad(false);
           }
         });
-
     }
   };
 
@@ -139,14 +136,15 @@ const SignupForm = () => {
                 if (validationError?.invalidFields?.includes(name)) {
                   formValidation(emailVerificationFormInfo, newFormState);
                 }
-
                 return newFormState;
               });
             }}
           />
           <span>{validationError?.errors?.email}</span>
         </div>
-        <span className='text-danger'>{apiResponse?.otpSendMessage}</span>
+        <div className='w-full'>
+          <span className='text-danger'>{apiResponse?.otpSendMessage}</span>
+        </div>
         <button className='mt-4' onClick={sendVerification} disabled={load}>
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
@@ -199,11 +197,13 @@ const SignupForm = () => {
           />
           <span>{validationError?.errors?.verification}</span>
         </div>
-        {apiResponse?.otpVerifyMessage ?
-          <span className='text-danger'>{apiResponse?.otpVerifyMessage}</span>
-          :
-          <span className='text-success'>{apiResponse?.otpSendMessage}</span>
-        }
+        <div className='w-full'>
+          {apiResponse?.otpVerifyMessage ?
+            <span className='text-danger'>{apiResponse?.otpVerifyMessage}</span>
+            :
+            <span className='text-success'>{apiResponse?.otpSendMessage}</span>
+          }
+        </div>
         <button className='mt-4' onClick={verifyCode} disabled={load}>
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
@@ -284,7 +284,9 @@ const SignupForm = () => {
           />
           <span>{validationError?.errors?.confirmPassword}</span>
         </div>
-        <span className='text-danger'>{apiResponse?.signupMessage}</span>
+        <div className='w-full'>
+          <span className='text-danger'>{apiResponse?.signupMessage}</span>
+        </div>
         <button className='mt-4' type="submit" disabled={load}>
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
