@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getValueByKey } from '../utils';
 import store from '@src/redux/store';
 
-const dev = 'http://localhost:3001';
+const dev = `http://${import.meta.env.VITE_DEV_BACKEND_HOST}:3001`;
 const prod = 'https://test.com';
 
 const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? dev : prod;

@@ -54,7 +54,7 @@ const Signup = () => {
           </div>
         </Col>
         <Col xs={12} md='5' lg='4' className='left_container overflow-y-auto' >
-          <div className='m-auto'>
+          <div className='m-auto w-100' style={{maxWidth:'800px'}}>
             <div className='w-100 my-2'>
               <div className='header_style'>StudenHub</div>
             </div>
