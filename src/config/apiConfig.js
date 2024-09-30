@@ -3,7 +3,7 @@ import { getValueByKey } from '../utils';
 import store from '@src/redux/store';
 
 const dev = `http://${import.meta.env.VITE_DEV_BACKEND_HOST}:3001`;
-const prod = 'https://mediadentbackend-repo.onrender.com/';
+const prod = 'https://mediadentbackend-repo.onrender.com';
 
 const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? dev : prod;
 
