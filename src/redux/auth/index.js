@@ -6,7 +6,7 @@ const token = getCookie('accessToken');
 const initialState = {
   isAuthenticated: false,
   user: null,
-  token,
+  token
 };
 
 const authSlice = createSlice({
@@ -16,8 +16,10 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.isAuthenticated = true;
       state.user = action.payload.user;
-      state.token = action.payload.token;
-      setCookie('accessToken', action.payload.token);
+      if (action.payload.token) {
+        state.token = action.payload.token;
+        setCookie('accessToken', action.payload.token);
+      }
     },
     logoutSuccess: (state) => {
       state.isAuthenticated = false;

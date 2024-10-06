@@ -1,25 +1,18 @@
 import { getData } from "@src/config/apiConfig";
-import { loginSuccess } from "@src/redux/auth";
-import { updateUserEdProfile } from "@src/redux/auth/userEducationProfile";
+import { loginSuccess, logoutSuccess } from "@src/redux/auth";
 
-const fetchUserInfo = (dispatch) => {
-  return new Promise((resolve, reject) => {
-    getData('USER_INFO', { baseURL: 'users' })
-      .then(response => {
-        const { data, token } = response;
-        const { user } = data;
+const fetchUserInfo = async (dispatch) => {
+  try {
+    const response = await getData('USER_INFO', { baseURL: 'users', queue: true });
+    const { data: { user }, token } = response;
 
-        if (user?.education) {
-          dispatch(updateUserEdProfile({ user, userEdProfile: user.education }));
-        }
-        dispatch(loginSuccess({ user, token }));
-        resolve(response);
-      })
-      .catch(error => {
-        console.error('Error fetching user info:', error);
-        reject(error);
-      });
-  });
+    dispatch(loginSuccess({ user, token }));
+
+    return response; // You can directly return the response if needed
+  } catch (error) {
+    dispatch(logoutSuccess());
+    throw error; // Re-throw the error if you need it to be handled elsewhere
+  }
 };
 
 export default fetchUserInfo;

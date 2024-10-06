@@ -52,7 +52,7 @@ const Login = () => {
             const { data, token } = response;
             const { user } = data;
             dispatch(loginSuccess({ user, token }));
-            navigate('/home');
+            // navigate('/home');
           } else {
             setApiResponse({ state: 0, message: response.message });
           }

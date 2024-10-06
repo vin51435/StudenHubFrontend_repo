@@ -9,6 +9,8 @@ import Test from '@src/pages/Test';
 import WebsiteHome from '@src/pages/WebsiteHome';
 import WebsiteLayout from '@src/components/layouts/WebsiteLayout';
 import UserDetails from '@src/pages/UserDetails';
+import LoginAddDetails from '@src/pages/LoginAddDetails';
+import OauthCallback from '@src/components/authComponents/OauthCallback';
 
 const AllRoutes = () => {
   return (
@@ -20,8 +22,11 @@ const AllRoutes = () => {
         </Route>
         <Route element={<ProtectedRoutes />}>
           <Route path='/userdetails' element={<UserDetails />} />
+          <Route path='/additionalinfo' element={<LoginAddDetails />} />
           <Route path="/home" element={<Home />} />
         </Route>
+        <Route path="/oauth2/google/callback" element={<OauthCallback />} />
+        <Route path="/oauth2/github/callback" element={<OauthCallback />} />
         <Route path="/login/*" element={<Login />} />
         <Route path="/signup/*" element={<Signup />} />
         <Route path="*" element={<NotFound />} />
