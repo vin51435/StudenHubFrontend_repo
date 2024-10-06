@@ -1,33 +1,7 @@
-import { getData, googleAuthBaseURL } from '@src/config/apiConfig';
-import { loginSuccess } from '@src/redux/auth';
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { googleAuthBaseURL } from '@src/config/apiConfig';
+import React from 'react';
 
 const GoogleSignup = ({ setLoaderFnc }) => {
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogin = async (code) => {
-    const response = await getData(`/callback?code=${code}`, {
-      baseURL: 'googleAuthBaseURL'
-    });
-    dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-    navigate('/home');
-  };
-
-  useEffect(() => {
-    const path = location.pathname;
-    if (path.includes('/login/auth/google/callback') || path.includes('/signup/auth/google/callback')) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      if (code) {
-        handleLogin(code);
-      }
-    }
-  }, []);
-
   const btnClick = () => {
     setLoaderFnc(true);
     window.location.href = googleAuthBaseURL;

@@ -57,13 +57,12 @@ const SignupForm = () => {
       setLoad(true);
       postData('USER_EMAIL_VERIFY', { baseURL: 'users', data: { email: signupForm.email, otp: Number(signupForm.verification) } })
         .then(response => {
+          setLoad(false);
           if (response.status === 'success') {
             setStep(3);
             setApiResponse(prev => ({ ...prev, otpVerifyMessage: response.message }));
-            setLoad(false);
           } else {
             setApiResponse(prev => ({ ...prev, otpVerifyMessage: response.message }));
-            setLoad(false);
           }
         });
     };
@@ -75,7 +74,8 @@ const SignupForm = () => {
     if (valid) {
       setLoad(true);
       postData('USER_EMAIL_REG', { baseURL: 'users', data: { email: signupForm.email } })
-        .then(response => {
+      .then(response => {
+          setLoad(false);
           if (response.status === 204) {
             setStep(3);
             setApiResponse(prev => ({ ...prev, otpSendMessage: 'Email already verified' }));
@@ -85,7 +85,6 @@ const SignupForm = () => {
           } else {
             setApiResponse(prev => ({ ...prev, otpSendMessage: response.message }));
           }
-          setLoad(false);
         });
     };
   };
@@ -101,13 +100,12 @@ const SignupForm = () => {
         data: { email, password, passwordConfirm, firstName, lastName }
       })
         .then(response => {
+          setLoad(false);
           if (response.status === 'success') {
             dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-            setLoad(false);
-            navigate('/home');
+            // navigate('/home');
           } else {
             setApiResponse(prev => ({ ...prev, signupMessage: response.message }));
-            setLoad(false);
           }
         });
     }

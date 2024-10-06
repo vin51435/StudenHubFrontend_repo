@@ -2,15 +2,12 @@ import axios from 'axios';
 import { getValueByKey } from '../utils';
 import store from '@src/redux/store';
 
-const dev = `http://${import.meta.env.VITE_DEV_BACKEND_HOST}:3001`;
-const prod = 'https://mediadentbackend-repo.onrender.com';
-
-const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? dev : prod;
+const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? import.meta.env.VITE_DEV_BACKEND_DEV : import.meta.env.VITE_DEV_BACKEND_PROD;
 
 const baseURLs = {
   apiBaseURL: `${activeHost}/api/v1/`,
-  googleAuthBaseURL: `${activeHost}/auth/google`,
-  githubAuthBaseURL: `${activeHost}/auth/github`,
+  googleAuthBaseURL: `${activeHost}/oauth2/google`,
+  githubAuthBaseURL: `${activeHost}/oauth2/github`,
   users: `${activeHost}/api/v1/users`
 };
 
@@ -28,6 +25,34 @@ const baseURLsEndpoint = {
   // Google OAuth
   GOOGLE_CALLBACK: '/callback',
   GITHUB_CALLBACK: '/callback',
+};
+
+let requestQueue = [];
+
+const processQueue = async () => {
+  if (requestQueue.length === 0) return; // If there's nothing in the queue, do nothing
+
+  const { apiCall, resolve, reject } = requestQueue.shift(); // Dequeue the first API call
+
+  try {
+    const response = await apiCall(); // Execute the API call
+    resolve(response); // Resolve the original promise with the API data
+  } catch (error) {
+    reject(error); // Reject the promise if an error occurs
+  } finally {
+    if (requestQueue.length > 0) {
+      processQueue(); // Process the next request in the queue if it exists
+    }
+  }
+};
+
+const addToQueue = (apiCall) => {
+  return new Promise((resolve, reject) => {
+    requestQueue.push({ apiCall, resolve, reject }); // Add the request to the queue
+    if (requestQueue.length === 1) {
+      processQueue(); // Start processing if it's the first request in the queue
+    }
+  });
 };
 
 const apiConfig = (baseURL, headers) => {
@@ -61,14 +86,12 @@ const apiConfig = (baseURL, headers) => {
 
   // Add a response interceptor (optional)
   api.interceptors.response.use(
-    (response) => {
-      return response;
-    },
+    (response) => response,
     (error) => {
       if (error.response) {
         if (error.response.status === 401) {
           if (window.location.pathname !== '/login') {
-            console.log('Unauthorized access - redirecting to login');
+            console.warn('Unauthorized access - redirecting to login');
             window.location.href = '/login';
           }
         } else if (error.response.status === 500) {
@@ -80,9 +103,7 @@ const apiConfig = (baseURL, headers) => {
       }
       return Promise.reject(error);
     }
-
   );
-
   return api;
 };
 
@@ -95,7 +116,7 @@ const handleError = (error) => {
   // Check if the error has a response and a message
   if (error.response && error.response.data) {
     console.error('Error:', error.response.data.message || error.response.data);
-    return error.response.data;
+    throw new Error(error.response.data.message || 'An error occurred');
   } else {
     console.error('Error:', error);
     throw error;
@@ -107,47 +128,49 @@ const getApiEndpoint = (apiEndpoint) => {
 };
 
 export const getData = async (apiEndpoint, options = {}) => {
-  const { baseURL, headers = {} } = options;
+  const { baseURL, headers = {}, queue = false } = options; // Default queue is true
   const api = apiConfig(baseURL, headers);
-  try {
-    const response = await api.get(getApiEndpoint(apiEndpoint));
-    return handleResponse(response);
-  } catch (error) {
-    return handleError(error);
+
+  // If queue is true, add the request to the queue
+  if (queue) {
+    return addToQueue(() => api.get(getApiEndpoint(apiEndpoint)).then(handleResponse).catch(handleError));
   }
+
+  // Otherwise, bypass the queue and execute the request immediately
+  return api.get(getApiEndpoint(apiEndpoint)).then(handleResponse).catch(handleError);
 };
 
 export const postData = async (apiEndpoint, options = {}) => {
-  const { data = {}, baseURL, headers = {} } = options;
+  const { data = {}, baseURL, headers = {}, queue = false } = options;
   const api = apiConfig(baseURL, headers);
-  try {
-    const response = await api.post(getApiEndpoint(apiEndpoint), data);
-    return handleResponse(response);
-  } catch (error) {
-    return handleError(error);
+
+  if (queue) {
+    return addToQueue(() => api.post(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError));
   }
+
+  return api.post(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError);
 };
 
 export const putData = async (apiEndpoint, options = {}) => {
-  const { data = {}, baseURL, headers = {} } = options;
+  const { data = {}, baseURL, headers = {}, queue = false } = options;
   const api = apiConfig(baseURL, headers);
-  try {
-    const response = await api.put(getApiEndpoint(apiEndpoint), data);
-    return handleResponse(response);
-  } catch (error) {
-    return handleError(error);
+
+  if (queue) {
+    return addToQueue(() => api.put(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError));
   }
+
+  return api.put(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError);
 };
 
 export const deleteData = async (apiEndpoint, options = {}) => {
-  const { baseURL, headers = {} } = options;
+  const { baseURL, headers = {}, queue = false } = options;
   const api = apiConfig(baseURL, headers);
-  try {
-    const response = await api.delete(getApiEndpoint(apiEndpoint));
-    return handleResponse(response);
-  } catch (error) {
-    return handleError(error);
+
+  if (queue) {
+    return addToQueue(() => api.delete(getApiEndpoint(apiEndpoint)).then(handleResponse).catch(handleError));
   }
+
+  return api.delete(getApiEndpoint(apiEndpoint)).then(handleResponse).catch(handleError);
 };
 
 export const { githubAuthBaseURL, googleAuthBaseURL } = baseURLs;

@@ -66,6 +66,7 @@ const WebsiteNavbar = () => {
             <span className="nav_button nav_button-toggle"></span>
           </label>
           <nav className="nav">
+            <a className="nav-item" href="/login">Login</a>
             <a className="nav-item" href="">Dashboard</a>
             <a className="nav-item" href="">History</a>
             <a className="nav-item" href="">Statistics</a>
@@ -101,7 +102,7 @@ const WebsiteNavbar = () => {
             <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="ms-auto" defaultActiveKey="#home">
                 <Nav.Item>
-                  <Nav.Link as={Link} to="/" onClick={() => {
+                  <Nav.Link as={Link} to="/login" onClick={() => {
                     // toggleLoading(true);
                     updateExpanded(false);
                   }}>

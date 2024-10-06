@@ -9,36 +9,55 @@ import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
 
 const Signup = () => {
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
   const windowSize = useWindowSize();
   const navigate = useNavigate();
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  const location = useLocation();
-
-  const path = location.pathname;
+  const { pathname, search, hash } = useLocation();
 
   useEffect(() => {
-    if (path.includes('/login/auth/')) {
-      setLoader(true);
-      const timer = setTimeout(() => {
-        setLoader(false);
-        console.error('Error logging in');
+    const timer = setTimeout(() => {
+      setLoader(false);
+      navigate('/signup');
+    }, 10000);
+
+    const handleAuthCheck = () => {
+      const isLoginPath = pathname === '/signup'; // Exactly matches '/signup'
+      const isGoogleCallback = pathname === '/signup/auth/google/callback'; // Specifically check for Google OAuth callback
+      const isGithubCallback = pathname === '/signup/auth/github/callback'; // Specifically check for GitHub OAuth callback
+      const isOAuthCallback = isGoogleCallback || isGithubCallback; // Check for either Google or GitHub callback
+
+      const isAuthPath = pathname.startsWith('/signup/auth') && !isOAuthCallback; // Allow '/signup/auth' but exclude OAuth callbacks
+
+      // Allow query parameters for OAuth callbacks
+      const hasQueryOrParam = search && !isOAuthCallback; // Ignore query params for OAuth callbacks
+      const hasAdditionalSegments = pathname.split('/').length > 3 && !isOAuthCallback; // Ignore path segments for OAuth callbacks
+
+      // Check for invalid paths or parameters
+      if ((hasQueryOrParam || hasAdditionalSegments) || (!isAuthPath && !isLoginPath && !isOAuthCallback)) {
         navigate('/login');
-      }, 10000);
+        return; // Exit early if invalid path
+      }
 
-      return () => clearTimeout(timer);
-    }
-  }, [path, navigate]);
+      if (pathname === '/signup') {
+        fetchUserInfo(dispatch)
+          .then(response => {
+            if (response.data && response.redirectUrl) {
+              navigate(response.redirectUrl, { replace: true });
+            }
+          })
+          .catch(() => console.error('Error signing up'))
+          .finally(() => setLoader(false));
+      } else {
+        setLoader(false); // Stop loader if the condition is not met
+      }
+    };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/home');
-    } else if (!isAuthenticated && token !== null) {
-      fetchUserInfo(dispatch);
-    }
+    handleAuthCheck();
 
-  }, [isAuthenticated]);
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, [dispatch, pathname, search, hash, navigate]);
 
   const setLoaderFnc = (bool) => {
     setLoader(bool);
@@ -54,7 +73,7 @@ const Signup = () => {
           </div>
         </Col>
         <Col xs={12} md='5' lg='4' className='left_container overflow-y-auto' >
-          <div className='m-auto w-100' style={{maxWidth:'800px'}}>
+          <div className='m-auto w-100' style={{ maxWidth: '800px' }}>
             <div className='w-100 my-2'>
               <div className='header_style'>StudenHub</div>
             </div>
