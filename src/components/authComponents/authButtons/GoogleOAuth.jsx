@@ -1,10 +1,18 @@
+import { useNotification } from '@src/components/common/Notification';
 import { googleAuthBaseURL } from '@src/config/apiConfig';
 import React from 'react';
 
 const GoogleSignup = ({ setLoaderFnc }) => {
+  const { notif } = useNotification();  // Get the notif function from context
+
   const btnClick = () => {
     setLoaderFnc(true);
-    window.location.href = googleAuthBaseURL;
+    if (navigator.onLine) {
+      window.location.href = googleAuthBaseURL;
+    } else {
+      setLoaderFnc(false);
+      notif('You are Offline', 'Please check your internet connection.');  // Trigger notification
+    }
   };
 
   return (

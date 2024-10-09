@@ -1,10 +1,18 @@
+import { useNotification } from '@src/components/common/Notification';
 import { githubAuthBaseURL } from '@src/config/apiConfig';
 import React from 'react';
 
 const GitHubOAuth = ({ setLoaderFnc }) => {
+  const {notif} = useNotification();  // Get the notif function from context
+
   const btnClick = () => {
     setLoaderFnc(true);
-    window.location.href = githubAuthBaseURL;
+    if (navigator.onLine) {
+      window.location.href = githubAuthBaseURL;
+    } else {
+      setLoaderFnc(false);
+      notif('You are Offline', 'Please check your internet connection.');  // Trigger notification
+    }
   };
 
   return (

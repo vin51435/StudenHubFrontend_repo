@@ -2,11 +2,14 @@
 @import '_mixins';
 
 // Main Website Styles
-@import './LandingPage/landingPage';
+@import './LandingPage/_landingPage';
 
 // Main Website common Styles
-@import './layout/desktopNavbar';
-@import './layout/mobileNavbar';
+@import './layout/_desktopNavbar';
+@import './layout/_mobileNavbar';
 
 // Auth pages(login/signup) Styles
 @import './authPages/authPages.scss';
+
+// Notification style
+@import './common/_notifications';

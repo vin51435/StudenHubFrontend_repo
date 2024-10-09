@@ -8,6 +8,7 @@ import useWindowSize from '@src/hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
+import { useNotification } from '@src/components/common/Notification';
 
 const Auth = () => {
   const [loader, setLoader] = useState(true);
@@ -16,13 +17,9 @@ const Auth = () => {
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const { pathname, search, hash } = useLocation();
+  const { notif, startRemoveNotification } = useNotification();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoader(false);
-      navigate('/login');
-    }, 10000);
-
     const handleAuthCheck = () => {
       const isLoginPath = pathname === '/login'; // Exactly matches '/login'
       const isGoogleCallback = pathname === '/login/auth/google/callback'; // Specifically check for Google OAuth callback
@@ -42,6 +39,11 @@ const Auth = () => {
       }
 
       if (pathname === '/login') {
+        let notifId = null;
+        const timeoutId = setTimeout(() => {
+          notifId = notif('Connecting to Server', 'Please wait while we connect to the server...', { type: 'error', timeOut: 0 });
+        }, 5000);
+
         fetchUserInfo(dispatch)
           .then(response => {
             if (response.data && response.redirectUrl) {
@@ -49,7 +51,13 @@ const Auth = () => {
             }
           })
           .catch(() => console.error('Error logging in'))
-          .finally(() => setLoader(false));
+          .finally(() => {
+            clearTimeout(timeoutId);
+            if (notifId) {
+              startRemoveNotification(notifId);
+            }
+            setLoader(false);
+          });
       } else {
         setLoader(false);
       }
@@ -57,7 +65,6 @@ const Auth = () => {
 
     handleAuthCheck();
 
-    return () => clearTimeout(timer); // Cleanup the timer
   }, [dispatch, pathname, search, hash, navigate]);
 
   const setLoaderFnc = (bool) => {
@@ -79,9 +86,11 @@ const Auth = () => {
               <div className='header_style'>StudenHub</div>
             </div>
             <div className='w-100 by-2'>
-              <span className='sub-header_style'>Log in to your account</span>
+              <span className='sub-header_style lh-1'>Log in to your account</span>
               <br />
-              <span className='body_style signup_link'>Don't have an account? <Link to='/signup'>Sign up</Link></span>
+              <div className='mt-1'>
+                <span className='body_style signup_link'>Don't have an account? <Link to='/signup'>Sign up</Link></span>
+              </div>
             </div>
             <div className='w-100 my-2'>
               <GitHubOAuth setLoaderFnc={setLoaderFnc} />
