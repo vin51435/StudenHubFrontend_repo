@@ -106,15 +106,7 @@
             margin-right: 0.3rem;
           }
         }
-        button {
-          background-color: $primary-color;
-          color: white;
-          font-weight: 600;
-          padding: 6px 8px;
-          @include apply-styles($border-styles);
-          &:hover {
-            @include apply-styles($btn-shadow-styles);
-          }
+        .btn {
           @include mediaMax(medium) {
             width: 100%;
             padding: 8px;
@@ -265,5 +257,31 @@
 .auth-page_main.signup_page {
   .row {
     flex-direction: row-reverse;
+  }
+}
+
+.signup_nav {
+  position: absolute;
+}
+
+.signup-details {
+  height: 100vh;
+  & > div {
+    height: 75%;
+    width: 60%;
+  }
+  .signup-details_container {
+    height: 85%;
+    @include apply-styles($border-styles);
+    border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
+    .signup-details-header_container {
+      width: fit-content;
+    }
+
+    .signup-details_btn_container {
+      .btn {
+        border-radius: $border-radius-rounded !important;
+      }
+    }
   }
 }

@@ -8,7 +8,8 @@ const baseURLs = {
   apiBaseURL: `${activeHost}/api/v1/`,
   googleAuthBaseURL: `${activeHost}/oauth2/google`,
   githubAuthBaseURL: `${activeHost}/oauth2/github`,
-  users: `${activeHost}/api/v1/users`
+  users: `${activeHost}/api/v1/users`,
+  userFormats: `${activeHost}/api/v1/userformat`
 };
 
 const baseURLsEndpoint = {
@@ -25,6 +26,9 @@ const baseURLsEndpoint = {
   // Google OAuth
   GOOGLE_CALLBACK: '/callback',
   GITHUB_CALLBACK: '/callback',
+
+  // User Formats
+  CITY_STATES: '/citystate'
 };
 
 let requestQueue = [];
@@ -86,7 +90,16 @@ const apiConfig = (baseURL, headers) => {
 
   // Add a response interceptor (optional)
   api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      console.log(response);
+      if (response.data && response.data.redirectUrl) {
+        console.log('response redirect', response.data.redirectUrl);
+        if (window.location.pathname !== response.data.redirectUrl) {
+          window.location.href = response.data.redirectUrl;
+        }
+      }
+      return response;
+    },
     (error) => {
       if (error.response) {
         if (error.response.status === 401) {

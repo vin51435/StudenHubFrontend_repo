@@ -1,9 +1,9 @@
-import { useNotification } from '@src/components/common/Notification';
+import { useNotification } from '@src/components/context/NotificationContext';
 import { githubAuthBaseURL } from '@src/config/apiConfig';
 import React from 'react';
 
 const GitHubOAuth = ({ setLoaderFnc }) => {
-  const {notif} = useNotification();  // Get the notif function from context
+  const { notif } = useNotification();  // Get the notif function from context
 
   const btnClick = () => {
     setLoaderFnc(true);

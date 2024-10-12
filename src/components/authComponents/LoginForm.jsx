@@ -1,5 +1,5 @@
 import { postData } from '@src/config/apiConfig';
-import { loginSuccess } from '@src/redux/auth';
+import { loginSuccess } from '@src/redux/reducer';
 import validateForm from '@src/utils/validators';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -85,7 +85,7 @@ const Login = () => {
     <div className='auth_form'>
       {step === 1 && (
         <form onSubmit={loginSubmit} autoComplete="off" noValidate>
-          <div>
+          <div className=''>
             <label className={`w-100 mt-2 `} htmlFor='login-email'>Email</label>
             <input
               className={`w-100 ${validationError?.invalidFields?.includes('email') ? 'wrongInput' : validationError?.validFields?.includes('email') ? 'rightInput' : ''}`}
@@ -117,7 +117,7 @@ const Login = () => {
               setStep(2);
             }}>forgot password?</span>
           </div>
-          <button className='mt-4' type="submit">Login</button>
+          <button className='mt-4 btn' type="submit">Login</button>
         </form>
       )}
       {step === 2 && <form onSubmit={forgotPasswordSubmit} autoComplete="off" noValidate>
@@ -154,7 +154,7 @@ const Login = () => {
               setStep(1);
             }}>Login</span>
         </div>
-        <button className='mt-4' type="submit">Send reset link</button>
+        <button className='mt-4 btn' type="submit">Send reset link</button>
       </form>}
     </div>
   );

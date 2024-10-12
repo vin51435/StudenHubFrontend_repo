@@ -100,3 +100,163 @@ a {
     );
   }
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+}
+
+.thin-scrollbar {
+  &::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background-color: #dfe9eb;
+  }
+
+  &::-webkit-scrollbar-track:hover {
+    background-color: #b8c0c2;
+  }
+
+  &::-webkit-scrollbar-track:active {
+    background-color: #b8c0c2;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background-color: #397524;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #62a34b;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #62a34b;
+  }
+}
+
+.btn {
+  background-color: $primary-color;
+  color: white;
+  font-weight: 600;
+  padding: 6px 8px;
+  @include apply-styles($border-styles);
+  border-color: transparent !important;
+  &:hover {
+    @include apply-styles($btn-shadow-styles);
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  & > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    .radio-group_input[type='radio'] {
+      display: none; /* Hide the actual radio buttons */
+      &:checked + label {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
+    }
+
+    .radio-group_label {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      background-color: transparent;
+      white-space: nowrap;
+      // transition: background-color 0.3s ease;
+      @include apply-styles($dotted-border);
+      &:hover {
+        background-color: #ddd;
+      }
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.input-group {
+  position: relative;
+  .input-group_input {
+    @include apply-styles($border-styles);
+    background-color: transparent;
+    outline: none;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    &:focus {
+      border: 2px solid gray;
+    }
+    &:focus ~ label,
+    &:valid ~ label {
+      top: 0px;
+      background-color: white;
+      font-size: 0.85rem;
+      color: black;
+    }
+  }
+  .input-group_label {
+    position: absolute;
+    font-size: 0.9rem;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: 0.3s;
+    color: $gray;
+  }
+}
+
+.react-select-group {
+  position: relative;
+  .async-select:has(.select__control--is-focused) ~ label,
+  .async-select:has(.select__control > .select__value-container--has-value)
+    ~ label {
+    top: 0px;
+    background-color: white;
+    font-size: 0.85rem;
+    color: black;
+  }
+  label {
+    position: absolute;
+    font-size: 0.9rem;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: 0.3s;
+    color: $gray;
+  }
+}
+
+.async-select {
+  .select__control {
+    @include apply-styles($border-styles);
+    box-shadow: none;
+    .select__placeholder {
+      font-size: 0.9rem;
+      color: $gray;
+    }
+    &--is-focused {
+      .select__placeholder {
+        color: red;
+      }
+    }
+  }
+}

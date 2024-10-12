@@ -13,10 +13,11 @@ const ProtectedRoutes = () => {
   useEffect(() => {
     fetchUserInfo(dispatch)
       .then(response => {
-        if (response.data && response.redirectUrl) {
-          navigate(response.redirectUrl);
-          return; // Early return to stop further execution
-        }
+        // if (response.data && response.redirectUrl) {
+        //   navigate(response.redirectUrl);
+        //   return; // Early return to stop further execution
+        // }
+        return response;
       })
       .catch(() => console.error('Error fetching user'))
       .finally(() => setLoading(false));

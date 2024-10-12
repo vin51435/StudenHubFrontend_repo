@@ -1,5 +1,5 @@
 import { getData } from "@src/config/apiConfig";
-import { loginSuccess, logoutSuccess } from "@src/redux/auth";
+import { loginSuccess, logoutSuccess } from "@src/redux/reducer";
 
 const fetchUserInfo = async (dispatch) => {
   try {

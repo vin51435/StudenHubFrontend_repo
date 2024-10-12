@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getData } from '@src/config/apiConfig';
-import { loginSuccess } from '@src/redux/auth';
+import { loginSuccess } from '@src/redux/reducer';
 import { PageLoadingSpinner } from '../common/LoadingSpinner';
 
 const OauthCallback = () => {
@@ -19,7 +19,9 @@ const OauthCallback = () => {
     })
       .then((response) => {
         dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-        navigate('/home');
+        if (response.data.user.interests.length > 0 && response.data.user.additionalInfo) {
+          navigate('/home');
+        }
       })
       .catch(err => {
         console.error(`${provider} signup error`, err);

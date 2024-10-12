@@ -8,7 +8,7 @@ import useWindowSize from '@src/hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
-import { useNotification } from '@src/components/common/Notification';
+import { useNotification } from '@src/components/context/NotificationContext';
 
 const Auth = () => {
   const [loader, setLoader] = useState(true);

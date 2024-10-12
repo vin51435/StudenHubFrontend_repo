@@ -1,4 +1,4 @@
-import { logoutSuccess } from '@src/redux/auth';
+import { logoutSuccess } from '@src/redux/reducer';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div>
       ded
-    <br />
+      <br />
       <br />
       <button onClick={() => dispatch(logoutSuccess())}>Logout</button>
     </div>

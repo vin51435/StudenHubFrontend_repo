@@ -1,5 +1,5 @@
 import { postData } from '@src/config/apiConfig';
-import { loginSuccess } from '@src/redux/auth';
+import { loginSuccess } from '@src/redux/reducer';
 import validateForm from '@src/utils/validators';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -74,7 +74,7 @@ const SignupForm = () => {
     if (valid) {
       setLoad(true);
       postData('USER_EMAIL_REG', { baseURL: 'users', data: { email: signupForm.email } })
-      .then(response => {
+        .then(response => {
           setLoad(false);
           if (response.status === 204) {
             setStep(3);
@@ -143,7 +143,7 @@ const SignupForm = () => {
         <div className='w-full'>
           <span className='text-danger'>{apiResponse?.otpSendMessage}</span>
         </div>
-        <button className='mt-4' onClick={sendVerification} disabled={load}>
+        <button className='mt-4 btn' onClick={sendVerification} disabled={load}>
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
           ) : (
@@ -202,7 +202,7 @@ const SignupForm = () => {
             <span className='text-success'>{apiResponse?.otpSendMessage}</span>
           }
         </div>
-        <button className='mt-4' onClick={verifyCode} disabled={load}>
+        <button className='mt-4 btn' onClick={verifyCode} disabled={load}>
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
           ) : (
@@ -285,7 +285,7 @@ const SignupForm = () => {
         <div className='w-full'>
           <span className='text-danger'>{apiResponse?.signupMessage}</span>
         </div>
-        <button className='mt-4' type="submit" disabled={load}>
+        <button className='mt-4 btn' type="submit" disabled={load}>
           {load ? (
             <LoadingSpinner height={'1.4rem'} />
           ) : (

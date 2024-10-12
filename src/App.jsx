@@ -1,10 +1,15 @@
 import React from 'react';
 import Routes from './routes/routes';
+import { NotificationProvider } from './components/context/NotificationContext';
 
 function App() {
 
   return (
-    <Routes />
+    <>
+      <NotificationProvider>
+        <Routes />
+      </NotificationProvider>
+    </>
   );
 }
 

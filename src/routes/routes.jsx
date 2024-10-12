@@ -11,27 +11,28 @@ import WebsiteLayout from '@src/components/layouts/WebsiteLayout';
 import UserDetails from '@src/pages/UserDetails';
 import LoginAddDetails from '@src/pages/LoginAddDetails';
 import OauthCallback from '@src/components/authComponents/OauthCallback';
+import SignupLayout from '@src/components/layouts/SignupLayout';
 
 const AllRoutes = () => {
   return (
-    <Router>
-      <Routes>
-        <Route element={<WebsiteLayout />}>
-          <Route path="/" element={<WebsiteHome />} />
-          <Route path="/test" element={<Test />} />
-        </Route>
-        <Route element={<ProtectedRoutes />}>
+    <Routes>
+      <Route element={<WebsiteLayout />}>
+        <Route path="/" element={<WebsiteHome />} />
+        <Route path="/test" element={<Test />} />
+      </Route>
+      <Route element={<ProtectedRoutes />}>
+        <Route element={<SignupLayout />}>
           <Route path='/userdetails' element={<UserDetails />} />
           <Route path='/additionalinfo' element={<LoginAddDetails />} />
-          <Route path="/home" element={<Home />} />
         </Route>
-        <Route path="/oauth2/google/callback" element={<OauthCallback />} />
-        <Route path="/oauth2/github/callback" element={<OauthCallback />} />
-        <Route path="/login/*" element={<Login />} />
-        <Route path="/signup/*" element={<Signup />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+        <Route path="/home" element={<Home />} />
+      </Route>
+      <Route path="/oauth2/google/callback" element={<OauthCallback />} />
+      <Route path="/oauth2/github/callback" element={<OauthCallback />} />
+      <Route path="/login/*" element={<Login />} />
+      <Route path="/signup/*" element={<Signup />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 
