@@ -76,7 +76,7 @@ a {
       linear,
       right bottom,
       left bottom,
-      color-stop(0.5, gray),
+      color-stop(0.5, $gray),
       color-stop(0.98, white)
     );
   }
@@ -95,7 +95,7 @@ a {
       linear,
       left bottom,
       right bottom,
-      color-stop(0.5, gray),
+      color-stop(0.5, $gray),
       color-stop(0.98, white)
     );
   }
@@ -154,9 +154,18 @@ a {
 }
 
 .radio-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 5px;
+
+  .radio-group_error {
+    position: absolute;
+    bottom: -1.15rem;
+    left: 10px;
+    font-size: 0.72rem;
+    color: $danger;
+  }
   & > div {
     display: flex;
     flex-wrap: wrap;
@@ -221,6 +230,13 @@ a {
     transition: 0.3s;
     color: $gray;
   }
+  .input-group_error {
+    position: absolute;
+    bottom: -1.15rem;
+    left: 10px;
+    font-size: 0.72rem;
+    color: $danger;
+  }
 }
 
 .react-select-group {
@@ -233,7 +249,7 @@ a {
     font-size: 0.85rem;
     color: black;
   }
-  label {
+  .react-select-group_label {
     position: absolute;
     font-size: 0.9rem;
     top: 50%;
@@ -242,6 +258,14 @@ a {
     pointer-events: none;
     transition: 0.3s;
     color: $gray;
+  }
+  .react-select-group_error {
+    position: absolute;
+    bottom: -1.15rem;
+    left: 10px;
+    font-size: 0.72rem;
+    color: $danger;
+    transition: 0.3;
   }
 }
 

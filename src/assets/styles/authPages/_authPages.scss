@@ -272,6 +272,7 @@
   }
   .signup-details_container {
     height: 85%;
+    max-height: 650px;
     @include apply-styles($border-styles);
     border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
     .signup-details-header_container {

@@ -1,13 +1,13 @@
 const validators = {
   text: (value, { required }) => {
-    if (required && !value.trim()) {
+    if ((required && !value?.trim())) {
       return 'This field is required';
     }
     return null;
   },
   email: (value, { required }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (required && !value.trim()) {
+    if (required && !value?.trim()) {
       return 'Email is required';
     }
     if (value && !emailRegex.test(value)) {
@@ -16,7 +16,7 @@ const validators = {
     return null;
   },
   number: (value, { required }) => {
-    if (required && !value.trim()) {
+    if (required && !value?.trim()) {
       return 'This field is required';
     }
     if (value && isNaN(value)) {
@@ -25,16 +25,16 @@ const validators = {
     return null;
   },
   password: (value, { required }) => {
-    if (required && !value.trim()) {
+    if (required && !value?.trim()) {
       return 'This field is required';
     }
-    if (value.length < 6) {
+    if (value?.length < 6) {
       return 'The password should be atleast 6 Characters Long.';
     }
     return null;
   },
   confirmPassword: (value, { required, formData }) => {
-    if (required && !value.trim()) {
+    if (required && !value?.trim()) {
       return 'This field is required';
     }
     if (value !== formData.password) {

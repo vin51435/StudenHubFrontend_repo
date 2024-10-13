@@ -17,6 +17,8 @@ const baseURLsEndpoint = {
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',
   USER_SIGNUP: '/signup',
+  USER_SIGNUP_ADDITIONAL_DETAILS: '/signupdetails',
+  USER_SIGNUP_INTEREST: '/signupinterest',
   USER_FORGOT_PASSWORD: '/forgotPassword',
   USER_LOGIN: '/login',
 
@@ -28,7 +30,7 @@ const baseURLsEndpoint = {
   GITHUB_CALLBACK: '/callback',
 
   // User Formats
-  CITY_STATES: '/citystate'
+  GET_CITY_STATES: '/getcitystate'
 };
 
 let requestQueue = [];
@@ -59,7 +61,7 @@ const addToQueue = (apiCall) => {
   });
 };
 
-const apiConfig = (baseURL, headers) => {
+const apiConfig = (baseURL, headers, queries) => {
   let selectedHeaders;
 
   const selectedBaseURL = baseURLs[baseURL] || baseURL;
@@ -81,6 +83,12 @@ const apiConfig = (baseURL, headers) => {
       if (token) {
         request.headers.Authorization = `Bearer ${token}`;
       }
+      if (queries && queries.length > 0) {
+        request.params = {
+          ...request.params, // Keep existing params
+          ...Object.fromEntries(queries.map(query => Object.entries(query).flat())),
+        };
+      }
       return request;
     },
     (error) => {
@@ -93,7 +101,6 @@ const apiConfig = (baseURL, headers) => {
     (response) => {
       console.log(response);
       if (response.data && response.data.redirectUrl) {
-        console.log('response redirect', response.data.redirectUrl);
         if (window.location.pathname !== response.data.redirectUrl) {
           window.location.href = response.data.redirectUrl;
         }
@@ -137,12 +144,13 @@ const handleError = (error) => {
 };
 
 const getApiEndpoint = (apiEndpoint) => {
-  return apiEndpoint.includes('/') ? apiEndpoint : getValueByKey(baseURLsEndpoint, apiEndpoint);
+  return Object.keys(baseURLsEndpoint).includes(apiEndpoint) ? getValueByKey(baseURLsEndpoint, apiEndpoint) : apiEndpoint;
+  // return apiEndpoint.includes('/') ? apiEndpoint : getValueByKey(baseURLsEndpoint, apiEndpoint);
 };
 
 export const getData = async (apiEndpoint, options = {}) => {
-  const { baseURL, headers = {}, queue = false } = options; // Default queue is true
-  const api = apiConfig(baseURL, headers);
+  const { baseURL, headers = {}, queue = false, queries } = options; // Default queue is true
+  const api = apiConfig(baseURL, headers, queries);
 
   // If queue is true, add the request to the queue
   if (queue) {

@@ -9,9 +9,10 @@ import Test from '@src/pages/Test';
 import WebsiteHome from '@src/pages/WebsiteHome';
 import WebsiteLayout from '@src/components/layouts/WebsiteLayout';
 import UserDetails from '@src/pages/UserDetails';
-import LoginAddDetails from '@src/pages/LoginAddDetails';
+import SignupAddDetails from '@src/pages/SignupAddDetails';
 import OauthCallback from '@src/components/authComponents/OauthCallback';
 import SignupLayout from '@src/components/layouts/SignupLayout';
+import SignupInterests from '@src/pages/SignupInterests';
 
 const AllRoutes = () => {
   return (
@@ -23,7 +24,8 @@ const AllRoutes = () => {
       <Route element={<ProtectedRoutes />}>
         <Route element={<SignupLayout />}>
           <Route path='/userdetails' element={<UserDetails />} />
-          <Route path='/additionalinfo' element={<LoginAddDetails />} />
+          <Route path='/additionalinfo' element={<SignupAddDetails />} />
+          <Route path='/interest' element={<SignupInterests />} />
         </Route>
         <Route path="/home" element={<Home />} />
       </Route>
