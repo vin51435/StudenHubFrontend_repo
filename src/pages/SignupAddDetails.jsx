@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
 import { TbDots, TbGenderFemale, TbGenderMale } from "react-icons/tb";
@@ -7,6 +7,7 @@ import { LuPencilRuler } from "react-icons/lu";
 import fetchOptions from '@src/utils/fetchOptions';
 import validateForm from '@src/utils/validators';
 import { putData } from '@src/config/apiConfig';
+import debounceImmediate from '@src/utils/debounceImmediate';
 
 const SignupAddDetails = () => {
   const [form, setForm] = useState({
@@ -28,7 +29,7 @@ const SignupAddDetails = () => {
 
   const userTypesArr = ['School Student', 'College Student', 'Professional'];
 
-  const loadMoreOptions = (inputValue, callback) => {
+  const loadMoreOptions = useCallback(debounceImmediate((inputValue, callback) => {
     setSelect(prev => ({ ...prev, load: true }));
     fetchOptions(inputValue, { page: select.page })
       .then(response => {
@@ -39,7 +40,22 @@ const SignupAddDetails = () => {
       })
       .catch(e => console.error('error: ', e))
       .finally(() => setSelect(prev => ({ ...prev, load: false })));
-  };
+  }, 400),
+    []
+  );
+
+  // const loadMoreOptions = (inputValue, callback) => {
+  //   setSelect(prev => ({ ...prev, load: true }));
+  //   fetchOptions(inputValue, { page: select.page })
+  //     .then(response => {
+  //       callback(response.options); // Provide the options to react-select
+  //       if (response.hasMore) {
+  //         setSelect(prev => ({ ...prev, page: prev.page + 1 }));
+  //       }
+  //     })
+  //     .catch(e => console.error('error: ', e))
+  //     .finally(() => setSelect(prev => ({ ...prev, load: false })));
+  // };
 
   const formValidation = (formInfo, formData) => {
     const validation = validateForm(formInfo, formData);
@@ -77,10 +93,10 @@ const SignupAddDetails = () => {
   return (
     <div className='signup-details d-flex justify-content-center align-items-center w-100'>
       {pageLoad && <PageLoadingSpinner />}
-      <Row className='signup-details_container pb-2 justify-content-center align-items-center'>
+      <Row className='signup-details_container justify-content-center align-items-center'>
         <Col xl='6' className='d-none d-xl-block d-flex justify-content-center align-items-center h-100'>hello1</Col>
-        <Col xl='6' className=' px-0 h-100 d-flex flex-column justify-content-between align-items-center'>
-          <div className='overflow-auto thin-scrollbar p-1 pt-4 px-4 w-100 flex-grow-1 d-flex flex-column justify-content-evenly'>
+        <Col xl='6' className='overflow-hidden px-0 h-100 d-flex flex-column justify-content-between align-items-center'>
+          <div className='overflow-auto thin-scrollbar p-3 pb-1 pt-md-4 px-md-4 w-100 flex-grow-1 d-flex flex-column justify-content-evenly'>
             <div className='signup-details-header_container'>
               <div className='d-flex justify-content-center align-items-center'>
                 <div className='d-flex justify-content-center align-items-center'>-</div>
@@ -213,8 +229,9 @@ const SignupAddDetails = () => {
                     isSearchable={true}
                     name="currentCity"
                     cacheOptions
+                    menuShouldScrollIntoView={true}
                     defaultOptions
-                    loadOptions={loadMoreOptions}
+                    loadOptions={(inputValue, callback) => loadMoreOptions(inputValue, callback)}
                     inputValue={select.inputValue}
                     placeholder={''}
                     onChange={e => setForm(prev => ({ ...prev, currentCity: e?.value ?? '' }))}
@@ -229,7 +246,7 @@ const SignupAddDetails = () => {
             </div>
           </div>
           <div className='signup-details_btn_container p-3 w-100 d-flex justify-content-end align-items-center'>
-            <button className='btn px-4 py-2' onClick={handleSubmit}>Next</button>
+            <button className='btn px-3 py-2 px-md-4 py-md-2 fs-6' onClick={handleSubmit}>Next</button>
           </div>
         </Col>
       </Row>

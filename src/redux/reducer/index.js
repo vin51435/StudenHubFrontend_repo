@@ -5,6 +5,7 @@ const token = getCookie('accessToken');
 
 const initialState = {
   isAuthenticated: false,
+  redirectUrl: null,
   user: null,
   token
 };
@@ -14,8 +15,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.isAuthenticated = true;
       state.user = action.payload.user;
+      state.isAuthenticated = true;
+      state.redirectUrl = action.payload?.redirectUrl ?? null;
       if (action.payload.token) {
         state.token = action.payload.token;
         setCookie('accessToken', action.payload.token);

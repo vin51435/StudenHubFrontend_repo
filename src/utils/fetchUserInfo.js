@@ -4,9 +4,9 @@ import { loginSuccess, logoutSuccess } from "@src/redux/reducer";
 const fetchUserInfo = async (dispatch) => {
   try {
     const response = await getData('USER_INFO', { baseURL: 'users', queue: true });
-    const { data: { user }, token } = response;
+    const { data: { user }, token, redirectUrl } = response;
 
-    dispatch(loginSuccess({ user, token }));
+    dispatch(loginSuccess({ user, token, redirectUrl }));
 
     return response; // You can directly return the response if needed
   } catch (error) {

@@ -99,7 +99,6 @@ const apiConfig = (baseURL, headers, queries) => {
   // Add a response interceptor (optional)
   api.interceptors.response.use(
     (response) => {
-      console.log(response);
       if (response.data && response.data.redirectUrl) {
         if (window.location.pathname !== response.data.redirectUrl) {
           window.location.href = response.data.redirectUrl;

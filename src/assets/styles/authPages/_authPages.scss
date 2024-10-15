@@ -269,10 +269,15 @@
   & > div {
     height: 75%;
     width: 60%;
+    @include mediaMax(medium) {
+      width: 85%;
+    }
   }
   .signup-details_container {
     height: 85%;
     max-height: 650px;
+    max-width: 1800px;
+    overflow: hidden;
     @include apply-styles($border-styles);
     border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
     .signup-details-header_container {
@@ -280,6 +285,9 @@
     }
 
     .signup-details_btn_container {
+      -webkit-box-shadow: 0px 0px 27px -8px $disabled-color;
+      -moz-box-shadow: 0px 0px 27px -8px $disabled-color;
+      box-shadow: 0px 0px 27px -8px $disabled-color;
       .btn {
         border-radius: $border-radius-rounded !important;
       }

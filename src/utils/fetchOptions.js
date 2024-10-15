@@ -12,7 +12,6 @@ const fetchOptions = async (inputValue, { page = 1, LIMIT = 10 }) => {
           { limit: LIMIT },
         ]
       });
-    console.log(res);
     return {
       options: res.data.map(item => ({
         value: item,
