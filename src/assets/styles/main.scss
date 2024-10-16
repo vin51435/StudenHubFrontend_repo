@@ -21,9 +21,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+}
+
 #root {
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  min-width: 100vw;
+  // width: 100%;
+  // height: 100%;
   font-family: 'Noto Sans', sans-serif;
 }
 
@@ -101,6 +106,10 @@ a {
   }
 }
 
+.red-text {
+  color: $danger;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
@@ -148,8 +157,22 @@ a {
   padding: 6px 8px;
   @include apply-styles($border-styles);
   border-color: transparent !important;
+  // -webkit-box-shadow: 4px 4px 5px 1px $secondary-color1;
+  // -moz-box-shadow: 4px 4px 5px 1px $secondary-color1;
+  // box-shadow: 4px 4px 5px 1px $secondary-color1;
   &:hover {
     @include apply-styles($btn-shadow-styles);
+  }
+  &.btn-red {
+    background-color: $danger;
+    // -webkit-box-shadow: 4px 4px 5px 1px $light-danger;
+    // -moz-box-shadow: 4px 4px 5px 1px $light-danger;
+    // box-shadow: 4px 4px 5px 1px $light-danger;
+    transition: 300ms;
+    &:hover {
+      background-color: $white;
+      @include apply-styles($btn-red-shadow-styles);
+    }
   }
 }
 
@@ -209,15 +232,23 @@ a {
     outline: none;
     width: 100%;
     padding: 0.5rem 1rem;
+    transition: all 0.15s ease-out;
     &:focus {
-      border: 2px solid gray;
+      // border: 2px solid $gray;
+      -webkit-box-shadow: 0px 0px 0px 1px $gray;
+      -moz-box-shadow: 0px 0px 0px 1px $gray;
+      box-shadow: 0px 0px 0px 1px $gray;
     }
-    &:focus ~ label,
-    &:valid ~ label {
+    &:focus ~ .input-group_label,
+    &:valid ~ .input-group_label {
       top: 0px;
-      background-color: white;
+      background-color: $white;
       font-size: 0.85rem;
       color: black;
+      .input-group_label_icon {
+        font-size: 1.1rem;
+        margin-right: 1px;
+      }
     }
   }
   .input-group_label {
@@ -227,8 +258,14 @@ a {
     left: 12px;
     transform: translateY(-50%);
     pointer-events: none;
-    transition: 0.3s;
+    transition: all 0.3s ease-out;
     color: $gray;
+    .input-group_label_icon {
+      transition: all 0.3s ease-out;
+      font-size: 1.35rem;
+      margin-right: 4px;
+      margin-left: 2px;
+    }
   }
   .input-group_error {
     position: absolute;

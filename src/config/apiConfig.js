@@ -30,7 +30,8 @@ const baseURLsEndpoint = {
   GITHUB_CALLBACK: '/callback',
 
   // User Formats
-  GET_CITY_STATES: '/getcitystate'
+  GET_CITY_STATES: '/getcitystate',
+  GET_INTERESTS: '/userinterests'
 };
 
 let requestQueue = [];
@@ -147,6 +148,18 @@ const getApiEndpoint = (apiEndpoint) => {
   // return apiEndpoint.includes('/') ? apiEndpoint : getValueByKey(baseURLsEndpoint, apiEndpoint);
 };
 
+/**
+ * Fetches data from an API endpoint, with optional configurations like base URL, headers, and queue management.
+ *
+ * @param {string} apiEndpoint - A predefined endpoint variable of a URL.
+ * @param {Object} [options={}] - Optional configurations for the request.
+ * @param {string} [options.baseURL] - A predefined base URL for the API.
+ * @param {Object} [options.headers={}] - An object representing custom headers to send with the request.
+ * @param {boolean} [options.queue=false] - If true, the request is added to a queue and executed later.
+ * @param {Object} [options.queries] - Query parameters to append to the request URL.
+ * 
+ * @returns {Promise<any>} - A promise that resolves with the API response or rejects with an error.
+ */
 export const getData = async (apiEndpoint, options = {}) => {
   const { baseURL, headers = {}, queue = false, queries } = options; // Default queue is true
   const api = apiConfig(baseURL, headers, queries);

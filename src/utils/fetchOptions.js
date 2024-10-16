@@ -17,7 +17,7 @@ const fetchOptions = async (inputValue, { page = 1, LIMIT = 10 }) => {
         value: item,
         label: item
       })),
-      hasMore: res  // `hasMore` can be part of your API response to indicate more pages
+      hasMore: { ...res, totalPages: Math.ceil(res.totalResults / res.limit) }  // `hasMore` can be part of your API response to indicate more pages
     };
   } catch (error) {
     console.error('Error fetching options:', error);

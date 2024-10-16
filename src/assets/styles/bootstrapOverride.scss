@@ -1,0 +1,11 @@
+.container,
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl,
+.container-xxl {
+  @include mediaMax(small) {
+    padding: 0;
+  }
+}

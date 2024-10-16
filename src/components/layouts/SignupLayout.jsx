@@ -8,10 +8,10 @@ const SignupLayout = () => {
 
   return (
     <>
-      <section className='signup_nav w-100 d-flex justify-content-end'>
-        <span className='' role='button' onClick={() => dispatch(logoutSuccess())}>Logout</span>
+      <section className='signup_nav w-100 d-flex justify-content-end mb-md-3 mb-2'>
+        <span className='btn btn-red m-2 ' role='button' onClick={() => dispatch(logoutSuccess())}>Logout</span>
       </section>
-      <main>
+      <main className='w-100 h-100 '>
         <Outlet />
       </main>
     </>

@@ -84,7 +84,7 @@ const WebsiteNavbar = () => {
             transition: 'top 0.4s'
           }}
         >
-          <Container fluid='lg'>
+          <Container fluid='xxl'>
             <Navbar.Brand href="/" className="d-flex">
               {/* <img src={logo} className="img-fluid logo" alt="brand" /> */}
               StudenHub

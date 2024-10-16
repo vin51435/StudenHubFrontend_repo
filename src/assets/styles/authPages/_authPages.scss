@@ -261,11 +261,11 @@
 }
 
 .signup_nav {
-  position: absolute;
+  // position: absolute;
 }
 
 .signup-details {
-  height: 100vh;
+  height: 100%;
   & > div {
     height: 75%;
     width: 60%;
@@ -291,6 +291,67 @@
       .btn {
         border-radius: $border-radius-rounded !important;
       }
+    }
+  }
+}
+
+.signup-interest_container {
+  position: relative;
+  & > form {
+    width: 75%;
+    padding-bottom: 60px;
+    @include mediaMax(small) {
+      width: 90%;
+    }
+  }
+  .signup-interest-btn_container {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    background-color: $white;
+    text-align: end;
+  }
+  .interest_subheader {
+    font-size: 0.8rem;
+  }
+  .interest_grid {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; // Adjust the gap between the images
+    justify-content: space-between; // Distributes the images evenly
+
+    .image_grid_item {
+      flex: 1 1 calc(33.33% - 20px); // 3 images per row, accounting for the gap
+      background-size: cover;
+      background-position: center;
+      min-height: 140px; // Set the height of the div; adjust as needed
+      display: flex;
+      justify-content: start;
+      align-items: end;
+      color: white; // Text color
+      font-weight: bold;
+      border-radius: $border-radius;
+      background-color: rgba(0, 0, 0, 0.5); // Fallback background color
+      -webkit-box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
+      .image_text {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: end;
+        font-size: 0.7rem;
+        line-height: 1em;
+        border-radius: $border-radius;
+        transition: 0.2s;
+      }
+    }
+
+    .interest_selected {
+      -webkit-box-shadow: 0px 0px 0px 4px $primary-color1;
+      -moz-box-shadow: 0px 0px 0px 4px $primary-color1;
+      box-shadow: 0px 0px 0px 4px $primary-color1;
     }
   }
 }
