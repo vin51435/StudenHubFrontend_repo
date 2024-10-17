@@ -1,11 +1,16 @@
-import { getData } from '@src/config/apiConfig';
+import { useNotification } from '@src/components/context/NotificationContext';
+import { getData, putData } from '@src/config/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { IoMdSearch } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
 
 const SignupInterests = () => {
   const [interest, setInterest] = useState({ selected: [], search: '', data: [], error: null, required: null });
-  // ! Receive required number of interest from api
+  const [load, setLoad] = useState(false);
+
+  const { notif } = useNotification();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getData('GET_INTERESTS', {
@@ -19,6 +24,7 @@ const SignupInterests = () => {
   }, []);
 
   const handleCheckboxChange = (event) => {
+    if (load) return;
     const { value, checked } = event.target;
     if (checked) {
       setInterest((prev) => ({ ...prev, selected: [...prev.selected, value] }));
@@ -31,11 +37,21 @@ const SignupInterests = () => {
     event.preventDefault();
     if (interest.selected.length < interest.required) {
       setInterest(prev => ({ ...prev, error: true }));
+      notif(`Select at least ${interest.required} interest`, null, { timeOut: 5000 });
       return;
     }
+    setLoad(true);
     setInterest(prev => ({ ...prev, error: false }));
-    console.log('Selected Options:', interest.selected);
-    // Here you can add code to handle the form submission
+    putData('POST_USER_SIGNUP_INTEREST', { baseURL: 'users', data: { interests: interest.selected } })
+      .then(response => {
+        if (response.code === 200) {
+          navigate('/home');
+        }
+      })
+      .catch(e => {
+        notif('Unable to save');
+      })
+      .finally(() => { setLoad(false); });
   };
 
   return (
@@ -47,14 +63,16 @@ const SignupInterests = () => {
         </div>
         <div className='input-group mt-md-4 mt-2'>
           <input
-            className='input-group_input' autoComplete="off"
+            id='signup-interest_input'
+            className='input-group_input fs-6' autoComplete="off"
             type='text'
             name='search'
             required={false}
             value={interest.search ?? ''}
+            placeholder=''
             onChange={(e) => setInterest(prev => ({ ...prev, search: e.target.value }))}
           />
-          <label className='input-group_label'>
+          <label className='input-group_label' htmlFor='signup-interest_input'>
             <IoMdSearch className='input-group_label_icon' />
             Search Interest</label>
         </div>
@@ -85,7 +103,7 @@ const SignupInterests = () => {
         </div>
         <div className='signup-interest-btn_container px-3 py-2 d-flex justify-content-end align-items-center'>
           <span className='me-2'>{interest.selected.length} Selected</span>
-          <button className='btn' onClick={handleSubmit}>
+          <button className='btn' onClick={handleSubmit} disabled={load}>
             Proceed
           </button>
         </div>

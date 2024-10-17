@@ -65,7 +65,7 @@ const SignupAddDetails = () => {
     const valid = formValidation(formInfo, form);
     if (valid) {
       setPageLoad(true);
-      putData('USER_SIGNUP_ADDITIONAL_DETAILS', {
+      putData('POST_USER_SIGNUP_ADDITIONAL_DETAILS', {
         baseURL: 'users',
         data: form
       })

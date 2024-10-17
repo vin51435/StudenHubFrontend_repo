@@ -17,8 +17,8 @@ const baseURLsEndpoint = {
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',
   USER_SIGNUP: '/signup',
-  USER_SIGNUP_ADDITIONAL_DETAILS: '/signupdetails',
-  USER_SIGNUP_INTEREST: '/signupinterest',
+  POST_USER_SIGNUP_ADDITIONAL_DETAILS: '/signupdetails',
+  POST_USER_SIGNUP_INTEREST: '/signupinterest',
   USER_FORGOT_PASSWORD: '/forgotPassword',
   USER_LOGIN: '/login',
 

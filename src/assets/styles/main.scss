@@ -176,6 +176,11 @@ a {
   }
 }
 
+.btn:disabled {
+  background-color: $gray;
+  color: $black;
+}
+
 .radio-group {
   position: relative;
   display: flex;
@@ -233,6 +238,10 @@ a {
     width: 100%;
     padding: 0.5rem 1rem;
     transition: all 0.15s ease-out;
+    font-size: 1rem;
+    &::placeholder {
+      font-size: inherit;
+    }
     &:focus {
       // border: 2px solid $gray;
       -webkit-box-shadow: 0px 0px 0px 1px $gray;
@@ -240,6 +249,7 @@ a {
       box-shadow: 0px 0px 0px 1px $gray;
     }
     &:focus ~ .input-group_label,
+    &:not(:placeholder-shown),
     &:valid ~ .input-group_label {
       top: 0px;
       background-color: $white;
