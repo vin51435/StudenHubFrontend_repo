@@ -13,11 +13,12 @@ import { useNotification } from '@src/components/context/NotificationContext';
 const Auth = () => {
   const [loader, setLoader] = useState(true);
   const windowSize = useWindowSize();
-  const navigate = useNavigate();
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
   const { pathname, search, hash } = useLocation();
   const { notif, startRemoveNotification } = useNotification();
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleAuthCheck = () => {
@@ -38,6 +39,11 @@ const Auth = () => {
         return; // Exit early if invalid path
       }
 
+      if (!token) {
+        setLoader(false);
+        return;
+      };
+
       if (pathname === '/login') {
         let notifId = null;
         const timeoutId = setTimeout(() => {
@@ -45,10 +51,8 @@ const Auth = () => {
         }, 5000);
 
         fetchUserInfo(dispatch)
-          .then(response => {
-            if (response.data && response.redirectUrl) {
-              navigate(response.redirectUrl, { replace: true });
-            }
+          .then(() => {
+            navigate('/home');
           })
           .catch(() => console.error('Error logging in'))
           .finally(() => {

@@ -1,4 +1,5 @@
 import { logoutSuccess } from '@src/redux/reducer';
+import { getCookie } from '@src/utils/cookieGetterSetter';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -12,6 +13,9 @@ const Home = () => {
   return (
     <div>
       ded
+      <br />
+      {getCookie('accessToken')}
+      <br />
       <br />
       <br />
       <button onClick={() => dispatch(logoutSuccess())}>Logout</button>

@@ -56,7 +56,7 @@ const SignupInterests = () => {
 
   return (
     <Container fluid={'xxl'} className='signup-interest_container w-100 h-100 d-flex justify-content-center align-items-center'>
-      <form className='w-md-75 h-100 d-flex justify-content-center align-items-center flex-column'>
+      <form className='w-lg-75 h-100 d-flex justify-content-center align-items-center flex-column'>
         <div className='w-100'>
           <h1 className='interest_header'>Pick your favorite Topics/Interest</h1>
           <h6 className={`interest_subheader ${interest.error ? 'red-text' : ''}`}>Choose at least {interest.required} - It'll help us personalize your feed the way you like it.</h6>

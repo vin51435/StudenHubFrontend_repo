@@ -1,5 +1,7 @@
 const setCookie = (name, value, options = {}) => {
-  let cookieString = `${name}=${value || ""}; path=/; Secure; SameSite=Strict`;
+  let isSecure = import.meta.env.VITE_NODE_ENV !== 'development';
+
+  let cookieString = `${name}=${value || ""}; path=/;${isSecure ? ' Secure;' : ''} SameSite=Strict`;
 
   if (options.delete) {
     cookieString += "; expires=Thu, 01 Jan 1970 00:00:00 GMT";
@@ -11,7 +13,6 @@ const setCookie = (name, value, options = {}) => {
 
   document.cookie = cookieString;
 };
-
 
 const getCookie = (name) => {
   const nameEQ = name + "=";

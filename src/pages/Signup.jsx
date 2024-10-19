@@ -13,11 +13,12 @@ import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
 const Signup = () => {
   const [loader, setLoader] = useState(true);
   const windowSize = useWindowSize();
-  const navigate = useNavigate();
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
   const { pathname, search, hash } = useLocation();
   const { notif, startRemoveNotification } = useNotification();
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleAuthCheck = () => {
@@ -37,18 +38,21 @@ const Signup = () => {
         navigate('/login');
         return; // Exit early if invalid path
       }
+      if (!token) {
+        setLoader(false);
+        return;
+      };
 
       if (pathname === '/signup') {
+
         let notifId = null;
         const timeoutId = setTimeout(() => {
           notifId = notif('Connecting to Server', 'Please wait while we connect to the server...', { type: 'error', timeOut: 0 });
         }, 5000);
 
         fetchUserInfo(dispatch)
-          .then(response => {
-            if (response.data && response.redirectUrl) {
-              navigate(response.redirectUrl, { replace: true });
-            }
+          .then(() => {
+            navigate('/home');
           })
           .catch(() => console.error('Error signing up'))
           .finally(() => {

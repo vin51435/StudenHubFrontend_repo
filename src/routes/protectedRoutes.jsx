@@ -12,12 +12,16 @@ const ProtectedRoutes = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserInfo(dispatch)
-      .then(response => {
-        return response;
-      })
-      .catch(() => console.error('Error fetching user'))
-      .finally(() => setLoading(false));
+    if (token) {
+      fetchUserInfo(dispatch)
+        .then(response => {
+          return response;
+        })
+        .catch(() => console.error('Error fetching user'))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
   }, [dispatch, navigate]);
 
   if (loading) {

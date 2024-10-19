@@ -4,12 +4,15 @@ import validateForm from '@src/utils/validators';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '@src/components/common/LoadingSpinner.jsx';
 
 const Login = () => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [validationError, setValidationError] = useState({});
   const [apiResponse, setApiResponse] = useState({ state: null, message: null });
   const [step, setStep] = useState(1);
+  const [load, setLoad] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -43,20 +46,19 @@ const Login = () => {
     e.preventDefault();
     const valid = formValidation(formInfo, loginForm);
     if (valid) {
+      setLoad(true);
       postData('USER_LOGIN', {
         baseURL: 'users',
         data: { email: loginForm.email, password: loginForm.password }
       })
         .then(response => {
-          if (response.status === 'success') {
-            const { data, token } = response;
-            const { user } = data;
-            dispatch(loginSuccess({ user, token }));
-            // navigate('/home');
-          } else {
-            setApiResponse({ state: 0, message: response.message });
-          }
-        });
+          const { data, token } = response;
+          const { user } = data;
+          dispatch(loginSuccess({ user, token }));
+          navigate('/home');
+        })
+        .catch(err => setApiResponse({ state: 0, message: err.message }))
+        .finally(() => setLoad(false));
     }
   };
 
@@ -76,7 +78,7 @@ const Login = () => {
         })
         .catch(error => {
           console.error('Error:', error);
-          setApiResponse({ state: 0, message: 'An error occurred. Please try again later.' });
+          setApiResponse({ state: 0, message: error?.message ?? 'An error occurred. Please try again later.' });
         });
     }
   };
@@ -117,7 +119,12 @@ const Login = () => {
               setStep(2);
             }}>forgot password?</span>
           </div>
-          <button className='mt-4 btn' type="submit">Login</button>
+          <button className='mt-4 btn' type="submit" disabled={load}>
+            {load ? (
+              <LoadingSpinner height={'1.4rem'} />
+            ) : (
+              'Login'
+            )}</button>
         </form>
       )}
       {step === 2 && <form onSubmit={forgotPasswordSubmit} autoComplete="off" noValidate>
@@ -154,7 +161,12 @@ const Login = () => {
               setStep(1);
             }}>Login</span>
         </div>
-        <button className='mt-4 btn' type="submit">Send reset link</button>
+        <button className='mt-4 btn' type="submit" disabled={load}>
+          {load ? (
+            <LoadingSpinner height={'1.4rem'} />
+          ) : (
+            'Send reset link'
+          )}</button>
       </form>}
     </div>
   );

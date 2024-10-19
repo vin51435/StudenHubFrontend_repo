@@ -1,9 +1,10 @@
 import { postData } from '@src/config/apiConfig';
 import { loginSuccess } from '@src/redux/reducer';
 import validateForm from '@src/utils/validators';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '@src/components/common/LoadingSpinner.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const [signupForm, setSignupForm] = useState({ email: '', password: '', confirmPassword: '', verification: '', firstName: '', lastName: '' });
@@ -12,13 +13,13 @@ const SignupForm = () => {
   const [validationError, setValidationError] = useState({});
   const [load, setLoad] = useState(false);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const signupFormInfo = [
     { name: 'email', type: 'email', required: true, message: 'Enter a valid email address' },
-    { name: 'password', type: 'password', required: true },
-    { name: 'confirmPassword', type: 'confirmPassword', required: true },
-    { name: 'verification', type: 'number', required: true },
+    { name: 'password', type: 'password', required: true, requiredLength: 8 },
+    { name: 'confirmPassword', type: 'confirmPassword', required: true, requiredLength: 8 },
     { name: 'firstName', type: 'text', required: true, message: 'Enter your first name.' },
     { name: 'lastName', type: 'text', required: true, message: 'Enter your last name.' },
   ];
@@ -60,11 +61,11 @@ const SignupForm = () => {
           setLoad(false);
           if (response.status === 'success') {
             setStep(3);
-            setApiResponse(prev => ({ ...prev, otpVerifyMessage: response.message }));
-          } else {
-            setApiResponse(prev => ({ ...prev, otpVerifyMessage: response.message }));
+            setApiResponse(prev => ({ ...prev, otpVerifyMessage: response?.message }));
           }
-        });
+        })
+        .catch(err => setApiResponse(prev => ({ ...prev, otpVerifyMessage: err.message })))
+        .finally(() => setLoad(false));
     };
   };
 
@@ -81,11 +82,11 @@ const SignupForm = () => {
             setApiResponse(prev => ({ ...prev, otpSendMessage: 'Email already verified' }));
           } else if (response.status === 'success') {
             setStep(2);
-            setApiResponse(prev => ({ ...prev, otpSendMessage: response.message }));
-          } else {
-            setApiResponse(prev => ({ ...prev, otpSendMessage: response.message }));
+            setApiResponse(prev => ({ ...prev, otpSendMessage: response?.message }));
           }
-        });
+        })
+        .catch(err => setApiResponse(prev => ({ ...prev, otpSendMessage: err.message })))
+        .finally(() => setLoad(false));
     };
   };
 
@@ -100,14 +101,13 @@ const SignupForm = () => {
         data: { email, password, passwordConfirm, firstName, lastName }
       })
         .then(response => {
-          setLoad(false);
-          if (response.status === 'success') {
-            dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-            // navigate('/home');
-          } else {
-            setApiResponse(prev => ({ ...prev, signupMessage: response.message }));
-          }
-        });
+          dispatch(loginSuccess({ token: response.token, user: response.data.user }));
+          navigate('/home');
+        })
+        .catch(err => {
+          setApiResponse(prev => ({ ...prev, signupMessage: err?.message }));
+        })
+        .finally(() => setLoad(false));
     }
   };
 
@@ -261,11 +261,11 @@ const SignupForm = () => {
             onChange={handleChange}
           />
           <div className='password_requirements'>
-            <span className={`${validationError?.invalidFields?.includes('password') ? 'text-danger' : validationError?.validFields?.includes('password') && 'text-success'} ${validationError?.validFields?.includes('password') && 'text-success'}`}>
+            <span className={`${validationError?.invalidFields?.includes('password') ? 'text-danger' : validationError?.validFields?.includes('password') ? 'text-success' : 'd-none'} ${validationError?.validFields?.includes('password') && 'text-success'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 100" shapeRendering="geometricPrecision" textRendering="geometricPrecision">
                 <path d="M120.004 3.341 45.596 81.632l-29.5-24.655c-6.003-5.043-7.852-4.46-12.402 0-4.83 5.489-5.02 7.42 0 12.199s33.703 27.987 33.703 27.987c2.526 1.847 5.102 2.842 8.199 2.842 3.092 0 5.865-.79 8.229-2.842l77.78-82.114c4.523-4.47 4.544-7.265 0-11.708-4.55-4.443-7.078-4.454-11.6 0" fill="currentColor " fillRule="evenodd" />
               </svg>
-              Must be atleast 6 characters
+              {validationError?.errors?.password}
             </span>
           </div>
         </div>

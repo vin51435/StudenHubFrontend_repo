@@ -1,71 +1,126 @@
-import { useState, useEffect } from 'react';
+import { generateChatId } from '@src/utils';
+import { getCookie } from '@src/utils/cookieGetterSetter';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3001'); // Backend URL
-
-function Test() {
-  const [message, setMessage] = useState('');
-  const [chat, setChat] = useState([]);
-  const [isConnected, setIsConnected] = useState(socket.connected);
+const ChatComponent = () => {
+  const [chatUserID, setChatUserID] = useState({ chatId: '', oppName: '' });
+  const [messages, setMessages] = useState([]);
+  const [messageContent, setMessageContent] = useState('');
+  const [socket, setSocket] = useState(null); // Track socket instance in state
+  const { isAuthenticated, user: { username }, token } = useSelector(state => state.auth);
 
   useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
+    const newSocket = io('http://192.168.0.155:3001', {
+      auth: {
+        token: getCookie('accessToken')
+      },
+      transports: ['websocket']
+    });
 
-    function onDisconnect() {
-      setIsConnected(false);
-    }
+    setSocket(newSocket);
 
-    function receiveMessage(obj) {
-      setChat((prevChat) => [...prevChat, obj.text]);
-    }
+    console.log('Socket created and connected');
 
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('receiveMessage', receiveMessage);
+    newSocket.on('receiveMessage', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    newSocket.on('error', (error) => {
+      console.error('Socket Error:', error.message);
+      if (error.statusCode === 401) {
+        // Handle 401 errors (e.g., redirect to login page)
+      }
+    });
+
+    newSocket.on('connect_error', (err) => {
+      console.log(err.message); // not authorized
+      console.log(err.data);
+      console.log(err);
+    });
+
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('receiveMessage', receiveMessage);
+      console.log('Cleaning up socket connection');
+      newSocket.disconnect(); // Disconnect the socket
     };
   }, []);
-  const sendMessage = (e) => {
-    e.preventDefault();
-    socket.emit('sendMessage', message);
-    setMessage('');
+
+  const sendMessage = () => {
+    if (!messageContent) return; // Prevent empty messages
+
+    const messageData = {
+      chatId: chatUserID.chatId,
+      senderId: username,
+      content: messageContent,
+    };
+
+    // Emit the message to the server
+    socket.emit('sendMessage', messageData);
+    setMessageContent(''); // Clear input field
   };
 
-  function connect() {
-    socket.connect();
-  }
+  const connect = () => {
+    if (socket && !socket.connected) {
+      socket.connect(); // Reconnect the socket
+      console.log('Reconnected', socket.id);
+    }
+  };
 
-  function disconnect() {
-    socket.disconnect();
-  }
+  const disconnect = () => {
+    if (socket) {
+      socket.disconnect(); // Disconnect the socket manually
+      console.log('Disconnected');
+    }
+  };
 
   return (
-    <div className='mt-5 pt-5'>
-      <p>State: {'' + isConnected}</p>
-      <ul>
-        {chat.map((msg, idx) => (
-          <p key={idx}>{msg}</p>
-        ))}
-      </ul>
+    <div className='mt-5 p-5 pt-5'>
+      <div>
+        <h3>{username}</h3>
+        <h5>{chatUserID.chatId}</h5>
+        <input
+          type='text'
+          value={chatUserID.oppName}
+          name='oppName'
+          onChange={(e) => setChatUserID(prev => ({ ...prev, [e.target.name]: e.target.value }))}
+        />
+        <div>
+          <button onClick={(e) => {
+            e.preventDefault();
+            setMessages([]);
+            setChatUserID(prev => {
+              const id = generateChatId(username, prev.oppName);
+              if (socket) {
+                console.log('Joining chat:', id);
+                socket.emit('joinChat', id);
+              }
+              return { ...prev, chatId: id };
+            });
+          }}>Connect to chat</button>
+        </div>
+      </div>
       <>
         <button onClick={connect}>Connect</button>
         <button onClick={disconnect}>Disconnect</button>
       </>
-      <form>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button onClick={sendMessage}>Send</button>
-      </form>
+      <br />
+      <input
+        type="text"
+        value={messageContent}
+        onChange={(e) => setMessageContent(e.target.value)}
+        placeholder="Type a message..."
+      />
+      <button onClick={sendMessage}>Send</button>
+      <div className="messages">
+        {messages.map((msg, index) => (
+          <div key={index}>
+            <strong>{msg.sendUsername}: </strong> {msg.content}
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
-export default Test;
+export default ChatComponent;

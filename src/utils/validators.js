@@ -24,12 +24,12 @@ const validators = {
     }
     return null;
   },
-  password: (value, { required }) => {
+  password: (value, { required, requiredLength }) => {
     if (required && !value?.trim()) {
       return 'This field is required';
     }
-    if (value?.length < 6) {
-      return 'The password should be atleast 6 Characters Long.';
+    if (requiredLength && (value?.length < requiredLength)) {
+      return `The password should be atleast ${requiredLength} Characters Long.`;
     }
     return null;
   },
@@ -50,12 +50,12 @@ const validateForm = (formInfo, formData) => {
   const invalidFields = [];
   const validFields = [];
 
-  formInfo.forEach(({ name, type, required, message }) => {
+  formInfo.forEach(({ name, type, required, message, requiredLength }) => {
     const value = formData[name];
     const validator = validators[type];
 
     if (validator) {
-      const error = validator(value, { required, formData });
+      const error = validator(value, { required, formData, requiredLength });
       if (error) {
         errors[name] = message || error;
         invalidFields.push(name);
