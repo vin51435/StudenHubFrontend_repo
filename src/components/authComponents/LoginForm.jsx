@@ -48,7 +48,7 @@ const Login = () => {
     if (valid) {
       setLoad(true);
       postData('USER_LOGIN', {
-        baseURL: 'users',
+        baseURL: 'userAuth',
         data: { email: loginForm.email, password: loginForm.password }
       })
         .then(response => {
@@ -66,7 +66,7 @@ const Login = () => {
     e.preventDefault();
     const valid = formValidation(resetFormInfo, loginForm);
     if (valid) {
-      postData('USER_FORGOT_PASSWORD', { baseURL: 'users', data: { email: loginForm.email } })
+      postData('USER_FORGOT_PASSWORD', { baseURL: 'userAuth', data: { email: loginForm.email } })
         .then(response => {
           if (response.status === 'success') {
             setApiResponse({ state: 1, message: response.message });

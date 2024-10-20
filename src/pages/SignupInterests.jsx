@@ -42,7 +42,7 @@ const SignupInterests = () => {
     }
     setLoad(true);
     setInterest(prev => ({ ...prev, error: false }));
-    putData('POST_USER_SIGNUP_INTEREST', { baseURL: 'users', data: { interests: interest.selected } })
+    putData('POST_USER_SIGNUP_INTEREST', { baseURL: 'userAuth', data: { interests: interest.selected } })
       .then(response => {
         if (response.code === 200) {
           navigate('/home');

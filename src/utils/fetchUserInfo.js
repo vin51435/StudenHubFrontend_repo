@@ -3,7 +3,7 @@ import { loginSuccess, logoutSuccess } from "@src/redux/reducer";
 
 const fetchUserInfo = async (dispatch) => {
   try {
-    const response = await getData('USER_INFO', { baseURL: 'users', queue: true });
+    const response = await getData('USER_INFO', { baseURL: 'userAuth', queue: true });
     const { data: { user }, token, redirectUrl } = response;
 
     dispatch(loginSuccess({ user, token, redirectUrl }));

@@ -66,7 +66,7 @@ const SignupAddDetails = () => {
     if (valid) {
       setPageLoad(true);
       putData('POST_USER_SIGNUP_ADDITIONAL_DETAILS', {
-        baseURL: 'users',
+        baseURL: 'userAuth',
         data: form
       })
         .then(response => {

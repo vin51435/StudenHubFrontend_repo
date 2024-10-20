@@ -5,14 +5,15 @@ import store from '@src/redux/store';
 const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? import.meta.env.VITE_DEV_BACKEND_DEV : import.meta.env.VITE_DEV_BACKEND_PROD;
 
 const baseURLs = {
-  apiBaseURL: `${activeHost}/api/v1/`,
   googleAuthBaseURL: `${activeHost}/oauth2/google`,
   githubAuthBaseURL: `${activeHost}/oauth2/github`,
-  users: `${activeHost}/api/v1/users`,
-  userFormats: `${activeHost}/api/v1/userformat`
+  userAuth: `${activeHost}/api/v1/auth`,
+  user: `${activeHost}/api/v1/user`,
+  userFormats: `${activeHost}/api/v1/userformat`,
 };
 
 const baseURLsEndpoint = {
+  // User Auth endpoints
   USER_INFO: `/info`,
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',
@@ -28,6 +29,10 @@ const baseURLsEndpoint = {
   // Google OAuth
   GOOGLE_CALLBACK: '/callback',
   GITHUB_CALLBACK: '/callback',
+
+  // User Communication apis
+  CHAT_ID: '/chatid',
+  MESSAGES: '/messages',
 
   // User Formats
   GET_CITY_STATES: '/getcitystate',

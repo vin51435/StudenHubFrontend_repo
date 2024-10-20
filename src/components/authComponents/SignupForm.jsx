@@ -56,7 +56,7 @@ const SignupForm = () => {
     const valid = formValidation(emailCodeVerificationFormInfo, signupForm);
     if (valid) {
       setLoad(true);
-      postData('USER_EMAIL_VERIFY', { baseURL: 'users', data: { email: signupForm.email, otp: Number(signupForm.verification) } })
+      postData('USER_EMAIL_VERIFY', { baseURL: 'userAuth', data: { email: signupForm.email, otp: Number(signupForm.verification) } })
         .then(response => {
           setLoad(false);
           if (response.status === 'success') {
@@ -74,7 +74,7 @@ const SignupForm = () => {
     const valid = formValidation(emailVerificationFormInfo, signupForm);
     if (valid) {
       setLoad(true);
-      postData('USER_EMAIL_REG', { baseURL: 'users', data: { email: signupForm.email } })
+      postData('USER_EMAIL_REG', { baseURL: 'userAuth', data: { email: signupForm.email } })
         .then(response => {
           setLoad(false);
           if (response.status === 204) {
@@ -97,7 +97,7 @@ const SignupForm = () => {
       setLoad(true);
       const { email, password, confirmPassword: passwordConfirm, firstName, lastName } = signupForm;
       postData('USER_SIGNUP', {
-        baseURL: 'users',
+        baseURL: 'userAuth',
         data: { email, password, passwordConfirm, firstName, lastName }
       })
         .then(response => {
