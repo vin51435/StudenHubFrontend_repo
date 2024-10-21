@@ -83,9 +83,10 @@ const SignupAddDetails = () => {
     <Container fluid={'xxl'} className='w-100 h-100 d-flex justify-content-center align-items-center'>
       <div className='signup-details pb-3 d-flex justify-content-center align-items-center w-100'>
         {pageLoad && <PageLoadingSpinner />}
-        <Row className='signup-details_container justify-content-center align-items-center'>
-          <Col xl='6' className='d-none d-xl-block d-flex justify-content-center align-items-center h-100'>hello1</Col>
-          <Col xl='6' className='overflow-hidden px-0 h-100 d-flex flex-column justify-content-between align-items-center'>
+        <Row className='signup-details_container overflow-hidden justify-content-center align-items-center'>
+          <Col xl='6' className='d-none d-xl-block h-100 d-flex justify-content-center align-items-center'>
+            <div>hello</div></Col>
+          <Col xl='6' className='signup-details_right_container px-0 h-100 d-flex flex-column justify-content-between align-items-center'>
             <div className='overflow-auto thin-scrollbar p-3 pb-1 pt-md-4 px-md-4 w-100 flex-grow-1 d-flex flex-column justify-content-evenly'>
               <div className='signup-details-header_container'>
                 <div className='d-flex justify-content-center align-items-center'>
@@ -203,10 +204,11 @@ const SignupAddDetails = () => {
                     <input
                       type='text'
                       required
+                      id='institute'
                       name='institute'
                       onChange={handleChange}
                       className='input-group_input' autoComplete="off" />
-                    <label className='input-group_label'>Institute</label>
+                    <label htmlFor='institute' className='input-group_label'>Institute</label>
                     {validationError?.errors?.institute && <span className='input-group_error'>{validationError?.errors?.institute}</span>}
                   </div>
                   <div className='react-select-group position-relative mt-3'>
@@ -219,7 +221,7 @@ const SignupAddDetails = () => {
                       isSearchable={true}
                       name="currentCity"
                       cacheOptions
-                      menuShouldScrollIntoView={true}
+                      // menuShouldScrollIntoView={true}
                       defaultOptions
                       loadOptions={(inputValue, callback) => loadMoreOptions(inputValue, callback)}
                       // onMenuScrollToBottom={() => loadMoreOptions(select.inputValue, () => { })}

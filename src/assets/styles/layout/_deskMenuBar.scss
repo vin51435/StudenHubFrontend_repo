@@ -1,0 +1,48 @@
+// MenuBar.scss
+
+.menu-bar {
+  background-color: #fff; // White background
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1); // Shadow for depth
+  padding: 20px 0;
+  position: relative; // Fixed position to stay on the left
+  left: 0; // Align to the left side of the page
+  top: 0; // Start from the top
+  height: 100vh; // Full height of the viewport
+  width: 80px; // Adjust width as needed
+  z-index: 1000; // Ensure it stays above other content
+  display: flex; // Use flexbox to align items
+  flex-direction: column; // Vertical layout
+  justify-content: start; // Align items to the top
+}
+
+.menu-button {
+  background: none; // No background
+  border: none; // No border
+  color: #333; // Dark text color
+  font-size: 16px; // Font size
+  cursor: pointer; // Pointer cursor on hover
+  display: flex; // Flexbox for icon and text alignment
+  flex-direction: column; // Stack icon and text
+  align-items: center; // Center align items
+  margin: 20px 0; // Add margin between buttons
+  transition: color 0.3s; // Smooth color transition
+
+  &:hover {
+    color: #007bff; // Change color on hover
+  }
+
+  svg {
+    font-size: 24px; // Icon size
+  }
+
+  span {
+    margin-top: 5px; // Space between icon and text
+    font-size: 12px; // Smaller text size
+    display: none; // Initially hide the text
+  }
+}
+
+// Optional: Expand text on hover
+.menu-button:hover span {
+  display: block; // Show text on hover
+}

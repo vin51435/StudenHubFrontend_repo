@@ -1,12 +1,14 @@
 @import '_variables';
 @import '_mixins';
 
-// Main Website Styles
-@import './LandingPage/_landingPage';
+// Main Styles
+@import './Pages/_landingPage';
+@import './Pages/_inbox';
 
 // Main Website common Styles
-@import './layout/_desktopNavbar';
-@import './layout/_mobileNavbar';
+@import './layout/_desktopWebsiteNavbar';
+@import './layout/_mobileWebsiteNavbar';
+@import './layout/_deskMenuBar';
 
 // Auth pages(login/signup) Styles
 @import './authPages/authPages.scss';

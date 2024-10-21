@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 
 const ChatComponent = () => {
-  const [chatUserId, setchatUserId] = useState({ chatId: '', oppName: '' });
+  const [chatUserId, setchatUserId] = useState({ chatId: null, oppName: '67139530f15e03c40882db76' });
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
   const [socket, setSocket] = useState(null); // Track socket instance in state
@@ -126,27 +126,32 @@ const ChatComponent = () => {
     <>
       <div className='mt-5 p-5 pt-5'>
         <div>
-          <h3>{username} : {_id}</h3>
-          <h5>{chatUserId.chatId}</h5>
-          <input
-            type='text'
-            value={chatUserId.oppName}
-            name='oppName'
-            placeholder="Enter opponent's name"
-            onChange={(e) =>
-              setchatUserId((prev) => ({
-                ...prev,
-                [e.target.name]: e.target.value,
-              }))
-            }
-          />
+          <h3>Username: {username}, User ID: {_id}</h3>
+          <h5>Chat ID: {chatUserId.chatId ?? 'Enter Opp ID'}</h5>
+          <div>
+            <label htmlFor='oppId'>Opp ID: </label>
+            <input
+              className='w-25 text-end'
+              id='oppId'
+              type='text'
+              value={chatUserId.oppName}
+              name='oppName'
+              placeholder="Enter opponent's name"
+              onChange={(e) =>
+                setchatUserId((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+            />
+          </div>
           <div>
             <button onClick={connectChat}>Connect to chat</button>
           </div>
         </div>
         <>
-          <button onClick={connect}>Connect</button>
-          <button onClick={disconnect}>Disconnect</button>
+          {/* <button onClick={connect}>Connect</button> */}
+          {/* <button onClick={disconnect}>Disconnect</button> */}
         </>
         <br />
         <input
@@ -159,7 +164,7 @@ const ChatComponent = () => {
         <div className='messages'>
           {messages.map((msg, index) => (
             <div key={index} className={`${msg.senderId === _id ? 'text-end' : ''}`}>
-              <strong>{msg.content}</strong>
+              <strong>{msg.senderId !== _id && '>>>'}{msg.content}{msg.senderId === _id && '<<<'}</strong>
             </div>
           ))}
         </div>

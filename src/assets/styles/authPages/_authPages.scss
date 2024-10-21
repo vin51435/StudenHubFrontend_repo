@@ -275,21 +275,26 @@
   }
   .signup-details_container {
     height: 85%;
-    max-height: 650px;
+    max-height: 550px;
     max-width: 1800px;
     overflow: hidden;
     @include apply-styles($border-styles);
     border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
-    .signup-details-header_container {
-      width: fit-content;
-    }
+    .signup-details_right_container {
+      & > div:first-child {
+        max-height: 470px;
+      }
+      .signup-details-header_container {
+        width: fit-content;
+      }
 
-    .signup-details_btn_container {
-      -webkit-box-shadow: 0px 0px 27px -8px $disabled-color;
-      -moz-box-shadow: 0px 0px 27px -8px $disabled-color;
-      box-shadow: 0px 0px 27px -8px $disabled-color;
-      .btn {
-        border-radius: $border-radius-rounded !important;
+      .signup-details_btn_container {
+        -webkit-box-shadow: 0px 0px 27px -8px $disabled-color;
+        -moz-box-shadow: 0px 0px 27px -8px $disabled-color;
+        box-shadow: 0px 0px 27px -8px $disabled-color;
+        .btn {
+          border-radius: $border-radius-rounded !important;
+        }
       }
     }
   }
@@ -341,7 +346,7 @@
         height: 100%;
         display: flex;
         align-items: end;
-        font-size: 0.7rem;
+        font-size: 0.9rem;
         line-height: 1em;
         border-radius: $border-radius;
         transition: 0.2s;

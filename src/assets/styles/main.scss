@@ -119,35 +119,7 @@ a {
 }
 
 .thin-scrollbar {
-  &::-webkit-scrollbar {
-    height: 2px;
-    width: 2px;
-  }
-  &::-webkit-scrollbar-track {
-    border-radius: 0px;
-    background-color: $secondary-light-color;
-  }
-
-  &::-webkit-scrollbar-track:hover {
-    background-color: $primary-light-color;
-  }
-
-  &::-webkit-scrollbar-track:active {
-    background-color: $primary-light-color;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    background-color: $secondary-color1;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: $primary-color1;
-  }
-
-  &::-webkit-scrollbar-thumb:active {
-    background-color: $primary-color1;
-  }
+  @include thin-scrollbar;
 }
 
 .btn {
@@ -232,7 +204,10 @@ a {
 .input-group {
   position: relative;
   .input-group_input {
+    @include fs-6;
     @include apply-styles($border-styles);
+    padding-left: 10px !important;
+    padding-right: 10px !important;
     background-color: transparent;
     outline: none;
     width: 100%;
@@ -268,10 +243,10 @@ a {
     left: 12px;
     transform: translateY(-50%);
     pointer-events: none;
-    transition: all 0.3s ease-out;
+    transition: all 0.2s ease-out;
     color: $gray;
     .input-group_label_icon {
-      transition: all 0.3s ease-out;
+      transition: all 0.2s ease-out;
       font-size: 1.35rem;
       margin-right: 4px;
       margin-left: 2px;
@@ -287,13 +262,22 @@ a {
 }
 
 .react-select-group {
+  @include fs-6;
   position: relative;
   .async-select .select__menu {
     position: relative;
   }
-  .async-select:has(.select__control--is-focused) ~ label,
+  .select__menu-list {
+    @include thin-scrollbar;
+  }
+  .select__control--is-focused {
+    -webkit-box-shadow: 0px 0px 0px 1px $gray !important;
+    -moz-box-shadow: 0px 0px 0px 1px $gray !important;
+    box-shadow: 0px 0px 0px 1px $gray !important;
+  }
+  .async-select:has(.select__control--is-focused) ~ .react-select-group_label,
   .async-select:has(.select__control > .select__value-container--has-value)
-    ~ label {
+    ~ .react-select-group_label {
     top: 0px;
     background-color: white;
     font-size: 0.85rem;
@@ -301,12 +285,13 @@ a {
   }
   .react-select-group_label {
     position: absolute;
+    z-index: 2;
     font-size: 0.9rem;
     top: 50%;
     left: 12px;
     transform: translateY(-50%);
     pointer-events: none;
-    transition: 0.3s;
+    transition: 0.2s;
     color: $gray;
   }
   .react-select-group_error {
