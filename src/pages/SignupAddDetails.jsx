@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
 import { TbDots, TbGenderFemale, TbGenderMale } from "react-icons/tb";
@@ -9,6 +9,8 @@ import validateForm from '@src/utils/validators';
 import { putData } from '@src/config/apiConfig';
 import debounceImmediate from '@src/utils/debounceImmediate';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SignupAddDetails = () => {
   const [form, setForm] = useState({
@@ -20,6 +22,15 @@ const SignupAddDetails = () => {
   const [pageLoad, setPageLoad] = useState(false);
   const [validationError, setValidationError] = useState({});
   const [select, setSelect] = useState({ load: false, inputValue: '', page: 1 });
+  const { redirectUrl } = useSelector(state => state.auth);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (redirectUrl !== location.pathname) {
+      navigate('/home');
+    }
+  }, [redirectUrl, location]);
 
   const formInfo = [
     { name: 'gender', type: 'text', required: true, message: 'Select gender' },
@@ -42,7 +53,7 @@ const SignupAddDetails = () => {
       })
       .catch(e => console.error('error: ', e))
       .finally(() => setSelect(prev => ({ ...prev, load: false })));
-  }, 500),
+  }, 1000),
     []
   );
 

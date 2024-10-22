@@ -6,7 +6,7 @@ import { Link, Outlet } from 'react-router-dom';
 const DeskMenuBarLayout = () => {
   return (
     <div className='w-100 d-flex '>
-      <aside className="menu-bar d-flex ">
+      <aside className="menu-bar d-flex fs-6">
         <Link to={'/home'} className="menu-button">
           <FaHome />
           <span>Explore</span>

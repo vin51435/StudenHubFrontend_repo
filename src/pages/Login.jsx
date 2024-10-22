@@ -79,7 +79,7 @@ const Auth = () => {
     <div className='auth-page_main'>
       {loader && <PageLoadingSpinner />}
       <Row className='gx-0 h-100'>
-        <Col xs={12} className={`top_container ${windowSize.medium ? 'd-block' : 'd-none'}`}>
+        <Col xs={12} className={`top_container ${windowSize.medium ? 'd-none' : 'd-none'}`}>
           <div>
             <p>Know about StudenHub-</p>
           </div>

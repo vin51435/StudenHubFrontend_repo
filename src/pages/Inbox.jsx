@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import { postData } from '@src/config/apiConfig';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Inbox = () => {
-  const usersData = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-    { id: 3, name: 'Charlie' },
-    { id: 4, name: 'David' },
+  const [usersData, setUsersData] = useState([]);
+  const { isAuthenticated, user, token } = useSelector(state => state.auth);
+  const { username, _id, chats: userChats } = user;
+
+  const dummyUsersData = [
+    { userId: 1, name: 'Alice' },
+    { userId: 2, name: 'Bob' },
+    { userId: 3, name: 'Charlie' },
+    { userId: 4, name: 'David' },
   ];
 
   const messagesData = {
@@ -21,6 +27,32 @@ const Inbox = () => {
     setSelectedUserId(userId);
   };
 
+  useEffect(() => {
+    if (userChats?.chatIds) {
+      postData('GET_INBOX_PARTICIPANTS', {
+        baseURL: 'user',
+        data: { chatIds: userChats.chatIds },
+      }).
+        then(response => {
+          console.log(response);
+          const data = response.data.map(ele => ({
+            chatId: ele.chatId,
+            userId: ele.secondParticipant?._id,
+            firstName: ele.secondParticipant?.firstName,
+            lastName: ele.secondParticipant?.lastName,
+            name: `${ele.secondParticipant?.firstName} ${ele.secondParticipant?.lastName}`,
+            username: ele.secondParticipant?.username,
+          }));
+
+          setUsersData([...dummyUsersData, ...data]);
+        })
+        .catch(err => console.log(err));
+
+    }
+  }, []);
+
+  console.log(usersData);
+
   return (
     <div className="d-flex h-100 w-100">
       <div className="users-pane border-end p-3">
@@ -28,9 +60,9 @@ const Inbox = () => {
         <ul className="list-unstyled">
           {usersData.map((user) => (
             <li
-              key={user.id}
-              onClick={() => handleUserClick(user.id)}
-              className={`user-item p-2 ${selectedUserId === user.id ? 'active' : ''}`}
+              key={user.userId}
+              onClick={() => handleUserClick(user.userId)}
+              className={`user-item p-2 ${selectedUserId === user.userId ? 'active' : ''}`}
             >
               {user.name}
             </li>

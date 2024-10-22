@@ -79,7 +79,7 @@ const Signup = () => {
     <div className='auth-page_main signup_page'>
       {loader && <PageLoadingSpinner />}
       <Row className='gx-0 vh-100 d-flex'>
-        <Col xs={12} className={`top_container ${windowSize.medium ? 'd-block' : 'd-none'}`}>
+        <Col xs={12} className={`top_container ${windowSize.medium ? 'd-none' : 'd-none'}`}>
           <div>
             <p>Know about StudenHub-</p>
           </div>

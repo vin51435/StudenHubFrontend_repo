@@ -1,18 +1,18 @@
-import { postData } from '@src/config/apiConfig';
+import { activeHost, postData } from '@src/config/apiConfig';
 import { getCookie } from '@src/utils/cookieGetterSetter';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 
 const ChatComponent = () => {
-  const [chatUserId, setchatUserId] = useState({ chatId: null, oppName: '67139530f15e03c40882db76' });
+  const [chatUserId, setChatUserId] = useState({ chatId: null, oppName: '67139530f15e03c40882db76' });
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
   const [socket, setSocket] = useState(null); // Track socket instance in state
   const { isAuthenticated, user: { username, _id }, token } = useSelector(state => state.auth);
 
   useEffect(() => {
-    const newSocket = io('http://192.168.0.155:3001', {
+    const newSocket = io(activeHost, {
       auth: {
         token: getCookie('accessToken'),
       },
@@ -93,7 +93,7 @@ const ChatComponent = () => {
       const chatId = response?.data?.chatId; // Extract the chatId from response
 
       // Update chatUserId state with the new chatId
-      setchatUserId((prev) => ({
+      setChatUserId((prev) => ({
         ...prev,
         chatId,
       }));
@@ -138,7 +138,7 @@ const ChatComponent = () => {
               name='oppName'
               placeholder="Enter opponent's name"
               onChange={(e) =>
-                setchatUserId((prev) => ({
+                setChatUserId((prev) => ({
                   ...prev,
                   [e.target.name]: e.target.value,
                 }))

@@ -3,16 +3,21 @@ import { getData, putData } from '@src/config/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { IoMdSearch } from "react-icons/io";
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SignupInterests = () => {
   const [interest, setInterest] = useState({ selected: [], search: '', data: [], error: null, required: null });
   const [load, setLoad] = useState(false);
-
+  const { redirectUrl } = useSelector(state => state.auth);
   const { notif } = useNotification();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    if (redirectUrl !== location.pathname) {
+      navigate('/home');
+    }
     getData('GET_INTERESTS', {
       baseURL: 'userFormats'
     })
@@ -21,7 +26,7 @@ const SignupInterests = () => {
           setInterest(prev => ({ ...prev, data: response.data.interests, required: response.data.required }));
         }
       });
-  }, []);
+  }, [location, redirectUrl]);
 
   const handleCheckboxChange = (event) => {
     if (load) return;

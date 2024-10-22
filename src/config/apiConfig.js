@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getValueByKey } from '../utils';
 import store from '@src/redux/store';
 
-const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? import.meta.env.VITE_DEV_BACKEND_DEV : import.meta.env.VITE_DEV_BACKEND_PROD;
+export const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? import.meta.env.VITE_DEV_BACKEND_DEV : import.meta.env.VITE_DEV_BACKEND_PROD;
 
 const baseURLs = {
   googleAuthBaseURL: `${activeHost}/oauth2/google`,
@@ -31,8 +31,11 @@ const baseURLsEndpoint = {
   GITHUB_CALLBACK: '/callback',
 
   // User Communication apis
+  GET_INBOX_PARTICIPANTS: '/getSecondParticipants',
+  USERS_BY_ID: '/usersbyid',
   CHAT_ID: '/chatid',
   MESSAGES: '/messages',
+  CHATS: '/chats',
 
   // User Formats
   GET_CITY_STATES: '/getcitystate',
