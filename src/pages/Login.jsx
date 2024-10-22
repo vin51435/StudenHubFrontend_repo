@@ -11,7 +11,7 @@ import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
 import { useNotification } from '@src/components/context/NotificationContext';
 
 const Auth = () => {
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const windowSize = useWindowSize();
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
   const { pathname, search, hash } = useLocation();
@@ -21,6 +21,7 @@ const Auth = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setLoader(true)
     const handleAuthCheck = () => {
       const isLoginPath = pathname === '/login'; // Exactly matches '/login'
       const isGoogleCallback = pathname === '/login/auth/google/callback'; // Specifically check for Google OAuth callback
