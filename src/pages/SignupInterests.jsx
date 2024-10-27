@@ -45,11 +45,14 @@ const SignupInterests = () => {
       notif(`Select at least ${interest.required} interest`, null, { timeOut: 5000 });
       return;
     }
-    setLoad(true);
     setInterest(prev => ({ ...prev, error: false }));
-    putData('POST_USER_SIGNUP_INTEREST', { baseURL: 'userAuth', data: { interests: interest.selected } })
+    setLoad(true);
+    putData('USER_SIGNUP_INTEREST', {
+      baseURL: 'userAuth',
+      data: { interests: interest.selected }
+    })
       .then(response => {
-        if (response.code === 200) {
+        if (response.status === 'success') {
           navigate('/home');
         }
       })

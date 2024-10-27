@@ -102,7 +102,7 @@ const SignupForm = () => {
       })
         .then(response => {
           dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-          navigate('/home');
+          navigate('/additionalinfo');
         })
         .catch(err => {
           setApiResponse(prev => ({ ...prev, signupMessage: err?.message }));

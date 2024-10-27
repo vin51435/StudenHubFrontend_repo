@@ -12,7 +12,7 @@ const ProtectedRoutes = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
+    if (!token || !isAuthenticated) {
       fetchUserInfo(dispatch)
         .then(response => {
           return response;
@@ -29,7 +29,8 @@ const ProtectedRoutes = () => {
   }
 
   if (isAuthenticated && (!redirectUrl || redirectUrl === location.pathname)) {
-    return user ? <Outlet /> : 'No user'; //* Replace 'form' with the actual component or redirect if needed
+    return <Outlet />;
+    // return user ? <Outlet /> : 'No user'; //* Replace 'form' with the actual component or redirect if needed
   }
 
   if (!isAuthenticated) {

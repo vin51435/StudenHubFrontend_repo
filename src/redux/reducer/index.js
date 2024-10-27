@@ -23,6 +23,7 @@ const authSlice = createSlice({
         setCookie('accessToken', action.payload.token);
       }
     },
+    // !Also disconnect from socket
     logoutSuccess: (state) => {
       state.isAuthenticated = false;
       state.user = null;

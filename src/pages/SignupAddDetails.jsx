@@ -43,10 +43,10 @@ const SignupAddDetails = () => {
 
   const loadMoreOptions = useCallback(debounceImmediate((inputValue, callback) => {
     setSelect(prev => ({ ...prev, load: true }));
-    fetchOptions(inputValue, { page: select.page })
+    fetchOptions('GET_CITY_STATES', inputValue, { page: select.page })
       .then(response => {
         const { options, hasMore } = response;
-        callback(options); // Provide the options to react-select
+        callback(options);
         if (hasMore.totalPages > select.page) {
           setSelect(prev => ({ ...prev, page: prev.page + 1 }));
         }
@@ -76,7 +76,7 @@ const SignupAddDetails = () => {
     const valid = formValidation(formInfo, form);
     if (valid) {
       setPageLoad(true);
-      putData('POST_USER_SIGNUP_ADDITIONAL_DETAILS', {
+      putData('USER_SIGNUP_ADDITIONAL_DETAILS', {
         baseURL: 'userAuth',
         data: form
       })
@@ -231,7 +231,7 @@ const SignupAddDetails = () => {
                       isClearable={true}
                       isSearchable={true}
                       name="currentCity"
-                      cacheOptions
+                      // cacheOptions
                       // menuShouldScrollIntoView={true}
                       defaultOptions
                       loadOptions={(inputValue, callback) => loadMoreOptions(inputValue, callback)}

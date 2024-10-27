@@ -18,8 +18,8 @@ const baseURLsEndpoint = {
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',
   USER_SIGNUP: '/signup',
-  POST_USER_SIGNUP_ADDITIONAL_DETAILS: '/signupdetails',
-  POST_USER_SIGNUP_INTEREST: '/signupinterest',
+  USER_SIGNUP_ADDITIONAL_DETAILS: '/signupdetails',
+  USER_SIGNUP_INTEREST: '/signupinterest',
   USER_FORGOT_PASSWORD: '/forgotPassword',
   USER_LOGIN: '/login',
 
@@ -76,7 +76,7 @@ const apiConfig = (baseURL, headers, queries) => {
   const selectedBaseURL = baseURLs[baseURL] || baseURL;
 
   if (Object.entries(headers).length === 0) {
-    selectedHeaders = { 'Content-Type': 'application/json' };
+    selectedHeaders = { 'Content-Type': 'application/json', "ngrok-skip-browser-warning": "69420" };
   } else {
     selectedHeaders = headers;
   }

@@ -1,47 +1,28 @@
-import { activeHost, postData } from '@src/config/apiConfig';
-import { getCookie } from '@src/utils/cookieGetterSetter';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { io } from 'socket.io-client';
+import { useSocket } from '@src/components/context/SocketContext.jsx';
+import { postData } from '@src/config/apiConfig';
 
 const ChatComponent = () => {
   const [chatUserId, setChatUserId] = useState({ chatId: null, oppName: '67139530f15e03c40882db76' });
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
-  const [socket, setSocket] = useState(null); // Track socket instance in state
+  const socket = useSocket();
   const { isAuthenticated, user: { username, _id }, token } = useSelector(state => state.auth);
 
   useEffect(() => {
-    const newSocket = io(activeHost, {
-      auth: {
-        token: getCookie('accessToken'),
-      },
-      transports: ['websocket'],
-    });
+    if (!socket) return;
 
-    setSocket(newSocket);
-    console.log('Socket created and connected');
-
-    newSocket.on('receiveMessage', (message) => {
+    const handleMessage = (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    };
 
-    newSocket.on('error', (error) => {
-      console.error('Socket Error:', error.message);
-      if (error.statusCode === 401) {
-        // Handle 401 errors (e.g., redirect to login page)
-      }
-    });
-
-    newSocket.on('connect_error', (err) => {
-      console.log(err.message); // not authorized
-    });
+    socket.on('receiveMessage', handleMessage);
 
     return () => {
-      console.log('Cleaning up socket connection');
-      newSocket.disconnect(); // Disconnect the socket
+      socket.off('receiveMessage', handleMessage);
     };
-  }, []);
+  }, [socket]);
 
   console.log(messages);
 
@@ -50,12 +31,12 @@ const ChatComponent = () => {
 
     const messageData = {
       chatId: chatUserId.chatId,
+      recipientId: chatUserId.oppName,
       senderId: _id,
       senderUsername: username,
       content: messageContent,
       status: { sent: false, delivered: false, read: false }
     };
-
 
     if (socket && socket.connected) {
       socket.emit('sendMessage', messageData); // Emit the message to the server
