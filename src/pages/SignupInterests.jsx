@@ -1,9 +1,10 @@
 import { useNotification } from '@src/components/context/NotificationContext';
 import { getData, putData } from '@src/config/apiConfig';
+import { loginSuccess } from '@src/redux/reducer';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { IoMdSearch } from "react-icons/io";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const SignupInterests = () => {
@@ -11,6 +12,7 @@ const SignupInterests = () => {
   const [load, setLoad] = useState(false);
   const { redirectUrl } = useSelector(state => state.auth);
   const { notif } = useNotification();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 

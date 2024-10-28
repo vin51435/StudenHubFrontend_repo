@@ -2,7 +2,6 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
 const ProtectedRoutes = React.lazy(() => import('./protectedRoutes'));
-const SocketProvider = React.lazy(() => import('@src/components/context/SocketContext.jsx'));
 const Login = React.lazy(() => import('@src/pages/Login'));
 const NotFound = React.lazy(() => import('@src/pages/NotFound'));
 const Home = React.lazy(() => import('@src/pages/Home'));
@@ -21,30 +20,28 @@ const DeskMenuBarLayout = React.lazy(() => import('@src/components/layouts/DeskM
 const AllRoutes = () => {
   return (
     <Suspense fallback={<PageLoadingSpinner />}>
-      <SocketProvider>
-        <Routes>
-          <Route element={<WebsiteLayout />}>
-            <Route path="/" element={<WebsiteHome />} />
+      <Routes>
+        <Route element={<WebsiteLayout />}>
+          <Route path="/" element={<WebsiteHome />} />
+        </Route>
+        <Route element={<ProtectedRoutes />}>
+          <Route element={<SignupLayout />}>
+            <Route path='/userdetails' element={<UserDetails />} />
+            <Route path='/additionalinfo' element={<SignupAddDetails />} />
+            <Route path='/interest' element={<SignupInterests />} />
           </Route>
-          <Route element={<ProtectedRoutes />}>
-            <Route element={<SignupLayout />}>
-              <Route path='/userdetails' element={<UserDetails />} />
-              <Route path='/additionalinfo' element={<SignupAddDetails />} />
-              <Route path='/interest' element={<SignupInterests />} />
-            </Route>
-            <Route element={<DeskMenuBarLayout />}>
-              <Route path="/test" element={<Test />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/inbox" element={<Inbox />} />
-            </Route>
+          <Route element={<DeskMenuBarLayout />}>
+            <Route path="/test" element={<Test />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/inbox" element={<Inbox />} />
           </Route>
-          <Route path="/oauth2/google/callback" element={<OauthCallback />} />
-          <Route path="/oauth2/github/callback" element={<OauthCallback />} />
-          <Route path="/login/*" element={<Login />} />
-          <Route path="/signup/*" element={<Signup />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes >
-      </SocketProvider>
+        </Route>
+        <Route path="/oauth2/google/callback" element={<OauthCallback />} />
+        <Route path="/oauth2/github/callback" element={<OauthCallback />} />
+        <Route path="/login/*" element={<Login />} />
+        <Route path="/signup/*" element={<Signup />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes >
     </Suspense>
   );
 };

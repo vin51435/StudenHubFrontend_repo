@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const Inbox = () => {
   const [usersData, setUsersData] = useState([]);
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
-  const { username, _id, chats: userChats } = user;
+  const { username, _id, chats } = user;
   const [selectedUserId, setSelectedUserId] = useState({ user: null, chatId: null });
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
@@ -35,10 +35,10 @@ const Inbox = () => {
 
   useEffect(() => {
     console.log('useEffrect ran ', user);
-    if (userChats?.chatIds) {
+    if (chats?.chatIds) {
       postData('GET_INBOX_PARTICIPANTS', {
         baseURL: 'user',
-        data: { chatIds: userChats.chatIds },
+        data: { chatIds: chats.chatIds },
       }).
         then(response => {
           const data = response.data.map(ele => ({
@@ -65,7 +65,7 @@ const Inbox = () => {
       // Fetch the chat ID
       const response = await postData('CHAT_ID', {
         baseURL: 'user',
-        data: { userBId }, // Correct data to send
+        data: { userBId },
       });
 
       const { chatId, userB } = response?.data; // Extract the chatId from response
