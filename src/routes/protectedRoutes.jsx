@@ -36,6 +36,8 @@ const ProtectedRoutes = () => {
   if (!isAuthenticated) {
     return <Navigate to='/login' />;
   }
+
+  return null; // Safeguard for rendering
 };
 
 export default ProtectedRoutes;

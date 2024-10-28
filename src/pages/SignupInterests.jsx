@@ -54,6 +54,7 @@ const SignupInterests = () => {
       .then(response => {
         if (response.status === 'success') {
           navigate('/home');
+          navigate(0);
         }
       })
       .catch(e => {
