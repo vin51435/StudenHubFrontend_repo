@@ -23,7 +23,38 @@ const Inbox = () => {
     if (!socket) return;
 
     const handleMessage = (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      console.log('receiveMessage', message);
+      setMessages((prevMessages) => {
+        // Find the index of the object with the matching user ID
+        const index = prevMessages.findIndex(
+          (msg) => msg.user === selectedUserId.user
+        );
+
+        // If no matching user is found, return the array unchanged
+        if (index === -1) {
+          // Optionally, you can create a new entry if the user is not found
+          return [
+            ...prevMessages,
+            {
+              user: selectedUserId.user,
+              chatId: selectedUserId.chatId,
+              messages: [message], // Initialize messages array with the new message
+            },
+          ];
+        }
+
+        // Create a shallow copy of the array and update the `messages` field for the specific object
+        const updatedMessages = [...prevMessages];
+        updatedMessages[index] = {
+          ...updatedMessages[index],
+          messages: [
+            ...updatedMessages[index].messages,
+            message,
+          ],
+        };
+
+        return updatedMessages;
+      });
     };
 
     socket.on('receiveMessage', handleMessage);
@@ -31,10 +62,10 @@ const Inbox = () => {
     return () => {
       socket.off('receiveMessage', handleMessage);
     };
-  }, [socket]);
+  }, [socket, selectedUserId]);
+  ;
 
   useEffect(() => {
-    console.log('useEffrect ran ', user);
     if (chats?.chatIds) {
       postData('GET_INBOX_PARTICIPANTS', {
         baseURL: 'user',
@@ -59,38 +90,48 @@ const Inbox = () => {
 
   const connectChat = async (e, userBId) => {
     e.preventDefault();
-    setMessages([]); // Clear previous messages
 
     try {
       // Fetch the chat ID
-      const response = await postData('CHAT_ID', {
+      const chatIdResponse = await postData('CHAT_ID', {
         baseURL: 'user',
         data: { userBId },
       });
+      console.log('chatId:', chatIdResponse);
 
-      const { chatId, userB } = response?.data; // Extract the chatId from response
-      console.log(response);
-      setSelectedUserId({ user: userB._id, chatId });
+      const { chatId, userB } = chatIdResponse?.data;
+      const newUser = { user: userB._id, chatId };
 
-      // Fetch messages for the chatId
-      const messagesResponse = await postData('MESSAGES', {
-        baseURL: 'user',
-        data: { chatId },
-      });
+      // Set the selected user ID and chat ID
+      setSelectedUserId(newUser);
 
-      console.log(messagesResponse);
+      // Check if messages for this user are not already in the state
+      if (messages.every((msg) => msg.user !== newUser.user)) {
+        // Fetch messages for the chat ID
+        const messagesResponse = await postData('MESSAGES', {
+          baseURL: 'user',
+          data: { chatId },
+        });
+        console.log('response Message:', messagesResponse);
 
-      const { messages } = messagesResponse.data;
+        const { messages: fetchedMessages } = messagesResponse.data;
 
-      // Update messages state
-      setMessages((prevMessages) => [...prevMessages, ...messages]);
+        // Update messages state
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            user: newUser.user,
+            chatId: newUser.chatId,
+            messages: fetchedMessages,
+          },
+        ]);
+      }
 
       // Join the chat room on the server
       if (socket && chatId) {
         console.log('Joining chat:', chatId);
         socket.emit('joinChat', chatId);
       }
-
     } catch (err) {
       console.error('Unforeseen error:', err);
     }
@@ -108,7 +149,9 @@ const Inbox = () => {
       status: { sent: false, delivered: false, read: false }
     };
 
+    console.log('socket from sendmessage', socket);
     if (socket && socket.connected) {
+      console.log('message send');
       socket.emit('sendMessage', messageData); // Emit the message to the server
       setMessageContent(''); // Clear the input field
     } else {
@@ -116,7 +159,8 @@ const Inbox = () => {
     }
   };
 
-  console.log(messages);
+  console.log('messages', messages);
+  console.log('setSelectedUserId', selectedUserId);
 
   return (
     <div className="d-flex h-100 w-100">
@@ -129,7 +173,7 @@ const Inbox = () => {
               onClick={(e) => {
                 connectChat(e, user.userId);
               }}
-              className={`user-item p-2 ${selectedUserId === user.userId ? 'active' : ''}`}
+              className={`user-item p-2 ${selectedUserId.user === user.userId ? 'bg-primary-subtle' : ''}`}
             >
               {user.name}
             </li>
@@ -141,11 +185,19 @@ const Inbox = () => {
         {selectedUserId ? (
           <div>
             <div className='messages'>
-              {messages.map((msg, index) => (
-                <div key={index} className={`${msg.senderId === _id ? 'text-end' : ''}`}>
-                  <strong>{msg.senderId !== _id && '>>>'}{msg.content}{msg.senderId === _id && '<<<'}</strong>
-                </div>
-              ))}
+              {messages
+                .filter((msg) => msg.user === selectedUserId.user)
+                .map((msg, index) =>
+                  msg.messages.map((singleMsg, msgIndex) => (
+                    <div key={`${index}-${msgIndex}`} className={`${singleMsg.senderId === _id ? 'text-end' : ''}`}>
+                      <strong>
+                        {singleMsg.senderId !== _id && '>>>'}
+                        {singleMsg.content}
+                        {singleMsg.senderId === _id && '<<<'}
+                      </strong>
+                    </div>
+                  ))
+                )}
             </div>
             <div>
               <input

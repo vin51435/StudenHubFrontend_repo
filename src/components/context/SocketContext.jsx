@@ -22,14 +22,22 @@ export const SocketProvider = ({ children }) => {
       });
 
       setSocket(newSocket);
-      // console.log('Socket initialized and connected for this tab');
+      console.log('Socket initialized and connected for this tab', newSocket);
+
+      newSocket.on("newMessageNotification", (notification) => {
+        console.log('New message notification received:', notification);
+      });
 
       newSocket.on('disconnect', () => {
-        // console.log('Socket disconnected');
+        console.log('Socket disconnected');
       });
 
       newSocket.on("connect_error", (error) => {
-        // console.log('Socket connection error:', error.message);
+        console.log('Socket connection error:', error.message);
+      });
+
+      newSocket.on("socketError", (error) => {
+        console.log('Socket error:', error);
       });
 
       // Cleanup socket on component unmount or when token changes

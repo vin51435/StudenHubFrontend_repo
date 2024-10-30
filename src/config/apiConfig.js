@@ -37,6 +37,9 @@ const baseURLsEndpoint = {
   MESSAGES: '/messages',
   CHATS: '/chats',
 
+  // User Non-auth
+  SEARCH_USER: '/search',
+
   // User Formats
   GET_CITY_STATES: '/getcitystate',
   GET_INTERESTS: '/userinterests'
@@ -164,7 +167,7 @@ const getApiEndpoint = (apiEndpoint) => {
  * @param {string} [options.baseURL] - A predefined base URL for the API.
  * @param {Object} [options.headers={}] - An object representing custom headers to send with the request.
  * @param {boolean} [options.queue=false] - If true, the request is added to a queue and executed later.
- * @param {Object} [options.queries] - Query parameters to append to the request URL.
+ * @param {array} [options.queries] - Query parameters to append to the request URL.
  * 
  * @returns {Promise<any>} - A promise that resolves with the API response or rejects with an error.
  */
@@ -181,6 +184,18 @@ export const getData = async (apiEndpoint, options = {}) => {
   return api.get(getApiEndpoint(apiEndpoint)).then(handleResponse).catch(handleError);
 };
 
+/**
+ * Post data to an API endpoint, with optional configurations like base URL, headers, and queue management.
+ *
+ * @param {string} apiEndpoint - A predefined endpoint variable of a URL.
+ * @param {Object} [options={}] - Optional configurations for the request.
+ * @param {string} [options.baseURL] - A predefined base URL for the API.
+ * @param {Object} [options.headers={}] - An object representing custom headers to send with the request.
+ * @param {boolean} [options.queue=false] - If true, the request is added to a queue and executed later.
+ * @param {Object} [options.data] - Request Body.
+ * 
+ * @returns {Promise<any>} - A promise that resolves with the API response or rejects with an error.
+ */
 export const postData = async (apiEndpoint, options = {}) => {
   const { data = {}, baseURL, headers = {}, queue = false } = options;
   const api = apiConfig(baseURL, headers);

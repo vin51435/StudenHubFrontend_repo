@@ -80,7 +80,7 @@ const SignupInterests = () => {
             name='search'
             required={false}
             value={interest.search ?? ''}
-            placeholder=''
+            placeholder=' '
             onChange={(e) => setInterest(prev => ({ ...prev, search: e.target.value }))}
           />
           <label className='input-group_label' htmlFor='signup-interest_input'>

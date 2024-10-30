@@ -26,12 +26,6 @@ const SignupAddDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (redirectUrl !== location.pathname) {
-      navigate('/home');
-    }
-  }, [redirectUrl, location]);
-
   const formInfo = [
     { name: 'gender', type: 'text', required: true, message: 'Select gender' },
     { name: 'userType', type: 'text', required: true, message: 'Select user type' },
@@ -40,6 +34,12 @@ const SignupAddDetails = () => {
   ];
 
   const userTypesArr = ['School Student', 'College Student', 'Professional'];
+
+  useEffect(() => {
+    if (redirectUrl !== location.pathname) {
+      navigate('/home');
+    }
+  }, [redirectUrl, location]);
 
   const loadMoreOptions = useCallback(debounceImmediate((inputValue, callback) => {
     setSelect(prev => ({ ...prev, load: true }));
@@ -218,7 +218,8 @@ const SignupAddDetails = () => {
                       id='institute'
                       name='institute'
                       onChange={handleChange}
-                      className='input-group_input' autoComplete="off" />
+                      className='input-group_input'
+                      autoComplete="off" />
                     <label htmlFor='institute' className='input-group_label'>Institute</label>
                     {validationError?.errors?.institute && <span className='input-group_error'>{validationError?.errors?.institute}</span>}
                   </div>
