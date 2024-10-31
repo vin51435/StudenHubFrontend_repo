@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getValueByKey } from '../utils';
 import store from '@src/redux/store';
+import { loginSuccess } from '@src/redux/reducer';
 
 export const activeHost = import.meta.env.VITE_NODE_ENV === 'development' ? import.meta.env.VITE_DEV_BACKEND_DEV : import.meta.env.VITE_DEV_BACKEND_PROD;
 
@@ -111,8 +112,12 @@ const apiConfig = (baseURL, headers, queries) => {
   // Add a response interceptor (optional)
   api.interceptors.response.use(
     (response) => {
-      if (response.data && response.data.redirectUrl) {
-        if (window.location.pathname !== response.data.redirectUrl) {
+      if (response.data) {
+        const { data: { updatedUser }, redirectUrl } = response.data;
+        if (updatedUser) {
+          store.dispatch(loginSuccess({ user: updatedUser }));
+        }
+        if (redirectUrl && window.location.pathname !== redirectUrl) {
           window.location.href = response.data.redirectUrl;
         }
       }
