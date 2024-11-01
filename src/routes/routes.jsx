@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
+const Notifications = React.lazy(() => import('@src/pages/Notifications'));
 const ProtectedRoutes = React.lazy(() => import('./protectedRoutes'));
 const Login = React.lazy(() => import('@src/pages/Login'));
 const NotFound = React.lazy(() => import('@src/pages/NotFound'));
@@ -34,6 +35,7 @@ const AllRoutes = () => {
             <Route path="/test" element={<Test />} />
             <Route path="/home" element={<Home />} />
             <Route path="/inbox" element={<Inbox />} />
+            <Route path="/notifications" element={<Notifications />} />
           </Route>
         </Route>
         <Route path="/oauth2/google/callback" element={<OauthCallback />} />

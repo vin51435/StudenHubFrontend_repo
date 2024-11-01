@@ -6,13 +6,22 @@ import SmallSpinner from '@src/components/common/LoadingSpinner';
 import userSVG from '@src/assets/svg/defaul-user.svg';
 import { useSelector } from 'react-redux';
 
-const DeskSearch = ({ handleOutsideClick }) => {
+const DeskSearch = ({ handleOutsideClick, isSearch }) => {
   const [searchData, setSearchData] = useState({ value: '', load: false, response: [] });
   const { user: { _id } } = useSelector((state) => state.auth);
 
-  const searchUsers = async (searchValue) => {
+  // Create a debounced version of the searchUsers function
+  const debouncedSearchUsers = useCallback(debounceImmediate(searchUsers, 1000), []);
+
+  useEffect(() => {
+    return () => {
+      debouncedSearchUsers.cancel();
+    };
+  }, []);
+
+  async function searchUsers(searchValue) {
     if (searchValue) {
-      const response = await getData('SEARCH_USER', {
+      const response = await getData('SEARCH_USERS', {
         baseURL: 'userFormats',
         queries: [{ searchValue }, { userId: _id ?? '' }],
       });
@@ -20,19 +29,16 @@ const DeskSearch = ({ handleOutsideClick }) => {
     }
   };
 
-  // Create a debounced version of the searchUsers function
-  const debouncedSearchUsers = useCallback(debounceImmediate(searchUsers, 1000), []);
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchData((prev) => ({ ...prev, value, load: Boolean(value) }));
+    debouncedSearchUsers(value);
+  };
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     debouncedSearchUsers.cancel();
     await searchUsers(searchData.value);
-  };
-
-  function handleInputChange(e) {
-    const value = e.target.value;
-    setSearchData(prev => ({ ...prev, value, load: value.length > 0 }));
-    debouncedSearchUsers(value);
   };
 
   async function userOnClick(id) {
@@ -56,6 +62,7 @@ const DeskSearch = ({ handleOutsideClick }) => {
             autoComplete="off"
             type='text'
             name='search'
+            autoFocus={isSearch}
             value={searchData.value ?? ''}
             placeholder=' '
             onChange={handleInputChange}

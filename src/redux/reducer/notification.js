@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Initial state with separated notification types
 const initialState = {
   notifications: {
     newChat: [],
@@ -12,51 +11,88 @@ const notificationSlice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    // Action to receive and add a new notification of a specific type
     receiveNotification: (state, action) => {
-      const { type, payload } = action.payload; 
+      const { type, sendId } = action.payload;
+
       if (state.notifications[type]) {
-        state.notifications[type].push({
-          ...payload,
-          read: false, // default read status
+        const existingIndex = state.notifications[type].findIndex(
+          (notification) => notification.sendId === sendId
+        );
+
+        if (existingIndex !== -1) {
+          state.notifications[type][existingIndex] = action.payload;
+        } else {
+          state.notifications[type].push(action.payload);
+        }
+      } else {
+        state.notifications[type] = [action.payload];
+      }
+    },
+
+    deleteNotification: (state, action) => {
+      const { type, sendId } = action.payload;
+      if (state.notifications[type]) {
+        state.notifications[type] = state.notifications[type].filter(
+          (notification) => notification.sendId !== sendId
+        );
+      }
+    },
+
+    markAsRead: (state, action) => {
+      const { type, sendId } = action.payload;
+      const notification = state.notifications[type]?.find(
+        (notif) => notif.sendId === sendId
+      );
+      if (notification) {
+        notification.isRead = true;
+      }
+    },
+
+    clearNotifications: (state, action) => {
+      const { type } = action.payload || {};
+      if (type && state.notifications[type]) {
+        state.notifications[type] = [];
+      } else {
+        Object.keys(state.notifications).forEach((key) => {
+          state.notifications[key] = [];
         });
       }
     },
 
-    // Action to delete a notification by its type and index
-    deleteNotification: (state, action) => {
-      const { type, index } = action.payload; 
-      if (state.notifications[type]) {
-        state.notifications[type].splice(index, 1);
-      }
-    },
+    loadNotifications: (state, action) => {
+      const notificationsArray = action.payload;
 
-    // Action to mark a notification as read
-    markAsRead: (state, action) => {
-      const { type, index } = action.payload; 
-      const notification = state.notifications[type]?.[index];
-      if (notification) {
-        notification.read = true;
-      }
-    },
+      Object.keys(state.notifications).forEach((key) => {
+        state.notifications[key] = [];
+      });
 
-    // Action to clear all notifications of a specific type
-    clearNotifications: (state, action) => {
-      const { type } = action.payload; 
-      if (state.notifications[type]) {
-        state.notifications[type] = [];
-      }
+      notificationsArray.forEach((notification) => {
+        const { type, sendId } = notification;
+
+        if (state.notifications[type]) {
+          const existingIndex = state.notifications[type].findIndex(
+            (notif) => notif.sendId === sendId
+          );
+
+          if (existingIndex !== -1) {
+            state.notifications[type][existingIndex] = notification;
+          } else {
+            state.notifications[type].push(notification);
+          }
+        } else {
+          state.notifications[type] = [notification];
+        }
+      });
     },
   },
 });
 
-// Export actions for use in components
 export const {
   receiveNotification,
   deleteNotification,
   markAsRead,
   clearNotifications,
+  loadNotifications,
 } = notificationSlice.actions;
 
-// Export the reducer to be used in the store
 export default notificationSlice.reducer;

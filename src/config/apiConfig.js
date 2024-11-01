@@ -39,7 +39,8 @@ const baseURLsEndpoint = {
   CHATS: '/chats',
 
   // User Non-auth
-  SEARCH_USER: '/search',
+  SEARCH_USERS: '/search',
+  USER_NOTIFICATIONS: '/notifications',
 
   // User Formats
   GET_CITY_STATES: '/getcitystate',

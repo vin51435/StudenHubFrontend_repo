@@ -5,12 +5,13 @@ import { useSelector } from 'react-redux';
 
 const Inbox = () => {
   const [usersData, setUsersData] = useState([]);
-  const { isAuthenticated, user, token } = useSelector(state => state.auth);
-  const { username, _id, chats } = user;
   const [selectedUserId, setSelectedUserId] = useState({ user: null, chatId: null });
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
-  const socket = useSocket();
+  const { socket } = useSocket();
+  const { notifications } = useSelector(state => state.notification);
+  const { isAuthenticated, user, token } = useSelector(state => state.auth);
+  const { username, _id, chats } = user;
 
   const dummyUsersData = [
     { userId: 1, name: 'Alice' },
@@ -99,8 +100,8 @@ const Inbox = () => {
       });
       console.log('chatId:', chatIdResponse);
 
-      const { chatId, userB } = chatIdResponse?.data;
-      const newUser = { user: userB._id, chatId };
+      const { chatId } = chatIdResponse?.data;
+      const newUser = { user: userBId, chatId };
 
       // Set the selected user ID and chat ID
       setSelectedUserId(newUser);

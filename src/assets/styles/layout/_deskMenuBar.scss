@@ -33,7 +33,30 @@
     font-size: 1.3rem;
   }
 
-  span {
+  .icon.inbox {
+    position: relative;
+    &::after {
+      position: absolute;
+      content: attr(data-notifications);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $danger;
+      border-radius: 50%;
+      color: $white;
+      height: 16px;
+      width: 16px;
+      font-size: 14px;
+      top: -4px;
+      right: -5px;
+    }
+    &[data-notifications='']::after {
+      content: '';
+      display: none;
+    }
+  }
+
+  .title {
     margin-top: 5px;
     font-size: 12px;
     display: none;

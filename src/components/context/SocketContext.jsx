@@ -1,6 +1,7 @@
 import { activeHost, postData } from '@src/config/apiConfig';
+import { markAsRead, receiveNotification } from '@src/redux/reducer/notification';
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 
 const WEBPUSH_PUBLIC_KEY = import.meta.env.VITE_WEBPUSH_PUBLICKEY;
@@ -10,8 +11,10 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-  const { token } = useSelector((state) => state.auth);
   const hasSubscribed = useRef(false); // Track whether we have subscribed to notifications
+  const dispatch = useDispatch();
+  const notifications = useSelector(state => state.notification);
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     // Initialize a new socket connection only if there's a token
@@ -24,8 +27,9 @@ export const SocketProvider = ({ children }) => {
       setSocket(newSocket);
       console.log('Socket initialized and connected for this tab', newSocket);
 
-      newSocket.on("newMessageNotification", (notification) => {
+      newSocket.on("newNotification", (notification) => {
         console.log('New message notification received:', notification);
+        dispatch(receiveNotification(notification));
       });
 
       newSocket.on('disconnect', () => {
@@ -83,14 +87,19 @@ export const SocketProvider = ({ children }) => {
     };
 
     subscribeToPushNotifications();
-  }, []); // Empty dependency array to run only on initial load
+  }, []);
 
-  const requestNotificationPermission = async () => {
+  function readNotification(notification) {
+    socket.emit('readNotification', notification._id);
+    dispatch(markAsRead(notification));
+  }
+
+  async function requestNotificationPermission() {
     const permission = await Notification.requestPermission();
     return permission === 'granted';
   };
 
-  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
+  return <SocketContext.Provider value={{ socket, readNotification }}>{children}</SocketContext.Provider>;
 };
 
 export default SocketProvider;

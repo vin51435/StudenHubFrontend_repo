@@ -3,6 +3,8 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
+import { getData } from '@src/config/apiConfig';
+import { loadNotifications } from '@src/redux/reducer/notification';
 
 const ProtectedRoutes = () => {
   const { isAuthenticated, token, redirectUrl, user } = useSelector((state) => state.auth);
@@ -23,6 +25,16 @@ const ProtectedRoutes = () => {
       setLoading(false);
     }
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    getData('USER_NOTIFICATIONS', {
+      baseURL: 'user'
+    })
+      .then(response => {
+        const { data } = response;
+        dispatch(loadNotifications(data));
+      });
+  }, []);
 
   if (loading) {
     return <PageLoadingSpinner />;

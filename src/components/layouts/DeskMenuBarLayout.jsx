@@ -3,11 +3,13 @@ import { FaHome, FaSearch, FaPaperPlane, FaUserCircle, FaBell } from 'react-icon
 import { GrTest } from "react-icons/gr";
 import { Link, Outlet } from 'react-router-dom';
 import DeskSearch from './components/DeskSearch';
+import { useSelector } from 'react-redux';
 const SocketProvider = React.lazy(() => import('@src/components/context/SocketContext.jsx'));
 
 const DeskMenuBarLayout = () => {
   const [toggle, setToggle] = useState({ search: false });
   const searchBarRef = useRef(null);
+  const { notifications } = useSelector(state => state.notification);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleOutsideClick);
@@ -36,38 +38,57 @@ const DeskMenuBarLayout = () => {
       <div className='w-100 d-flex'>
         <aside className="menu-bar d-flex fs-6">
           <Link to={'/home'} className="menu-button">
-            <FaHome />
-            <span>Explore</span>
+            <span className='icon'>
+              <FaHome />
+            </span>
+            <span className='title'>Explore</span>
           </Link>
-          <button className="menu-button" onClick={toggleSearch}>
-            <FaSearch />
-            <span>Search</span>
-          </button>
+          <div ref={searchBarRef} >
+            <div className="menu-button" onClick={toggleSearch}>
+              <span className='icon '>
+                <FaSearch />
+              </span>
+              <span className='title'>Search</span>
+            </div>
+            {toggle.search && (
+              <div className="search-bar-container">
+                <DeskSearch handleOutsideClick={handleOutsideClick} isSearch={toggle.search} />
+              </div>
+            )}
+          </div>
           <Link to={'/inbox'} className="menu-button">
-            <FaPaperPlane />
-            <span>Inbox</span>
+            {/* Only show new message notifications here */}
+            <span className='icon inbox' data-notifications={
+              Object.values(notifications).reduce((count, value) => {
+                return count + value.reduce((subCount, ele) => subCount + (ele?.isRead ? 0 : 1), 0);
+              }, 0)
+            }>
+              <FaPaperPlane />
+            </span>
+            <span className='title'>Inbox</span>
+          </Link>
+          <Link to={'/notifications'} className="menu-button">
+            <span className='icon'>
+              <FaBell />
+            </span>
+            <span className='title'>Notifications</span>
           </Link>
           <button className="menu-button">
-            <FaUserCircle />
-            <span>Profile</span>
-          </button>
-          <button className="menu-button">
-            <FaBell />
-            <span>Notifications</span>
+            <span className='icon'>
+              <FaUserCircle />
+            </span>
+            <span className='title'>Profile</span>
           </button>
           <Link to={'/test'} className="menu-button">
-            <GrTest />
-            <span>Test</span>
+            <span className='icon'>
+              <GrTest />
+            </span>
+            <span className='title'>Test</span>
           </Link>
         </aside>
         <main className='w-100 h-100'>
           <Outlet />
         </main>
-        {toggle.search && (
-          <div ref={searchBarRef} className="search-bar-container">
-            <DeskSearch handleOutsideClick={handleOutsideClick} />
-          </div>
-        )}
       </div>
     </SocketProvider>
   );
