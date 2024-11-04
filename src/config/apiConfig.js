@@ -113,10 +113,10 @@ const apiConfig = (baseURL, headers, queries) => {
   // Add a response interceptor (optional)
   api.interceptors.response.use(
     (response) => {
-      if (response.data) {
-        const { data: { updatedUser }, redirectUrl } = response.data;
-        if (updatedUser) {
-          store.dispatch(loginSuccess({ user: updatedUser }));
+      if (response?.data) {
+        const { data, redirectUrl } = response.data;
+        if (data?.updatedUser) {
+          store.dispatch(loginSuccess({ user: data?.updatedUser }));
         }
         if (redirectUrl && window.location.pathname !== redirectUrl) {
           window.location.href = response.data.redirectUrl;

@@ -1,28 +1,28 @@
-// ChatInbox.scss
-
-.users-pane {
-  width: 30%;
-  background-color: #f8f9fa; // Light background for the user pane
-}
-
-.user-item {
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &.active {
-    background-color: #e9ecef; // Highlight active user
+.inbox_container {
+  .users-pane {
+    width: 30%;
+    background-color: #f8f9fa;
   }
 
-  &:hover {
-    background-color: #e2e6ea; // Change background on hover
+  .user-item {
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &.active {
+      background-color: #e9ecef;
+    }
+
+    &:hover {
+      background-color: #e2e6ea;
+    }
   }
-}
 
-.messages-pane {
-  background-color: #ffffff; // White background for the messages pane
-  border-left: 1px solid #dee2e6; // Border between panes
-}
+  .messages-pane {
+    background-color: #ffffff;
+    border-left: 1px solid #dee2e6;
+  }
 
-.message {
-  margin: 5px 0;
+  .message {
+    margin: 5px 0;
+  }
 }

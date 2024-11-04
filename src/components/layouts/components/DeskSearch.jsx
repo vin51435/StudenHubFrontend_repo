@@ -44,7 +44,7 @@ const DeskSearch = ({ handleOutsideClick, isSearch }) => {
   async function userOnClick(id) {
     handleOutsideClick('close');
     const res = await postData('CHAT_ID', {
-      baseURL: 'users',
+      baseURL: 'user',
       data: {
         userBId: id
       }

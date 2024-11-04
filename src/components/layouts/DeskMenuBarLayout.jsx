@@ -37,18 +37,16 @@ const DeskMenuBarLayout = () => {
     <SocketProvider>
       <div className='w-100 d-flex'>
         <aside className="menu-bar d-flex fs-6">
-          <Link to={'/home'} className="menu-button">
-            <span className='icon'>
+          <Link to={'/home'} className="menu-button tooltip right" data-tooltip={'Explore'}>
+            <span className='icon '>
               <FaHome />
             </span>
-            <span className='title'>Explore</span>
           </Link>
           <div ref={searchBarRef} >
-            <div className="menu-button" onClick={toggleSearch}>
-              <span className='icon '>
+            <div className="menu-button tooltip right" data-tooltip={'Search'} onClick={toggleSearch}>
+              <span className='icon'>
                 <FaSearch />
               </span>
-              <span className='title'>Search</span>
             </div>
             {toggle.search && (
               <div className="search-bar-container">
@@ -56,7 +54,7 @@ const DeskMenuBarLayout = () => {
               </div>
             )}
           </div>
-          <Link to={'/inbox'} className="menu-button">
+          <Link to={'/inbox'} className="menu-button tooltip right" data-tooltip={'Inbox'}>
             {/* Only show new message notifications here */}
             <span className='icon inbox' data-notifications={
               Object.values(notifications).reduce((count, value) => {
@@ -65,32 +63,28 @@ const DeskMenuBarLayout = () => {
             }>
               <FaPaperPlane />
             </span>
-            <span className='title'>Inbox</span>
           </Link>
-          <Link to={'/notifications'} className="menu-button">
+          <Link to={'/notifications'} className="menu-button tooltip right" data-tooltip={'Notifications'}>
             <span className='icon'>
               <FaBell />
             </span>
-            <span className='title'>Notifications</span>
           </Link>
-          <button className="menu-button">
+          <Link to={'/profile'} className="menu-button tooltip right" data-tooltip={'Profile'}>
             <span className='icon'>
               <FaUserCircle />
             </span>
-            <span className='title'>Profile</span>
-          </button>
-          <Link to={'/test'} className="menu-button">
+          </Link>
+          <Link to={'/test'} className="menu-button tooltip right" data-tooltip={'Tests'}>
             <span className='icon'>
               <GrTest />
             </span>
-            <span className='title'>Test</span>
           </Link>
         </aside>
         <main className='w-100 h-100'>
           <Outlet />
         </main>
       </div>
-    </SocketProvider>
+    </SocketProvider >
   );
 };
 

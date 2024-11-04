@@ -1,6 +1,8 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
+import Profile from '@src/pages/Profile';
+import TestLayout from '@src/components/layouts/DeskMenuBarLayout2';
 const Notifications = React.lazy(() => import('@src/pages/Notifications'));
 const ProtectedRoutes = React.lazy(() => import('./protectedRoutes'));
 const Login = React.lazy(() => import('@src/pages/Login'));
@@ -33,8 +35,11 @@ const AllRoutes = () => {
           </Route>
           <Route element={<DeskMenuBarLayout />}>
             <Route path="/test" element={<Test />} />
-            <Route path="/home" element={<Home />} />
+            <Route element={<TestLayout />}>
+              <Route path="/home" element={<Home />} />
+            </Route>
             <Route path="/inbox" element={<Inbox />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/notifications" element={<Notifications />} />
           </Route>
         </Route>

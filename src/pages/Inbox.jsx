@@ -2,6 +2,7 @@ import { useSocket } from '@src/components/context/SocketContext';
 import { postData } from '@src/config/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 const Inbox = () => {
   const [usersData, setUsersData] = useState([]);
@@ -9,6 +10,7 @@ const Inbox = () => {
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
   const { socket } = useSocket();
+  const location = useLocation();
   const { notifications } = useSelector(state => state.notification);
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
   const { username, _id, chats } = user;
@@ -87,7 +89,7 @@ const Inbox = () => {
         .catch(err => console.log(err));
 
     }
-  }, []);
+  }, [location.pathname]);
 
   const connectChat = async (e, userBId) => {
     e.preventDefault();
@@ -164,7 +166,7 @@ const Inbox = () => {
   console.log('setSelectedUserId', selectedUserId);
 
   return (
-    <div className="d-flex h-100 w-100">
+    <div className="inbox_container d-flex h-100 w-100">
       <div className="users-pane border-end p-3">
         <h3>Users</h3>
         <ul className="list-unstyled">

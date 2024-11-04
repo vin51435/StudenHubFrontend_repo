@@ -20,6 +20,8 @@ $border-radius: 8px;
 $border-radius-rounded: 20px;
 $border-color: #747775;
 
+$tooltip-fs: 0.855rem;
+
 $breakpoints: (
   'xsmall': 400px,
   'small': 576px,
@@ -127,4 +129,7 @@ $dashed-box1: (
   &::-webkit-scrollbar-thumb:active {
     background-color: $primary-color1;
   }
+}
+
+@mixin tooltip {
 }

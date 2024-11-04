@@ -111,10 +111,10 @@ a {
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   &::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
+    display: none;
   }
 }
 
@@ -171,7 +171,7 @@ a {
     flex-wrap: wrap;
     gap: 8px;
     .radio-group_input[type='radio'] {
-      display: none; /* Hide the actual radio buttons */
+      display: none;
       &:checked + label {
         background-color: #007bff;
         color: white;
@@ -317,5 +317,73 @@ a {
         color: red;
       }
     }
+  }
+}
+
+.tooltip {
+  position: relative;
+  opacity: 1;
+  &::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    font-size: $tooltip-fs;
+    top: 50%;
+
+    left: 100%;
+    margin-left: 15px;
+    // width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #000;
+    color: #fff;
+    text-align: center;
+
+    display: none;
+    opacity: 0;
+    transform: translateY(-50%) scale(0);
+    transition: all 0.35s;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+
+    left: 200%;
+    // left: 100%;
+    margin-left: -5px;
+
+    top: 50%;
+
+    border: 10px solid #000;
+    border-color: transparent black transparent transparent;
+
+    display: none;
+
+    opacity: 0;
+    transform-origin: right center;
+    transform: translateY(-50%) scale(0);
+    transition: all 0.35s;
+  }
+  &:hover::before,
+  &:hover::after {
+    display: block;
+
+    animation: hoverDelay 0.35s 0.8s forwards;
+  }
+  &.left::before {
+    left: initial;
+    margin: initial;
+
+    right: 100%;
+    margin-right: 15px;
+  }
+  &.right::before {
+    right: initial;
+  }
+}
+@keyframes hoverDelay {
+  to {
+    opacity: 1;
+    left: 100%;
+    transform: translateY(-50%) scale(1);
   }
 }
