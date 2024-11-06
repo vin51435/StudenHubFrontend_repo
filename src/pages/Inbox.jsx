@@ -1,182 +1,211 @@
-import { useSocket } from '@src/components/context/SocketContext';
+import { useSocket } from '@src/context/SocketContext';
 import { postData } from '@src/config/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 const Inbox = () => {
+  const [selectedUser, setSelectedUser] = useState({ userId: null, chatId: null });
   const [usersData, setUsersData] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState({ user: null, chatId: null });
-  const [messages, setMessages] = useState([]);
-  const [messageContent, setMessageContent] = useState('');
-  const { socket } = useSocket();
-  const location = useLocation();
   const { notifications } = useSelector(state => state.notification);
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
+  const location = useLocation();
+  const { socket, handleReadNotification } = useSocket();
   const { username, _id, chats } = user;
-
-  const dummyUsersData = [
-    { userId: 1, name: 'Alice' },
-    { userId: 2, name: 'Bob' },
-    { userId: 3, name: 'Charlie' },
-    { userId: 4, name: 'David' },
-  ];
 
   useEffect(() => {
     if (!socket) return;
+    const handleNewMessage = (newMessage) => {
+      if (!selectedUser?.userId || !selectedUser?.chatId) return;
 
-    const handleMessage = (message) => {
-      console.log('receiveMessage', message);
-      setMessages((prevMessages) => {
-        // Find the index of the object with the matching user ID
-        const index = prevMessages.findIndex(
-          (msg) => msg.user === selectedUserId.user
-        );
+      try {
+        setUsersData((prev) => {
+          const existingUserIndex = prev.findIndex(
+            (user) => user.chatId === newMessage.chatId
+          );
 
-        // If no matching user is found, return the array unchanged
-        if (index === -1) {
-          // Optionally, you can create a new entry if the user is not found
-          return [
-            ...prevMessages,
-            {
-              user: selectedUserId.user,
-              chatId: selectedUserId.chatId,
-              messages: [message], // Initialize messages array with the new message
-            },
-          ];
-        }
+          if (existingUserIndex === -1) return prev;
 
-        // Create a shallow copy of the array and update the `messages` field for the specific object
-        const updatedMessages = [...prevMessages];
-        updatedMessages[index] = {
-          ...updatedMessages[index],
-          messages: [
-            ...updatedMessages[index].messages,
-            message,
-          ],
-        };
+          const updatedUserMessages = [...prev];
+          const existingUser = updatedUserMessages[existingUserIndex];
 
-        return updatedMessages;
-      });
+          if (!existingUser?.messages) {
+            throw new Error('User messages is null or undefined.');
+          }
+
+          updatedUserMessages[existingUserIndex] = {
+            ...existingUser,
+            messages: [
+              ...(existingUser.messages || []),
+              newMessage,
+            ],
+          };
+
+          return updatedUserMessages;
+        });
+      } catch (error) {
+        console.error('Error handling new message:', error);
+      }
     };
 
-    socket.on('receiveMessage', handleMessage);
+    socket.on('receiveMessage', handleNewMessage);
 
     return () => {
-      socket.off('receiveMessage', handleMessage);
+      socket.off('receiveMessage', handleNewMessage);
     };
-  }, [socket, selectedUserId]);
-  ;
+  }, [socket, selectedUser]);
 
   useEffect(() => {
     if (chats?.chatIds) {
       postData('GET_INBOX_PARTICIPANTS', {
         baseURL: 'user',
         data: { chatIds: chats.chatIds },
-      }).
-        then(response => {
-          const data = response.data.map(ele => ({
-            chatId: ele.chatId,
-            userId: ele.secondParticipant?._id,
-            firstName: ele.secondParticipant?.firstName,
-            lastName: ele.secondParticipant?.lastName,
-            name: `${ele.secondParticipant?.firstName} ${ele.secondParticipant?.lastName}`,
-            username: ele.secondParticipant?.username,
-          }));
-
-          setUsersData([...dummyUsersData, ...data]);
+      })
+        .then(response => {
+          const userB = response.data.map(
+            ({ chatId, secondParticipant: { _id, firstName, lastName, username } }) => ({
+              chatId,
+              userId: _id,
+              firstName,
+              lastName,
+              name: `${firstName} ${lastName}`,
+              username,
+              notification: { newMessage: false, newMessageNotificationId: null },
+            })
+          );
+          return userB;
         })
-        .catch(err => console.log(err));
-
+        .then((userB) => {
+          updateUsersDataAndNotifications(userB);
+        });
     }
-  }, [location.pathname]);
+  }, [location.pathname, user]);
 
-  const connectChat = async (e, userBId) => {
+  useEffect(() => {
+    updateUsersDataAndNotifications();
+  }, [notifications]);
+
+
+  function updateUsersDataAndNotifications(data) {
+    setUsersData(prev => {
+      let usersArray;
+
+      if (data) {
+        const uniqueUsers = new Map(data.map(user => [user.userId + user.chatId, user]));
+        usersArray = Array.from(uniqueUsers.values());
+      } else {
+        usersArray = prev;
+      }
+
+      if (notifications) {
+        const newMessageNotifications = notifications.newMessage.filter((n) => !n.isRead);
+
+        usersArray = usersArray.map((user) => {
+          const newMessageNotification = newMessageNotifications.find(
+            (n) => n.senderId === user.userId
+          );
+
+          return {
+            ...user,
+            notification: {
+              newMessage: !!newMessageNotification,
+              newMessageNotificationId: newMessageNotification?._id,
+            },
+          };
+        });
+      }
+
+      return usersArray;
+    });
+  }
+
+  function markAsReadNotification(userBId) {
+    handleReadNotification({ userId: userBId, type: 'newMessage' });
+  }
+
+  async function handleChatConnection(event, userBId) {
+    event.preventDefault();
+
+    const { data: { chatId } } = await postData('CHAT_ID', {
+      baseURL: 'user',
+      data: { userBId },
+    });
+    if (!chatId) {
+      throw new Error('Chat ID is null or undefined');
+    }
+    const userB = { userBId, chatId };
+    setSelectedUser({ userId: userB.userBId, chatId });
+
+    if (!usersData.every((msg) => msg.userId === userB.userBId).messages) {
+      const { data: { messages: fetchedMessages } } = await postData('MESSAGES', {
+        baseURL: 'user',
+        data: { chatId },
+      });
+
+      if (!fetchedMessages) throw new Error('Messages is null or undefined');
+
+      setUsersData(prev => {
+        return prev.map((user) =>
+          user.userId === userB.userBId
+            ? { ...user, messages: fetchedMessages }
+            : user
+        );
+      });
+
+      markAsReadNotification(userBId);
+    }
+
+    if (socket && chatId) {
+      socket.emit('joinChat', chatId);
+    }
+  }
+
+  async function sendMessage(e) {
     e.preventDefault();
 
-    try {
-      // Fetch the chat ID
-      const chatIdResponse = await postData('CHAT_ID', {
-        baseURL: 'user',
-        data: { userBId },
-      });
-      console.log('chatId:', chatIdResponse);
+    const messageContent = usersData.find(user => user.userId === selectedUser.userId)?.inboxInput;
+    if (!messageContent || !selectedUser?.chatId) return;
 
-      const { chatId } = chatIdResponse?.data;
-      const newUser = { user: userBId, chatId };
-
-      // Set the selected user ID and chat ID
-      setSelectedUserId(newUser);
-
-      // Check if messages for this user are not already in the state
-      if (messages.every((msg) => msg.user !== newUser.user)) {
-        // Fetch messages for the chat ID
-        const messagesResponse = await postData('MESSAGES', {
-          baseURL: 'user',
-          data: { chatId },
-        });
-        console.log('response Message:', messagesResponse);
-
-        const { messages: fetchedMessages } = messagesResponse.data;
-
-        // Update messages state
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            user: newUser.user,
-            chatId: newUser.chatId,
-            messages: fetchedMessages,
-          },
-        ]);
-      }
-
-      // Join the chat room on the server
-      if (socket && chatId) {
-        console.log('Joining chat:', chatId);
-        socket.emit('joinChat', chatId);
-      }
-    } catch (err) {
-      console.error('Unforeseen error:', err);
-    }
-  };
-
-  const sendMessage = () => {
-    if (!messageContent || !selectedUserId.chatId) return; // Prevent sending empty messages or when no chatId
-
-    const messageData = {
-      chatId: selectedUserId.chatId,
-      recipientId: selectedUserId.user,
+    const messagePayload = {
+      chatId: selectedUser.chatId,
+      recipientId: selectedUser.userId,
       senderId: _id,
       senderUsername: username,
       content: messageContent,
-      status: { sent: false, delivered: false, read: false }
+      status: { sent: false, delivered: false, read: false },
     };
 
-    console.log('socket from sendmessage', socket);
-    if (socket && socket.connected) {
-      console.log('message send');
-      socket.emit('sendMessage', messageData); // Emit the message to the server
-      setMessageContent(''); // Clear the input field
-    } else {
-      console.error('Socket not connected.');
+    try {
+      if (socket?.connected) {
+        socket.emit('sendMessage', messagePayload);
+        // Clear input field
+        setUsersData(prev =>
+          prev.map(user =>
+            user.userId === selectedUser.userId
+              ? { ...user, inboxInput: '' }
+              : user
+          )
+        );
+      } else {
+        console.error('Socket connection is unavailable.');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
-  };
-
-  console.log('messages', messages);
-  console.log('setSelectedUserId', selectedUserId);
+  }
 
   return (
     <div className="inbox_container d-flex h-100 w-100">
-      <div className="users-pane border-end p-3">
+      <div className="users-pane border-end py-3">
         <h3>Users</h3>
         <ul className="list-unstyled">
           {usersData.map((user) => (
             <li
               key={user.userId}
               onClick={(e) => {
-                connectChat(e, user.userId);
+                handleChatConnection(e, user.userId);
               }}
-              className={`user-item p-2 ${selectedUserId.user === user.userId ? 'bg-primary-subtle' : ''}`}
+              className={`user-item p-2 ${user.notification.newMessage ? 'bg-primary-subtle' : ''} ${selectedUser.userId === user.userId ? 'bg-primary text-white' : ''}`}
             >
               {user.name}
             </li>
@@ -185,31 +214,33 @@ const Inbox = () => {
       </div>
       <div className="messages-pane flex-grow-1 p-3">
         <h3>Messages</h3>
-        {selectedUserId ? (
+        {selectedUser ? (
           <div>
             <div className='messages'>
-              {messages
-                .filter((msg) => msg.user === selectedUserId.user)
-                .map((msg, index) =>
-                  msg.messages.map((singleMsg, msgIndex) => (
-                    <div key={`${index}-${msgIndex}`} className={`${singleMsg.senderId === _id ? 'text-end' : ''}`}>
-                      <strong>
-                        {singleMsg.senderId !== _id && '>>>'}
-                        {singleMsg.content}
-                        {singleMsg.senderId === _id && '<<<'}
-                      </strong>
-                    </div>
-                  ))
-                )}
+              {usersData.find(user => user.userId === selectedUser.userId)?.messages?.map((singleMsg, msgIndex) => (
+                <div key={`${msgIndex}`} className={`${singleMsg.senderId === _id ? 'text-end' : ''}`}>
+                  <strong>
+                    {singleMsg.senderId !== _id && '>>>'}
+                    {singleMsg.content}
+                    {singleMsg.senderId === _id && '<<<'}
+                  </strong>
+                </div>
+              ))}
             </div>
             <div>
               <input
                 type='text'
-                value={messageContent}
-                onChange={(e) => setMessageContent(e.target.value)}
+                value={usersData.find(user => user.userId === selectedUser.userId)?.inboxInput || ""}
+                onChange={(e) => setUsersData(prev =>
+                  prev.map(user =>
+                    user.userId === selectedUser.userId
+                      ? { ...user, inboxInput: e.target.value }
+                      : user
+                  )
+                )}
                 placeholder='Type a message...'
               />
-              <button onClick={sendMessage}>Send</button>
+              <button role='submit' onClick={sendMessage}>Send</button>
             </div>
           </div>
         ) : (

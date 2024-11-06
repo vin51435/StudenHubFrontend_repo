@@ -1,4 +1,4 @@
-import { useNotification } from '@src/components/context/NotificationContext';
+import { useNotification } from '@src/context/NotificationContext';
 import { getData, putData } from '@src/config/apiConfig';
 import { loginSuccess } from '@src/redux/reducer';
 import React, { useEffect, useState } from 'react';

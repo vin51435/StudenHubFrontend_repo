@@ -1,4 +1,4 @@
-import { useNotification } from '@src/components/context/NotificationContext';
+import { useNotification } from '@src/context/NotificationContext';
 import { githubAuthBaseURL } from '@src/config/apiConfig';
 import React from 'react';
 

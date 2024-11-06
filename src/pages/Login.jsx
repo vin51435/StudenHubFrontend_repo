@@ -8,7 +8,7 @@ import useWindowSize from '@src/hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
-import { useNotification } from '@src/components/context/NotificationContext';
+import { useNotification } from '@src/context/NotificationContext';
 
 const Auth = () => {
   const [loader, setLoader] = useState(false);
@@ -21,7 +21,7 @@ const Auth = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setLoader(true)
+    setLoader(true);
     const handleAuthCheck = () => {
       const isLoginPath = pathname === '/login'; // Exactly matches '/login'
       const isGoogleCallback = pathname === '/login/auth/google/callback'; // Specifically check for Google OAuth callback

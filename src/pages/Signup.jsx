@@ -7,7 +7,7 @@ import useWindowSize from '@src/hooks/useWindowSize';
 import SignupForm from '@src/components/authComponents/SignupForm';
 import { useDispatch, useSelector } from 'react-redux';
 import fetchUserInfo from '@src/utils/fetchUserInfo';
-import { useNotification } from '@src/components/context/NotificationContext';
+import { useNotification } from '@src/context/NotificationContext';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
 
 const Signup = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Routes from './routes/routes';
-import { NotificationProvider } from './components/context/NotificationContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 function App() {
 

@@ -4,7 +4,7 @@ import { GrTest } from "react-icons/gr";
 import { Link, Outlet } from 'react-router-dom';
 import DeskSearch from './components/DeskSearch';
 import { useSelector } from 'react-redux';
-const SocketProvider = React.lazy(() => import('@src/components/context/SocketContext.jsx'));
+const SocketProvider = React.lazy(() => import('@src/context/SocketContext.jsx'));
 
 const DeskMenuBarLayout = () => {
   const [toggle, setToggle] = useState({ search: false });
@@ -57,9 +57,7 @@ const DeskMenuBarLayout = () => {
           <Link to={'/inbox'} className="menu-button tooltip right" data-tooltip={'Inbox'}>
             {/* Only show new message notifications here */}
             <span className='icon inbox' data-notifications={
-              Object.values(notifications).reduce((count, value) => {
-                return count + value.reduce((subCount, ele) => subCount + (ele?.isRead ? 0 : 1), 0);
-              }, 0)
+              notifications.newMessage.map((notification) => !notification.isRead).reduce((a, b) => a + b, 0)
             }>
               <FaPaperPlane />
             </span>

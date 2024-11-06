@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
 import Profile from '@src/pages/Profile';
-import TestLayout from '@src/components/layouts/DeskMenuBarLayout2';
+import TestLayout from '@src/components/layouts/TestLayout';
 const Notifications = React.lazy(() => import('@src/pages/Notifications'));
 const ProtectedRoutes = React.lazy(() => import('./protectedRoutes'));
 const Login = React.lazy(() => import('@src/pages/Login'));

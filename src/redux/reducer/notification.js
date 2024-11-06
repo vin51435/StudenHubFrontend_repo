@@ -12,39 +12,63 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     receiveNotification: (state, action) => {
-      const { type, sendId } = action.payload;
+      const { type, _id } = action.payload;
+      const notifications = state.notifications[type] || [];
+      const existingIndex = notifications.findIndex(notification => notification._id === _id);
 
-      if (state.notifications[type]) {
-        const existingIndex = state.notifications[type].findIndex(
-          (notification) => notification.sendId === sendId
-        );
-
-        if (existingIndex !== -1) {
-          state.notifications[type][existingIndex] = action.payload;
-        } else {
-          state.notifications[type].push(action.payload);
-        }
+      if (existingIndex !== -1) {
+        notifications[existingIndex] = action.payload;
       } else {
-        state.notifications[type] = [action.payload];
+        notifications.unshift(action.payload);
       }
+      state.notifications[type] = notifications;
     },
 
     deleteNotification: (state, action) => {
-      const { type, sendId } = action.payload;
-      if (state.notifications[type]) {
-        state.notifications[type] = state.notifications[type].filter(
-          (notification) => notification.sendId !== sendId
-        );
-      }
+      const { type, userId, notificationId } = action.payload;
+
+      if (!state.notifications[type]) return;
+
+      state.notifications[type] = state.notifications[type].filter((notification) => {
+        switch (type) {
+          case 'newMessage':
+            // Delete all notifications with matching senderId for type 'newMessage'
+            return notification.senderId !== userId;
+
+          default:
+            // Delete specific notification by notificationId for other types
+            return notification._id !== notificationId;
+        }
+      });
     },
 
     markAsRead: (state, action) => {
-      const { type, sendId } = action.payload;
-      const notification = state.notifications[type]?.find(
-        (notif) => notif.sendId === sendId
-      );
-      if (notification) {
-        notification.isRead = true;
+      const { type, notificationId, userId } = action.payload;
+      const notifications = state.notifications[type];
+
+      if (!notifications) {
+        return;
+      }
+
+      switch (type) {
+        case 'newMessage':
+          // Mark all notifications with matching senderId as read
+          notifications.forEach((notification) => {
+            if (notification.senderId === userId) {
+              notification.isRead = true;
+            }
+          });
+          break;
+
+        default:
+          // Mark a single notification as read using notificationId
+          const notificationToUpdate = notifications.find(
+            (notification) => notification._id === notificationId
+          );
+          if (notificationToUpdate) {
+            notificationToUpdate.isRead = true;
+          }
+          break;
       }
     },
 
@@ -67,11 +91,11 @@ const notificationSlice = createSlice({
       });
 
       notificationsArray.forEach((notification) => {
-        const { type, sendId } = notification;
+        const { type, _id } = notification;
 
         if (state.notifications[type]) {
           const existingIndex = state.notifications[type].findIndex(
-            (notif) => notif.sendId === sendId
+            (notif) => notif._id === _id
           );
 
           if (existingIndex !== -1) {

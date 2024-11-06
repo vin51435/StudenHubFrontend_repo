@@ -82,10 +82,9 @@ export const SocketProvider = ({ children }) => {
             data: subscription,
           });
 
-          // console.log('Subscribed to push notifications');
           hasSubscribed.current = true; // Mark as subscribed
         } catch (error) {
-          // console.error('Push notification subscription failed:', error);
+          console.error('Push notification subscription failed:', error);
         }
       }
     };
@@ -93,17 +92,17 @@ export const SocketProvider = ({ children }) => {
     subscribeToPushNotifications();
   }, []);
 
-  function readNotification(notification) {
-    socket.emit('readNotification', notification._id);
-    dispatch(markAsRead(notification));
-  }
+  const handleReadNotification = ({ userId, type, notificationId = null }) => {
+    socket.emit('readNotification', { userBId: userId, type, notificationId });
+    dispatch(markAsRead({ userId, type, notificationId }));
+  };
 
   async function requestNotificationPermission() {
     const permission = await Notification.requestPermission();
     return permission === 'granted';
   };
 
-  return <SocketContext.Provider value={{ socket, readNotification }}>{children}</SocketContext.Provider>;
+  return <SocketContext.Provider value={{ socket, handleReadNotification }}>{children}</SocketContext.Provider>;
 };
 
 export default SocketProvider;
