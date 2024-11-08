@@ -20,7 +20,7 @@ export const NotificationProvider = ({ children }) => {
  * @param {string} [options.type='error'] - The type of the notification (e.g., 'error', 'success', 'info').
  * @returns {number} - The unique ID of the notification, which can be used to manage its lifecycle.
  */
-  const notif = (header, message = '', options = { timeOut: 1000, type: 'error' }) => {
+  const notif = (header = 'header', message = 'content', options = { timeOut: 1000, type: 'error' }) => {
     const { timeOut, type } = options;
     const id = Date.now(); // Unique ID for each notification
 
@@ -63,19 +63,19 @@ export const NotificationProvider = ({ children }) => {
   };
 
   return (
-    <NotificationContext.Provider value={{ notif, startRemoveNotification }}>
+    <NotificationContext.Provider value={{ notif, startRemoveNotification, removeNotification }}>
       {children}
       <div className="notification-container">
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`notification ${notification.removing ? 'slide-out' : ''}`}
+            className={`notification ${notification.type} ${notification.removing ? 'slide-out' : ''}`}
           >
             <div className="notification-header">
               {notification.header}
             </div>
             {notification.message && <div className="notification-message">{notification.message}</div>}
-            <button onClick={() => startRemoveNotification(notification.id, 0)} className="close-btn">×</button>
+            <button onClick={() => startRemoveNotification(notification.id)} className="close-btn">×</button>
           </div>
         ))}
       </div>

@@ -14,27 +14,24 @@ const ProtectedRoutes = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     if (!token || !isAuthenticated) {
       fetchUserInfo(dispatch)
-        .then(response => {
-          return response;
-        })
-        .catch(() => console.error('Error fetching user'))
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
-  }, [dispatch, navigate]);
 
-  useEffect(() => {
-    getData('USER_NOTIFICATIONS', {
-      baseURL: 'user'
-    })
-      .then(response => {
-        const { data } = response;
-        dispatch(loadNotifications(data));
-      });
-  }, []);
+    if (token && isAuthenticated && !redirectUrl) {
+      getData('USER_NOTIFICATIONS', {
+        baseURL: 'user'
+      })
+        .then(response => {
+          const { data } = response;
+          dispatch(loadNotifications(data));
+        });
+    }
+  }, [isAuthenticated, token, redirectUrl]);
 
   if (loading) {
     return <PageLoadingSpinner />;

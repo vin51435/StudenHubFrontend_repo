@@ -3,7 +3,7 @@ import { getData, postData } from '@src/config/apiConfig';
 import debounceImmediate from '@src/utils/debounceImmediate';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SmallSpinner from '@src/components/common/LoadingSpinner';
-import userSVG from '@src/assets/svg/defaul-user.svg';
+import userSVG from '@src/assets/svg/default-user.svg';
 import { useSelector } from 'react-redux';
 
 const DeskSearch = ({ handleOutsideClick, isSearch }) => {
@@ -41,6 +41,7 @@ const DeskSearch = ({ handleOutsideClick, isSearch }) => {
     await searchUsers(searchData.value);
   };
 
+  // Default action, Redirect to chat
   async function userOnClick(id) {
     handleOutsideClick('close');
     const res = await postData('CHAT_ID', {

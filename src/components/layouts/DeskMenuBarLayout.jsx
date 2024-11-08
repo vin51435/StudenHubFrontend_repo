@@ -78,7 +78,7 @@ const DeskMenuBarLayout = () => {
             </span>
           </Link>
         </aside>
-        <main className='w-100 h-100'>
+        <main className='w-100'>
           <Outlet />
         </main>
       </div>

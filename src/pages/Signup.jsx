@@ -15,10 +15,24 @@ const Signup = () => {
   const windowSize = useWindowSize();
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
   const { pathname, search, hash } = useLocation();
-  const { notif, startRemoveNotification } = useNotification();
+  const { notif, startRemoveNotification, removeNotification } = useNotification();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const notifId = notif(
+      'Email Verification Notice',
+      'Due to the lack of an official domain, email verification is currently unavailable. However, you can still access the app using the default login or by signing in with OAuth. Thank you for your understanding!',
+      { type: 'info', timeOut: 0 }
+    );
+
+
+    return () => {
+      // removeNotification(notifId);
+      startRemoveNotification(notifId);
+    };
+  }, []);
 
   useEffect(() => {
     const handleAuthCheck = () => {

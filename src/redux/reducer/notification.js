@@ -90,7 +90,7 @@ const notificationSlice = createSlice({
         state.notifications[key] = [];
       });
 
-      notificationsArray.forEach((notification) => {
+      notificationsArray?.forEach((notification) => {
         const { type, _id } = notification;
 
         if (state.notifications[type]) {

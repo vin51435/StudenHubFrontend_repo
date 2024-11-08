@@ -1,23 +1,44 @@
 import { useSocket } from '@src/context/SocketContext';
 import { postData } from '@src/config/apiConfig';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import defaultUserImg from '@src/assets/svg/default-user.svg';
 
 const Inbox = () => {
-  const [selectedUser, setSelectedUser] = useState({ userId: null, chatId: null });
+  const [selectedUser, setSelectedUser] = useState({ userId: null, chatId: null, chatLoaded: false, userFullName: null, userPicture: null });
   const [usersData, setUsersData] = useState([]);
   const { notifications } = useSelector(state => state.notification);
   const { isAuthenticated, user, token } = useSelector(state => state.auth);
   const location = useLocation();
   const { socket, handleReadNotification } = useSocket();
-  const { username, _id, chats } = user;
+  const messagesContainerRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const [messageContainer, setMessageContainer] = useState({ isAtBottom: true, newMessage: false, });
+  const { username, _id, chats, fullName } = user;
+
+  // IntersectionObserver callback to detect visibility of the last message
+  const observerCallback = (entries) => {
+    const entry = entries[0];
+    setMessageContainer({ isAtBottom: entry.isIntersecting, newMessage: false, });
+  };
+
+  const selectedUserData = usersData.find(user => user.userId === selectedUser.userId);
+
+  useLayoutEffect(() => {
+    if (messageContainer.isAtBottom && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [selectedUserData?.messages, messageContainer.isAtBottom]);
 
   useEffect(() => {
     if (!socket) return;
+
+    handleChatConnection();
+
     const handleNewMessage = (newMessage) => {
       if (!selectedUser?.userId || !selectedUser?.chatId) return;
-
+      if (!messageContainer.isAtBottom) setMessageContainer(prev => ({ ...prev, newMessage: true }));
       try {
         setUsersData((prev) => {
           const existingUserIndex = prev.findIndex(
@@ -48,14 +69,29 @@ const Inbox = () => {
       }
     };
 
+    // Set up IntersectionObserver to observe the last message
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null, // observe relative to the viewport
+      threshold: 1.0, // trigger when the whole element is in view
+    });
+
+    if (messagesEndRef.current) {
+      observer.observe(messagesEndRef.current);
+    }
+
     socket.on('receiveMessage', handleNewMessage);
 
     return () => {
       socket.off('receiveMessage', handleNewMessage);
+
+      if (messagesEndRef.current) {
+        observer.unobserve(messagesEndRef.current);
+      }
     };
-  }, [socket, selectedUser]);
+  }, [selectedUser.userId, selectedUser.chatId]);
 
   useEffect(() => {
+    // Get all chat participants
     if (chats?.chatIds) {
       postData('GET_INBOX_PARTICIPANTS', {
         baseURL: 'user',
@@ -63,11 +99,13 @@ const Inbox = () => {
       })
         .then(response => {
           const userB = response.data.map(
-            ({ chatId, secondParticipant: { _id, firstName, lastName, username } }) => ({
+            ({ chatId, secondParticipant: { _id, firstName, lastName, username, fullName, profilePicture } }) => ({
               chatId,
               userId: _id,
+              profilePicture,
               firstName,
               lastName,
+              fullName,
               name: `${firstName} ${lastName}`,
               username,
               notification: { newMessage: false, newMessageNotificationId: null },
@@ -79,12 +117,11 @@ const Inbox = () => {
           updateUsersDataAndNotifications(userB);
         });
     }
-  }, [location.pathname, user]);
+  }, [location.pathname === '/inbox', notifications.newChat]);
 
   useEffect(() => {
     updateUsersDataAndNotifications();
-  }, [notifications]);
-
+  }, [notifications.newMessage]);
 
   function updateUsersDataAndNotifications(data) {
     setUsersData(prev => {
@@ -114,7 +151,6 @@ const Inbox = () => {
           };
         });
       }
-
       return usersArray;
     });
   }
@@ -123,21 +159,40 @@ const Inbox = () => {
     handleReadNotification({ userId: userBId, type: 'newMessage' });
   }
 
-  async function handleChatConnection(event, userBId) {
-    event.preventDefault();
+  const setSelectedUserHandler = (update) => {
+    setSelectedUser(prev => Object.assign({}, prev, update));
+  };
+
+  async function handleChatConnection() {
+    const { userId: userBId, } = selectedUser;
+    if (!userBId) return;
 
     const { data: { chatId } } = await postData('CHAT_ID', {
       baseURL: 'user',
       data: { userBId },
     });
     if (!chatId) {
+      setSelectedUserHandler({ userId: null, chatLoaded: true, userBPicture: null });
       throw new Error('Chat ID is null or undefined');
     }
-    const userB = { userBId, chatId };
-    setSelectedUser({ userId: userB.userBId, chatId });
+    setSelectedUserHandler({ chatId, chatLoaded: true });
 
-    if (!usersData.every((msg) => msg.userId === userB.userBId).messages) {
-      const { data: { messages: fetchedMessages } } = await postData('MESSAGES', {
+    getMessagesByChatId(userBId, chatId);
+
+    markAsReadNotification(userBId);
+
+    if (socket && chatId) {
+      socket.emit('joinChat', chatId);
+    }
+  }
+
+  async function getMessagesByChatId(userBId, chatId) {
+    if (!userBId || !chatId) {
+      userBId = selectedUser.userId;
+      chatId = selectedUser.chatId;
+    }
+    if (!usersData.every((msg) => msg.userId === userBId).messages) {
+      const { data: { messages: fetchedMessages } } = await postData('GET_MESSAGES_BY_CHAT_ID', {
         baseURL: 'user',
         data: { chatId },
       });
@@ -146,22 +201,23 @@ const Inbox = () => {
 
       setUsersData(prev => {
         return prev.map((user) =>
-          user.userId === userB.userBId
-            ? { ...user, messages: fetchedMessages }
+          user.userId === userBId
+            ? {
+              ...user,
+              messages: [
+                ...fetchedMessages.reverse(),  // Reverse the fetchedMessages to append the newest message at the end
+                ...(user.messages || [])        // Ensure we keep existing messages in order
+              ]
+            }
             : user
         );
       });
 
-      markAsReadNotification(userBId);
-    }
-
-    if (socket && chatId) {
-      socket.emit('joinChat', chatId);
     }
   }
 
   async function sendMessage(e) {
-    e.preventDefault();
+    e?.preventDefault();
 
     const messageContent = usersData.find(user => user.userId === selectedUser.userId)?.inboxInput;
     if (!messageContent || !selectedUser?.chatId) return;
@@ -194,16 +250,25 @@ const Inbox = () => {
     }
   }
 
+  const handleScroll = () => {
+    const container = messagesContainerRef.current;
+    if (container.scrollTop === 0) {
+      console.log('you reached the top');
+      // loadMoreMessages(); // Trigger function to load more messages
+    }
+  };
+
   return (
     <div className="inbox_container d-flex h-100 w-100">
       <div className="users-pane border-end py-3">
-        <h3>Users</h3>
+        <h3 className='m-2'>{fullName}</h3>
         <ul className="list-unstyled">
           {usersData.map((user) => (
             <li
               key={user.userId}
               onClick={(e) => {
-                handleChatConnection(e, user.userId);
+                e.preventDefault();
+                setSelectedUserHandler({ userId: user.userId, userFullName: user?.fullName, userPicture: user?.profilePicture });
               }}
               className={`user-item p-2 ${user.notification.newMessage ? 'bg-primary-subtle' : ''} ${selectedUser.userId === user.userId ? 'bg-primary text-white' : ''}`}
             >
@@ -212,13 +277,20 @@ const Inbox = () => {
           ))}
         </ul>
       </div>
-      <div className="messages-pane flex-grow-1 p-3">
-        <h3>Messages</h3>
+      <div className="messages-pane flex-grow-1 ">
+        <h3 className="header mt-3 mx-3 mb-0">{selectedUser?.userFullName ?? 'Messages'}</h3>
         {selectedUser ? (
-          <div>
-            <div className='messages'>
-              {usersData.find(user => user.userId === selectedUser.userId)?.messages?.map((singleMsg, msgIndex) => (
-                <div key={`${msgIndex}`} className={`${singleMsg.senderId === _id ? 'text-end' : ''}`}>
+          <div className="chat-container m-3 mt-0">
+            <div
+              ref={messagesContainerRef}
+              className="messages hidden-scrollbar"
+              onScroll={handleScroll}
+            >
+              {selectedUserData?.messages?.map((singleMsg, msgIndex) => (
+                <div
+                  key={`${msgIndex}`}
+                  className={`message ${singleMsg.senderId === _id ? 'sent' : 'received'}`}
+                >
                   <strong>
                     {singleMsg.senderId !== _id && '>>>'}
                     {singleMsg.content}
@@ -226,11 +298,23 @@ const Inbox = () => {
                   </strong>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
-            <div>
+
+            <div className="input-container ">
+              {messageContainer.newMessage && (
+                <span role='button' className={`scroll-to-bottom`}
+                  onClick={() => setMessageContainer(prev => ({ ...prev, isAtBottom: true }))}
+                >
+                  <img className='scroll-to-bottom-icon'
+                    src={selectedUser?.profilePicture ?? defaultUserImg}
+                    alt="avatar" />
+                </span>
+              )}
               <input
-                type='text'
-                value={usersData.find(user => user.userId === selectedUser.userId)?.inboxInput || ""}
+                className="message-input"
+                type="text"
+                value={selectedUserData?.inboxInput || ""}
                 onChange={(e) => setUsersData(prev =>
                   prev.map(user =>
                     user.userId === selectedUser.userId
@@ -238,9 +322,16 @@ const Inbox = () => {
                       : user
                   )
                 )}
-                placeholder='Type a message...'
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    sendMessage();
+                  }
+                }}
+                placeholder="Type a message..."
               />
-              <button role='submit' onClick={sendMessage}>Send</button>
+              <button className="send-button" onClick={sendMessage}>
+                Send
+              </button>
             </div>
           </div>
         ) : (

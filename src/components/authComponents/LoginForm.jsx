@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@src/components/common/LoadingSpinner.jsx';
 
 const Login = () => {
-  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ email: 'nice@gmail.com', password: '12345678' });
   const [validationError, setValidationError] = useState({});
   const [apiResponse, setApiResponse] = useState({ state: null, message: null });
   const [step, setStep] = useState(1);

@@ -35,7 +35,7 @@ const baseURLsEndpoint = {
   GET_INBOX_PARTICIPANTS: '/getSecondParticipants',
   USERS_BY_ID: '/usersbyid',
   CHAT_ID: '/chatid',
-  MESSAGES: '/messages',
+  GET_MESSAGES_BY_CHAT_ID: '/messages',
   CHATS: '/chats',
 
   // User Non-auth
