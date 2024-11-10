@@ -27,10 +27,8 @@ const Signup = () => {
       { type: 'info', timeOut: 0 }
     );
 
-
     return () => {
-      // removeNotification(notifId);
-      startRemoveNotification(notifId);
+      removeNotification(notifId);
     };
   }, []);
 
