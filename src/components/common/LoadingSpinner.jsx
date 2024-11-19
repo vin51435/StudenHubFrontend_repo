@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const Spinner = () => {
+const Spinner = memo(() => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" height="100%" width="100%">
       <radialGradient id="a" cx=".66" fx=".66" cy=".313" fy=".313" gradientTransform="scale(1.5)">
@@ -16,15 +16,23 @@ const Spinner = () => {
       <circle transform-origin="center" fill="none" opacity=".2" stroke="currentColor" strokeWidth="21" strokeLinecap="round" cx="100" cy="100" r="70" />
     </svg>
   );
-};
+});
 
-const SmallSpinner = ({ height, backgroundColor }) => {
+const SmallSpinner = memo(({ height, backgroundColor }) => {
   return (
     <span className='w-100 d-flex justify-content-center align-items-center'
       style={{
         height: height ?? 'inherit',
         backgroundColor: '#00000000'
       }}>
+      <Spinner />
+    </span>
+  );
+});
+
+const ButtonSpinner = ({ load }) => {
+  return (
+    <span className={`${load ? 'btn-spinner' : 'd-none'} d-flex justify-content-center align-items-center`}>
       <Spinner />
     </span>
   );
@@ -57,5 +65,5 @@ const PageLoadingSpinner = () => {
   );
 };
 
-export { PageLoadingSpinner, Spinner };
+export { PageLoadingSpinner, Spinner, ButtonSpinner };
 export default SmallSpinner;

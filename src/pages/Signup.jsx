@@ -13,14 +13,14 @@ import { PageLoadingSpinner } from '@src/components/common/LoadingSpinner';
 const Signup = () => {
   const [loader, setLoader] = useState(true);
   const windowSize = useWindowSize();
-  const { isAuthenticated, user, token } = useSelector(state => state.auth);
+  const { token } = useSelector(state => state.auth);
   const { pathname, search, hash } = useLocation();
   const { notif, startRemoveNotification, removeNotification } = useNotification();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  /* useEffect(() => {
     const notifId = notif(
       'Email Verification Notice',
       'Due to the lack of an official domain, email verification is currently unavailable. However, you can still access the app using the default login or by signing in with OAuth. Thank you for your understanding!',
@@ -30,7 +30,7 @@ const Signup = () => {
     return () => {
       removeNotification(notifId);
     };
-  }, []);
+  }, []); */
 
   useEffect(() => {
     const handleAuthCheck = () => {

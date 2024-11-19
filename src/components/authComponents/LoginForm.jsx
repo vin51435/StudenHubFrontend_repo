@@ -4,7 +4,7 @@ import validateForm from '@src/utils/validators';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from '@src/components/common/LoadingSpinner.jsx';
+import { ButtonSpinner } from '@src/components/common/LoadingSpinner.jsx';
 
 const Login = () => {
   const [loginForm, setLoginForm] = useState({ email: 'nice@gmail.com', password: '12345678' });
@@ -120,11 +120,9 @@ const Login = () => {
             }}>forgot password?</span>
           </div>
           <button className='mt-4 btn' type="submit" disabled={load}>
-            {load ? (
-              <LoadingSpinner height={'1.4rem'} />
-            ) : (
-              'Login'
-            )}</button>
+            <ButtonSpinner load={load} />
+            Login
+          </button>
         </form>
       )}
       {step === 2 && <form onSubmit={forgotPasswordSubmit} autoComplete="off" noValidate>
@@ -162,11 +160,9 @@ const Login = () => {
             }}>Login</span>
         </div>
         <button className='mt-4 btn' type="submit" disabled={load}>
-          {load ? (
-            <LoadingSpinner height={'1.4rem'} />
-          ) : (
-            'Send reset link'
-          )}</button>
+          <ButtonSpinner load={load} />
+          Send reset link
+        </button>
       </form>}
     </div>
   );

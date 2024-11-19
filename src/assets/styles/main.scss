@@ -156,6 +156,23 @@ a {
       @include apply-styles($btn-red-shadow-styles);
     }
   }
+
+  &:has(.btn-spinner) {
+    position: relative;
+    background-color: $gray !important;
+    color: $gray !important;
+    pointer-events: none;
+  }
+  .btn-spinner {
+    color: $white;
+    width: -webkit-fill-available;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: rgb(255 255 255 / 42%);
+    height: -webkit-fill-available;
+  }
 }
 
 .btn:disabled {

@@ -1,10 +1,10 @@
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { postData } from '@src/config/apiConfig';
 import { loginSuccess } from '@src/redux/reducer';
 import validateForm from '@src/utils/validators';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import LoadingSpinner from '@src/components/common/LoadingSpinner.jsx';
-import { useNavigate } from 'react-router-dom';
+import { ButtonSpinner } from '@src/components/common/LoadingSpinner.jsx';
 
 const SignupForm = () => {
   const [signupForm, setSignupForm] = useState({ email: '', password: '', confirmPassword: '', verification: '', firstName: '', lastName: '' });
@@ -61,10 +61,10 @@ const SignupForm = () => {
           setLoad(false);
           if (response.status === 'success') {
             setStep(3);
-            setApiResponse(prev => ({ ...prev, otpVerifyMessage: response?.message }));
+            setApiResponse(prev => ({ ...prev, otpVerifyMessage: response?.message, otpVerifyMessage: null }));
           }
         })
-        .catch(err => setApiResponse(prev => ({ ...prev, otpVerifyMessage: err.message })))
+        .catch(err => setApiResponse(prev => ({ ...prev, otpVerifyMessage: err.message, otpSendMessage: null })))
         .finally(() => setLoad(false));
     };
   };
@@ -79,13 +79,13 @@ const SignupForm = () => {
           setLoad(false);
           if (response.status === 204) {
             setStep(3);
-            setApiResponse(prev => ({ ...prev, otpSendMessage: 'Email already verified' }));
+            setApiResponse(prev => ({ ...prev, otpSendMessage: 'Email already verified', otpVerifyMessage: null }));
           } else if (response.status === 'success') {
             setStep(2);
-            setApiResponse(prev => ({ ...prev, otpSendMessage: response?.message }));
+            setApiResponse(prev => ({ ...prev, otpSendMessage: response?.message, otpVerifyMessage: null }));
           }
         })
-        .catch(err => setApiResponse(prev => ({ ...prev, otpSendMessage: err.message })))
+        .catch(err => setApiResponse(prev => ({ ...prev, otpVerifyMessage: err.message, otpSendMessage: null })))
         .finally(() => setLoad(false));
     };
   };
@@ -144,11 +144,8 @@ const SignupForm = () => {
           <span className='text-danger'>{apiResponse?.otpSendMessage}</span>
         </div>
         <button className='mt-4 btn' onClick={sendVerification} disabled={load}>
-          {load ? (
-            <LoadingSpinner height={'1.4rem'} />
-          ) : (
-            'Verify Email'
-          )}
+          <ButtonSpinner load={load} />
+          Verify Email
         </button>
       </form>}
       {step === 2 && <form autoComplete="off" noValidate>
@@ -196,19 +193,21 @@ const SignupForm = () => {
           <span>{validationError?.errors?.verification}</span>
         </div>
         <div className='w-full'>
-          {apiResponse?.otpVerifyMessage ?
-            <span className='text-danger'>{apiResponse?.otpVerifyMessage}</span>
-            :
+          {apiResponse?.otpSendMessage ?
             <span className='text-success'>{apiResponse?.otpSendMessage}</span>
+            :
+            <span className='text-danger'>{apiResponse?.otpVerifyMessage}</span>
           }
         </div>
-        <button className='mt-4 btn' onClick={verifyCode} disabled={load}>
-          {load ? (
-            <LoadingSpinner height={'1.4rem'} />
-          ) : (
-            'Verify'
-          )}
-        </button>
+        <div className='d-flex w-100 gap-4 '>
+          <button className='mt-4 w-auto px-4 btn position-relative' onClick={verifyCode} disabled={load}>
+            Verify
+            <ButtonSpinner load={load} />
+          </button>
+          {apiResponse?.otpVerifyMessage && <button className='mt-4 w-auto px-4 btn' onClick={sendVerification} disabled={load}>
+            Send Code
+          </button>}
+        </div>
       </form>}
       {step === 3 && <form onSubmit={signUp} autoComplete="off" noValidate>
         <div>
@@ -286,11 +285,8 @@ const SignupForm = () => {
           <span className='text-danger'>{apiResponse?.signupMessage}</span>
         </div>
         <button className='mt-4 btn' type="submit" disabled={load}>
-          {load ? (
-            <LoadingSpinner height={'1.4rem'} />
-          ) : (
-            'Signup'
-          )}
+          <ButtonSpinner load={load} />
+          Signup
         </button>
       </form >}
     </div >
