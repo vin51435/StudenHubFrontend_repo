@@ -17,9 +17,13 @@ const ProtectedRoutes = () => {
 
     if (!token || !isAuthenticated) {
       fetchUserInfo(dispatch)
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setTimeout(() => setLoading(false), 300); // Delay to fade out spinner
+          // setLoading(false)
+        });
     } else {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 300); // Delay to fade out spinner
+      // setLoading(false);
     }
 
     if (token && isAuthenticated && !redirectUrl) {
@@ -34,7 +38,7 @@ const ProtectedRoutes = () => {
   }, [isAuthenticated, token, redirectUrl]);
 
   if (loading) {
-    return <PageLoadingSpinner />;
+    return <PageLoadingSpinner load={loading} />;
   }
 
   if (isAuthenticated && (!redirectUrl || redirectUrl === location.pathname)) {

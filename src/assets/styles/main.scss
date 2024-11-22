@@ -139,17 +139,11 @@ a {
   padding: 6px 8px;
   @include apply-styles($border-styles);
   border-color: transparent !important;
-  // -webkit-box-shadow: 4px 4px 5px 1px $secondary-color1;
-  // -moz-box-shadow: 4px 4px 5px 1px $secondary-color1;
-  // box-shadow: 4px 4px 5px 1px $secondary-color1;
   &:hover {
     @include apply-styles($btn-shadow-styles);
   }
   &.btn-red {
     background-color: $danger;
-    // -webkit-box-shadow: 4px 4px 5px 1px $light-danger;
-    // -moz-box-shadow: 4px 4px 5px 1px $light-danger;
-    // box-shadow: 4px 4px 5px 1px $light-danger;
     transition: 300ms;
     &:hover {
       background-color: $white;
@@ -162,11 +156,13 @@ a {
     background-color: $gray !important;
     color: $gray !important;
     pointer-events: none;
+    border: none !important;
   }
   .btn-spinner {
     color: $white;
     width: -webkit-fill-available;
     margin: auto;
+    padding: 5px;
     position: absolute;
     right: 0;
     top: 0;

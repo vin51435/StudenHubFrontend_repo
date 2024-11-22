@@ -1,0 +1,8 @@
+.page-load-spinner {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.page-load-spinner.hidden {
+  opacity: 0;
+  pointer-events: none;
+}

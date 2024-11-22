@@ -38,27 +38,26 @@ const ButtonSpinner = ({ load }) => {
   );
 };
 
-const PageLoadingSpinner = () => {
+const PageLoadingSpinner = ({ load }) => {
   return (
     <div
-      className='page-load-spinner position-absolute d-flex justify-content-center align-items-center'
+      className={`page-load-spinner position-absolute d-flex justify-content-center align-items-center ${load ? '' : 'hidden'
+        }`}
       style={{
         width: '100vw',
         height: '100vh',
         backgroundColor: 'rgba(255,255,255,0.8)',
         zIndex: 9999,
-        pointerEvents: 'auto'
-      }}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        pointerEvents: load ? 'auto' : 'none',
       }}
     >
-      <span style={{
-        display: 'block',
-        height: '50px',
-        color: 'black'
-      }}>
+      <span
+        style={{
+          display: 'block',
+          height: '50px',
+          color: 'black',
+        }}
+      >
         <Spinner />
       </span>
     </div>
