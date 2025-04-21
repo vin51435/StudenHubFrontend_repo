@@ -1,6 +1,8 @@
+@use '@styles/scss.import.scss' as *;
+
 // ?Auth (login/signup) page css
 .auth-page_main {
-  height: 100vh;
+  // height: 100vh;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
   display: grid;
@@ -12,9 +14,7 @@
     background-color: $secondary-color;
     display: flex;
     align-items: center;
-    // justify-content: center;
     flex-direction: column;
-    padding: 0 3rem;
     height: 100%;
     -ms-overflow-style: none; /* Internet Explorer 10+ */
     scrollbar-width: none; /* Firefox */
@@ -156,8 +156,7 @@
     padding: 0 12px;
     position: relative;
     text-align: center;
-    -webkit-transition: background-color 0.218s, border-color 0.218s,
-      box-shadow 0.218s;
+    -webkit-transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
     transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
     vertical-align: middle;
     white-space: nowrap;
@@ -255,26 +254,22 @@
 }
 
 .auth-page_main.signup_page {
-  .row {
+  .ant-row {
     flex-direction: row-reverse;
   }
-}
-
-.signup_nav {
-  // position: absolute;
 }
 
 .signup-details {
   height: 100%;
   & > div {
-    height: 75%;
+    // height: 75%;
     width: 60%;
     @include mediaMax(medium) {
       width: 85%;
     }
   }
   .signup-details_container {
-    height: 85%;
+    // height: 85%;
     max-height: 550px;
     max-width: 1800px;
     overflow: hidden;
@@ -282,7 +277,7 @@
     border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
     .signup-details_right_container {
       & > div:first-child {
-        max-height: 470px;
+        // max-height: 470px;
       }
       .signup-details-header_container {
         width: fit-content;

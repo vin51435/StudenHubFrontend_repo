@@ -1,3 +1,5 @@
+@use '@styles/scss.import.scss' as *;
+
 .notification-container {
   position: fixed;
   bottom: 20px;

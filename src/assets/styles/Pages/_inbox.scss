@@ -1,3 +1,5 @@
+@use '@styles/scss.import.scss' as *;
+
 .inbox_container {
   .users-pane {
     width: 30%;
@@ -144,12 +146,7 @@
     }
 
     &.placeholder {
-      background: linear-gradient(
-        100deg,
-        #f0f0f0 25%,
-        #e0e0e0 50%,
-        #f0f0f0 75%
-      );
+      background: linear-gradient(100deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
       background-size: 200% 100%;
       animation: gradient 1.5s infinite ease-in-out;
     }

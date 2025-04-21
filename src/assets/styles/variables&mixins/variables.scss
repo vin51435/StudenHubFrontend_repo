@@ -1,0 +1,138 @@
+@use 'sass:string';
+
+$primary-color: #3498db;
+$secondary-color: #f8f9fa;
+
+$primary-color1: #050c9c;
+$secondary-color1: #050d9e80;
+$tertiary-color: #3abef9;
+$primary-light-color: #a7e6ff;
+$secondary-light-color: #e2f7ff;
+$white: #ffffff;
+$black: #000000;
+
+$danger: #dc3545;
+$info: #cff4fc;
+$light-danger: #e3647180;
+$success: #198754;
+$gray: #808080;
+$disabled-color: #d8d8d8;
+
+$border-radius: 8px;
+// $border-radius: 6px;
+$border-radius-rounded: 20px;
+$border-color: #747775;
+
+$tooltip-fs: 0.855rem;
+
+$breakpoints: (
+  'xsmall': 400px,
+  'small': 576px,
+  'medium': 768px,
+  'large': 992px,
+  'xlarge': 1200px,
+  'xxlarge': 1400px,
+);
+
+$btn-shadow-styles: (
+  box-shadow: 0px 0px 0px 2px $secondary-color1,
+);
+$btn-red-shadow-styles: (
+  box-shadow: 0px 0px 0px 2px $light-danger,
+);
+
+$border-styles: (
+  // border: 1px solid $border-color !important,
+  // border-radius: $border-radius !important,
+);
+
+$dotted-border: (
+  background-image: (
+    url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='#{string.slice('#{$border-radius-rounded}',1,-3)}' ry='#{string.slice('#{$border-radius-rounded}',1,-3)}' stroke='%23#{string.slice('#{$border-color}',2)}' stroke-width='2' stroke-dasharray='2%2c4' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e"),
+  ),
+  border-radius: $border-radius-rounded,
+);
+
+@mixin fs-6 {
+  font-size: 1rem !important;
+}
+
+$dashed-box1: (
+  background-image: (
+    repeating-linear-gradient(
+      0deg,
+      $border-color,
+      $border-color 2px,
+      transparent 2px,
+      transparent 4px,
+      $border-color 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      $border-color,
+      $border-color 2px,
+      transparent 2px,
+      transparent 4px,
+      $border-color 4px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      $border-color,
+      $border-color 2px,
+      transparent 2px,
+      transparent 4px,
+      $border-color 4px
+    ),
+    repeating-linear-gradient(
+      270deg,
+      $border-color,
+      $border-color 2px,
+      transparent 2px,
+      transparent 4px,
+      $border-color 4px
+    ),
+  ),
+  background-size: (
+    1px 100%,
+    100% 1px,
+    1px 100%,
+    100% 1px,
+  ),
+  background-position: (
+    0 0,
+    0 0,
+    100% 0,
+    0 100%,
+  ),
+  background-repeat: no-repeat,
+);
+
+@mixin thin-scrollbar {
+  &::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background-color: $secondary-light-color;
+  }
+  &::-webkit-scrollbar-track:hover {
+    background-color: $primary-light-color;
+  }
+  &::-webkit-scrollbar-track:active {
+    background-color: $primary-light-color;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background-color: $secondary-color1;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: $primary-color1;
+  }
+  &::-webkit-scrollbar-thumb:active {
+    background-color: $primary-color1;
+  }
+}
+
+@mixin tooltip {
+}

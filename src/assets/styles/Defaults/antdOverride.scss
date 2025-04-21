@@ -1,0 +1,18 @@
+.ant-form .ant-form-item {
+  margin-bottom: 12px;
+}
+.ant-form.form-pb4 {
+  .ant-form-item-label {
+    padding: 0 0 4px !important;
+  }
+  .ant-form-item-control .ant-radio-label {
+    padding-left: 4px !important;
+  }
+  .ant-radio-wrapper.ant-radio-wrapper-in-form-item {
+    margin-inline-end: 20px !important;
+  }
+}
+
+.ant-form .ant-radio-wrapper.ant-radio-wrapper-in-form-item {
+  align-items: center !important;
+}
