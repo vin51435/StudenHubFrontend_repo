@@ -4,7 +4,6 @@ import LoginForm from '@src/pages/Auth/Login/components/LoginForm';
 import { Col, Image, Row } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import LoginImage from '/login.png';
 
 const Login: React.FC = () => {
   return (
@@ -57,9 +56,12 @@ const Login: React.FC = () => {
         >
           <Image
             wrapperClassName="[&&]:m-auto"
-            src={LoginImage}
+            src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginnarrow.png"
+            // src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginpanel.jpg"
             preview={false}
             className="object-cover object-left-top w-full overflow-clip "
+            alt="StudenHub"
+            loading="lazy"
           />
         </Col>
       </Row>

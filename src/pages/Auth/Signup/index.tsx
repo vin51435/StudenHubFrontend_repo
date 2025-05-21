@@ -4,7 +4,6 @@ import { Grid, Col, Row, Image } from 'antd';
 import GitHubOAuth from '@src/pages/Auth/components/GithubOAuth';
 import GoogleSignup from '@src/pages/Auth/components/GoogleOAuth';
 import SignupForm from '@src/pages/Auth/Signup/components/SignupForm';
-import SingupImage from '/signup.png';
 
 const { useBreakpoint } = Grid;
 
@@ -64,7 +63,8 @@ const Signup: React.FC = () => {
         >
           <Image
             wrapperClassName="[&&]:m-auto"
-            src={SingupImage}
+            src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/signuppanel.png"
+            alt="StudenHub"
             preview={false}
             className="object-cover object-left-top w-full overflow-clip "
             loading="lazy"
