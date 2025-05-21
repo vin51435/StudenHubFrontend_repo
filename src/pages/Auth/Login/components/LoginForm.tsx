@@ -25,7 +25,6 @@ const LoginForm: React.FC = () => {
   const [load, setLoad] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { notif } = useNotification();
 
   const handleFinish = () => {
@@ -46,9 +45,10 @@ const LoginForm: React.FC = () => {
         data: values,
       })
         .then((response) => {
-          const { user, token } = response.data;
-          dispatch(loginSuccess({ user, token }));
-          navigate(getRoutePath('APP')); // /home
+          const { token } = response;
+          if (token) {
+            navigate(getRoutePath('APP')); // /home
+          }
         })
         .catch((err) => {
           notif(err.message);
@@ -87,8 +87,6 @@ const LoginForm: React.FC = () => {
             notif(response.message, null, {
               type: 'success',
             });
-          } else if (response.error?.code === 404) {
-            navigate('/signup');
           } else {
             notif(response.message);
           }

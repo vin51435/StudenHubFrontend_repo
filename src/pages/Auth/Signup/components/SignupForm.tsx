@@ -4,6 +4,7 @@ import { ErrorCodes } from '@src/contants/errorCodes';
 import { useNotification } from '@src/contexts/NotificationContext';
 import { post } from '@src/libs/apiConfig';
 import { loginSuccess } from '@src/redux/reducers/auth';
+import { getRoutePath } from '@src/utils/getRoutePath';
 import {
   SignupFormSchema,
   EmailVerificationSchema,
@@ -46,7 +47,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ setShowLoginService }: SignupFo
   const [load, setLoad] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { notif } = useNotification();
 
   const maxWait = appConfig.app.otpResend;
@@ -68,7 +68,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setShowLoginService }: SignupFo
     }
   }, [otpState.count]);
 
-  // useEffect(() => setShowLoginService(step !== 3), [step]);
+  useEffect(() => setShowLoginService(step !== 3), [step]);
 
   const handleSendVerification = () => {
     const values = step === 1 ? emailForm.getFieldsValue() : { email: otpState.email };
@@ -177,8 +177,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ setShowLoginService }: SignupFo
         data: values,
       })
         .then((response) => {
-          dispatch(loginSuccess({ token: response.token, user: response.data.user }));
-          navigate('/additionalinfo');
+          const { token } = response;
+          if (token) {
+            navigate(getRoutePath('APP')); // /home
+          }
         })
         .catch((err) => {
           notif('Server Error', err?.message, {

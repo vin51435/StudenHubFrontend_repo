@@ -1,3 +1,5 @@
+@use '@styles/scss.import.scss' as *;
+
 .ant-form .ant-form-item {
   margin-bottom: 12px;
 }
@@ -15,4 +17,14 @@
 
 .ant-form .ant-radio-wrapper.ant-radio-wrapper-in-form-item {
   align-items: center !important;
+}
+
+.ant-spin-fullscreen.ant-spin-fullscreen-show {
+  background-color: $primary-light-transparent !important;
+  .ant-spin.ant-spin-spinning {
+    background-color: transparent !important;
+    .ant-spin-dot-holder {
+      color: $primary-color1 !important;
+    }
+  }
 }

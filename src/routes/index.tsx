@@ -1,13 +1,25 @@
 import { useRoutes, BrowserRouter } from 'react-router-dom';
 import { publicRoutes } from './routing/publicRoutes.routes';
 import { protectedRoutes } from './routing/protectedRoutes.routes';
-import { Suspense } from 'react';
-import { Spin } from 'antd';
+import { useEffect } from 'react';
 import { authRoutes } from '@src/routes/routing/authRoutes.routes';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '@src/redux/reducers/uiSlice';
 
 const AppRoutes = () => {
+  const dispatch = useDispatch();
   const routes = [...publicRoutes, ...authRoutes, ...protectedRoutes];
-  return <Suspense fallback={<Spin fullscreen />}>{useRoutes(routes)}</Suspense>;
+
+  const routeLoaded = useRoutes(routes);
+  useEffect(() => {
+    if (routeLoaded) {
+      dispatch(setLoading(false));
+    } else {
+      dispatch(setLoading(true));
+    }
+  }, [routeLoaded]);
+
+  return routeLoaded;
 };
 
 const RouterWrapper = () => (

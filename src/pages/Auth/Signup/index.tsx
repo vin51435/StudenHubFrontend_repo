@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useWindowSize from '@src/hooks/useWindowSize';
-import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Col, Spin, Divider, Row } from 'antd';
-import fetchUserInfo from '@src/api/fetchUser';
-import { useNotification } from '@src/contexts/NotificationContext';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Grid, Col, Row, Image } from 'antd';
 import GitHubOAuth from '@src/pages/Auth/components/GithubOAuth';
 import GoogleSignup from '@src/pages/Auth/components/GoogleOAuth';
 import SignupForm from '@src/pages/Auth/Signup/components/SignupForm';
+import SingupImage from '/signup.png';
 
 const { useBreakpoint } = Grid;
 
@@ -28,36 +25,50 @@ const Signup: React.FC = () => {
             <div className="">
               <span className="sub-header_style">Create your account</span>
             </div>
-            <div className="">
-              <span className="body_style signup_link ">
-                Have an account? <Link to="/login">Log in</Link>
-              </span>
-            </div>
             <div className={`${showLoginService ? '' : 'hidden'}`}>
               <div className="">
-                {/* GitHub and Google OAuth */}
-                <GitHubOAuth />
-                <GoogleSignup />
+                <span className="body_style signup_link ">
+                  Have an account? <Link to="/login">Log in</Link>
+                </span>
               </div>
-              <div className="my-4">
-                {/* <Divider orientation="center">Or with email and password</Divider> */}
-                <div className="text-divider">
-                  <span>Or with email and password</span>
+              <div>
+                <div className="">
+                  {/* GitHub and Google OAuth */}
+                  <GitHubOAuth />
+                  <GoogleSignup />
+                </div>
+                <div className="my-4">
+                  {/* <Divider orientation="center">Or with email and password</Divider> */}
+                  <div className="text-divider">
+                    <span>Or with email and password</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="my-4 w-full">
+            <div className="my-2 w-full">
               <SignupForm setShowLoginService={setShowLoginService} />
             </div>
           </div>
         </Col>
 
         {/* Right Column (Image Section) */}
-        <Col xs={0} md={14} lg={16} className="right_container hidden md:block">
-          <div className="auth-page_main_img">
-            {/* Add your image or content here */}
-            image
-          </div>
+        <Col
+          xs={0}
+          md={14}
+          lg={16}
+          className="right_container hidden md:block h-full"
+          style={{
+            background: 'linear-gradient(to right bottom, rgb(3, 73, 145), rgb(3, 73, 146))',
+            display: 'flex',
+          }}
+        >
+          <Image
+            wrapperClassName="[&&]:m-auto"
+            src={SingupImage}
+            preview={false}
+            className="object-cover object-left-top w-full overflow-clip "
+            loading="lazy"
+          />
         </Col>
       </Row>
     </div>

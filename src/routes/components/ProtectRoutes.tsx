@@ -7,6 +7,7 @@ import { get } from '@src/libs/apiConfig';
 import { loadNotifications } from '@src/redux/reducers/notifications';
 import { Spin } from 'antd';
 import { getRoutePath } from '@src/utils/getRoutePath';
+import { setLoading } from '@src/redux/reducers/uiSlice';
 
 const ProtectedRoutes: React.FC = () => {
   const { isAuthenticated, token, redirectUrl, user } = useSelector(
@@ -14,31 +15,32 @@ const ProtectedRoutes: React.FC = () => {
   );
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
+
+  const verifyUserAuthenticity = async () => {
+    if (token && !redirectUrl) {
+      await fetchUserInfo();
+      dispatch(setLoading(false));
+
+      // Fetch user notifications
+      const response = await get('NOTIFICATIONS', {
+        BASE_URLS: 'user',
+      });
+      const { data } = response;
+      dispatch(loadNotifications(data));
+    }
+  };
 
   useEffect(() => {
-    if (!token || !isAuthenticated) {
-      fetchUserInfo().finally(() => setLoading(false));
-    }
-
-    if (token && isAuthenticated && !redirectUrl) {
-      get('NOTIFICATIONS', {
-        BASE_URLS: 'user',
-      }).then((response) => {
-        const { data } = response;
-        dispatch(loadNotifications(data));
-      });
-    }
+    dispatch(setLoading(true));
+    verifyUserAuthenticity();
   }, []);
   // Adding any of the token,isAuthenticated,redirectUrl,dispatch dependency, makes it run twice
-
-  if (loading) return <Spin fullscreen />;
 
   if (isAuthenticated && (!redirectUrl || redirectUrl === location.pathname)) {
     return <Outlet />;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !token) {
     return <Navigate to={getRoutePath('LOGIN')} state={{ from: location }} replace />;
   }
 

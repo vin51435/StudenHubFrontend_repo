@@ -1,15 +1,15 @@
 import fetchUserInfo from '@src/api/fetchUser';
 import { useNotification } from '@src/contexts/NotificationContext';
+import { logoutSuccess } from '@src/redux/reducers/auth';
+import { setLoading } from '@src/redux/reducers/uiSlice';
 import { RootState } from '@src/redux/store';
 import { getRoutePath } from '@src/utils/getRoutePath';
-import { Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const ProtectAuthRoutes: React.FC = () => {
-  const [loader, setLoader] = useState<boolean>(true);
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { pathname, search, hash } = useLocation();
   const { notif, startRemoveNotification } = useNotification();
 
@@ -75,11 +75,11 @@ const ProtectAuthRoutes: React.FC = () => {
       // }
 
       if (!token) {
-        setLoader(false);
+        dispatch(setLoading(false));
         return;
       }
 
-      if (currentPathStarts) {
+      if (currentPathStarts && token && isAuthenticated) {
         let notifId: string | null = null;
         const timeoutId = setTimeout(() => {
           notifId = notif('Please wait while we connect to the server...', null, {
@@ -103,10 +103,11 @@ const ProtectAuthRoutes: React.FC = () => {
           .finally(() => {
             clearTimeout(timeoutId);
             if (notifId) startRemoveNotification(notifId);
-            setLoader(false);
+            dispatch(setLoading(false));
           });
       } else {
-        setLoader(false);
+        dispatch(logoutSuccess());
+        dispatch(setLoading(false));
       }
     };
 
@@ -114,7 +115,7 @@ const ProtectAuthRoutes: React.FC = () => {
   }, [pathname, search, dispatch, navigate]);
   // Adding token to dependency makes it run twice
 
-  if (loader) return <Spin fullscreen />;
+  // if (loader) return <Spin fullscreen />;
 
   return <Outlet />;
 };

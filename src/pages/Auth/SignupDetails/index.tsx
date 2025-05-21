@@ -22,13 +22,8 @@ const SignupAddDetails: React.FC = () => {
     options: { cities: [] },
     values: null,
   });
-  const [formErrors, setFormErrors] = useState<Partial<Record<keyof SignupDetailsSchema, string>>>(
-    {}
-  );
 
   const [form] = Form.useForm();
-  const { startPageLoad, stopPageLoad } = useLoader();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCities();

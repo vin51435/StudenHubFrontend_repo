@@ -1,5 +1,3 @@
-// src/lib/api/interceptors.ts
-
 import axios, { AxiosInstance } from 'axios';
 import store from '../redux/store';
 import { loginSuccess } from '../redux/reducers/auth';
@@ -8,6 +6,23 @@ import { BaseUrlType } from '../types';
 import { ErrorCodes } from '@src/contants/errorCodes';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
+
+function redirection(redirectUrl: string, errorCode?: string) {
+  store.dispatch(setLoading(true));
+  let redirectPath: string = redirectUrl;
+
+  if (errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_DETAILS) {
+    redirectPath = getRoutePath('SIGNUP.DETAILS');
+  } else if (errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_INTERESTS) {
+    redirectPath = getRoutePath('SIGNUP.INTERESTS');
+  }
+
+  if (redirectPath && window.location.pathname !== redirectPath) {
+    console.log('interecept redirected');
+    window.location.href = redirectPath;
+  }
+  store.dispatch(setLoading(false));
+}
 
 /**
  * Adds request and response interceptors to an Axios instance.
@@ -41,34 +56,24 @@ export const attachInterceptors = (api: AxiosInstance, queries?: Record<string, 
   api.interceptors.response.use(
     (response) => {
       const { data, errorCode, redirectUrl, token } = response?.data || {};
+
+      if (redirectUrl) {
+        redirection(redirectUrl, errorCode);
+      }
       if (data?.user) {
         store.dispatch(loginSuccess({ user: data.user, token: token ?? null, redirectUrl }));
-      }
-      if (redirectUrl) {
-        store.dispatch(setLoading(true));
-        let redirectPath: string | null = null;
-
-        if (!errorCode) {
-          redirectPath = redirectUrl;
-        } else if (errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_DETAILS) {
-          redirectPath = getRoutePath('SIGNUP.DETAILS');
-        } else if (errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_INTERESTS) {
-          redirectPath = getRoutePath('SIGNUP.INTERESTS');
-        }
-
-        if (redirectPath && window.location.pathname !== redirectPath) {
-          console.log('interecept redirected');
-          window.location.href = redirectPath;
-        }
-        store.dispatch(setLoading(false));
       }
       return response;
     },
     (error) => {
-      const { status, errorCode } = error?.response;
+      const { status, errorCode, redirectUrl } = error?.response?.data || {};
+
+      if (redirectUrl) {
+        redirection(redirectUrl, errorCode);
+      }
+
       if (status === 401 || errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_LOGIN) {
         console.warn('Unauthorized - redirecting to login');
-        window.location.href = getRoutePath('SIGNUP');
       } else if (status === 500) {
         console.error('Server error - please try again later');
       } else {
