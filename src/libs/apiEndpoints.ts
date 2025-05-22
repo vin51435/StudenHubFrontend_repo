@@ -1,5 +1,3 @@
-// src/lib/api/endpoints.ts
-
 export const activeHost =
   import.meta.env.VITE_NODE_ENV === 'development'
     ? import.meta.env.VITE_DEV_BACKEND_DEV
@@ -22,6 +20,7 @@ export const AUTH_ENDPOINTS = {
   USER_SIGNUP_INTEREST: '/signupinterest',
   USER_FORGOT_PASSWORD: '/forgotPassword',
   USER_LOGIN: '/login',
+  USER_LOGOUT: '/logout',
   GOOGLE_CALLBACK: '/callback',
   GITHUB_CALLBACK: '/callback',
 } as const;

@@ -1,10 +1,10 @@
 import fetchUserInfo from '@src/api/fetchUser';
 import { useNotification } from '@src/contexts/NotificationContext';
-import { logoutSuccess } from '@src/redux/reducers/auth';
+import { useLogout } from '@src/hooks/useLogout';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 import { RootState } from '@src/redux/store';
 import { getRoutePath } from '@src/utils/getRoutePath';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ const ProtectAuthRoutes: React.FC = () => {
   const { pathname, search, hash } = useLocation();
   const { notif, startRemoveNotification } = useNotification();
 
+  const logout = useLogout();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -106,7 +107,7 @@ const ProtectAuthRoutes: React.FC = () => {
             dispatch(setLoading(false));
           });
       } else {
-        dispatch(logoutSuccess());
+        // logout();
         dispatch(setLoading(false));
       }
     };

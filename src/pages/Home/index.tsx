@@ -1,20 +1,13 @@
-import { logoutSuccess } from '@src/redux/reducers/auth';
-import { useDispatch } from 'react-redux';
+import { useLogout } from '@src/hooks/useLogout';
 
 export default function Home() {
-  const dispatch = useDispatch();
-
+  const logout = useLogout();
   return (
     <div>
-      Home
+      <div className="bg-white dark:bg-gray-900 text-black dark:text-white">Hello</div>
+
       <br />
-      <button
-        onClick={() => {
-          dispatch(logoutSuccess());
-        }}
-      >
-        Logout
-      </button>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
