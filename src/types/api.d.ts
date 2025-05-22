@@ -11,7 +11,7 @@ export type BaseUrlType = keyof typeof BASE_URLS;
 
 export type ApiEndpointKey = keyof typeof flatEndpointObjects;
 
-export interface IMethodOpotions {
+export interface IMethodOptions {
   BASE_URLS?: BaseUrlType;
   data?: Record<string, any>;
   headers?: Record<string, any>;
@@ -39,7 +39,6 @@ export interface IResponse<T = any> extends IBaseResponse {
   data?: IResponseData<T>;
   authenticated?: boolean;
   redirectUrl?: string;
-  token?: string;
 }
 
 export interface IPaginatedResponse<T = any> extends IBaseResponse {

@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { ApiEndpointKey, IMethodOpotions, IRequestQueue } from '../types';
+import { ApiEndpointKey, IMethodOptions, IRequestQueue } from '../types';
 import { createApiInstance } from './interceptors';
 import { getApiEndpoint } from '../utils/apiUtils';
 
@@ -47,7 +47,7 @@ const handleError = (error: any) => {
 
 export const get = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOpotions, 'BASE_URLS' | 'headers' | 'queue' | 'queries'> = {}
+  options: Pick<IMethodOptions, 'BASE_URLS' | 'headers' | 'queue' | 'queries'> = {}
 ): Promise<ResponseBody> => {
   const { BASE_URLS, headers = {}, queue = false, queries } = options;
   const api = createApiInstance(BASE_URLS, headers, queries);
@@ -63,7 +63,7 @@ export const get = async <ResponseBody = any>(
 
 export const post = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOpotions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
 ): Promise<ResponseBody> => {
   const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
   const api = createApiInstance(BASE_URLS, headers);
@@ -79,7 +79,7 @@ export const post = async <ResponseBody = any>(
 
 export const put = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOpotions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
 ): Promise<ResponseBody> => {
   const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
   const api = createApiInstance(BASE_URLS, headers);
@@ -95,7 +95,7 @@ export const put = async <ResponseBody = any>(
 
 export const deleteResource = async (
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOpotions, 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'BASE_URLS' | 'headers' | 'queue'> = {}
 ) => {
   const { BASE_URLS, headers = {}, queue = false } = options;
   const api = createApiInstance(BASE_URLS, headers);

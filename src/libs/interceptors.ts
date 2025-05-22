@@ -18,7 +18,6 @@ function redirection(redirectUrl: string, errorCode?: string) {
   }
 
   if (redirectPath && window.location.pathname !== redirectPath) {
-    console.log('interecept redirected');
     window.location.href = redirectPath;
   }
   store.dispatch(setLoading(false));
@@ -27,14 +26,12 @@ function redirection(redirectUrl: string, errorCode?: string) {
 /**
  * Adds request and response interceptors to an Axios instance.
  */
-export const attachInterceptors = (api: AxiosInstance, queries?: Record<string, any>) => {
+export const attachInterceptors = (api: AxiosInstance, queries?: Array<Record<string, string>>) => {
   // Request interceptor
   api.interceptors.request.use(
     (request) => {
-      const token = store.getState().auth.token;
-      if (token) {
-        request.headers.Authorization = `Bearer ${token}`;
-      }
+      request.withCredentials = true;
+
       request.headers['ngrok-skip-browser-warning'] = '69420';
 
       // Append dynamic query params
@@ -55,13 +52,13 @@ export const attachInterceptors = (api: AxiosInstance, queries?: Record<string, 
   // Response interceptor
   api.interceptors.response.use(
     (response) => {
-      const { data, errorCode, redirectUrl, token } = response?.data || {};
+      const { data, errorCode, redirectUrl } = response?.data || {};
 
       if (redirectUrl) {
         redirection(redirectUrl, errorCode);
       }
       if (data?.user) {
-        store.dispatch(loginSuccess({ user: data.user, token: token ?? null, redirectUrl }));
+        store.dispatch(loginSuccess({ user: data.user, redirectUrl }));
       }
       return response;
     },
@@ -91,7 +88,7 @@ export const attachInterceptors = (api: AxiosInstance, queries?: Record<string, 
 export const createApiInstance = (
   baseURLKeyOrUrl?: BaseUrlType,
   headers: Record<string, string> = {},
-  queries?: Record<string, any>
+  queries?: Array<Record<string, string>>
 ): AxiosInstance => {
   const selectedBaseURL = BASE_URLS[baseURLKeyOrUrl as keyof typeof BASE_URLS] || baseURLKeyOrUrl;
 

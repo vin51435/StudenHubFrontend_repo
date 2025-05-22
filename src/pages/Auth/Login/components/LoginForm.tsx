@@ -36,7 +36,6 @@ const LoginForm: React.FC = () => {
       login1FormSchema.parse(values);
       setFormErrors({});
 
-      console.log('Submitted:', values);
       // return;
       setLoad(true);
 
@@ -45,10 +44,7 @@ const LoginForm: React.FC = () => {
         data: values,
       })
         .then((response) => {
-          const { token } = response;
-          if (token) {
-            navigate(getRoutePath('APP')); // /home
-          }
+          navigate(getRoutePath('APP')); // /home
         })
         .catch((err) => {
           notif(err.message);

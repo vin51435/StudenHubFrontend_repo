@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const ProtectAuthRoutes: React.FC = () => {
-  const { token, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { pathname, search, hash } = useLocation();
   const { notif, startRemoveNotification } = useNotification();
 
@@ -74,12 +74,12 @@ const ProtectAuthRoutes: React.FC = () => {
       //   return;
       // }
 
-      if (!token) {
+      if (!isAuthenticated) {
         dispatch(setLoading(false));
         return;
       }
 
-      if (currentPathStarts && token && isAuthenticated) {
+      if (currentPathStarts && isAuthenticated) {
         let notifId: string | null = null;
         const timeoutId = setTimeout(() => {
           notifId = notif('Please wait while we connect to the server...', null, {
@@ -113,9 +113,6 @@ const ProtectAuthRoutes: React.FC = () => {
 
     handleAuthCheck();
   }, [pathname, search, dispatch, navigate]);
-  // Adding token to dependency makes it run twice
-
-  // if (loader) return <Spin fullscreen />;
 
   return <Outlet />;
 };

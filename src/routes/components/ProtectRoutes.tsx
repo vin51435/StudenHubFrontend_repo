@@ -10,23 +10,26 @@ import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 
 const ProtectedRoutes: React.FC = () => {
-  const { isAuthenticated, token, redirectUrl, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { isAuthenticated, redirectUrl, user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
 
   const verifyUserAuthenticity = async () => {
-    if (token && !redirectUrl) {
-      await fetchUserInfo();
-      dispatch(setLoading(false));
+    if (!redirectUrl) {
+      try {
+        await fetchUserInfo();
 
-      // Fetch user notifications
-      const response = await get('NOTIFICATIONS', {
-        BASE_URLS: 'user',
-      });
-      const { data } = response;
-      dispatch(loadNotifications(data));
+        // Fetch user notifications only if fetchUserInfo is successful
+        const response = await get('NOTIFICATIONS', {
+          BASE_URLS: 'user',
+        });
+        const { data } = response;
+        dispatch(loadNotifications(data));
+      } catch (error) {
+        // Error is automatically handled
+      } finally {
+        dispatch(setLoading(false));
+      }
     }
   };
 
@@ -34,13 +37,13 @@ const ProtectedRoutes: React.FC = () => {
     dispatch(setLoading(true));
     verifyUserAuthenticity();
   }, []);
-  // Adding any of the token,isAuthenticated,redirectUrl,dispatch dependency, makes it run twice
+  // Adding any of the isAuthenticated,redirectUrl,dispatch dependency, makes it run twice
 
   if (isAuthenticated && (!redirectUrl || redirectUrl === location.pathname)) {
     return <Outlet />;
   }
 
-  if (!isAuthenticated && !token) {
+  if (!isAuthenticated) {
     return <Navigate to={getRoutePath('LOGIN')} state={{ from: location }} replace />;
   }
 

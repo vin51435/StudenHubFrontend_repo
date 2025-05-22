@@ -11,6 +11,5 @@ interface UserInfoResponse {
   data: {
     user: User;
   };
-  token: string;
   redirectUrl?: string;
 }

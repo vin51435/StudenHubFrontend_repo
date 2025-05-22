@@ -4,6 +4,8 @@ import { AuthState, LoginPayload } from '@src/types/redux';
 import { RootState } from '@src/redux/store';
 import { getCookie, setCookie } from '@src/utils/cookieGetterSetter';
 
+// Token is no longer used, http-only cookies are used
+
 const token = getCookie('accessToken');
 
 const initialState: AuthState = {
