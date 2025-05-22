@@ -5,7 +5,6 @@ import type { RootState, AppDispatch } from '@src/redux/store';
 import fetchUserInfo from '@src/api/fetchUser';
 import { get } from '@src/libs/apiConfig';
 import { loadNotifications } from '@src/redux/reducers/notifications';
-import { Spin } from 'antd';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 
@@ -13,6 +12,7 @@ const ProtectedRoutes: React.FC = () => {
   const { isAuthenticated, redirectUrl, user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const verifyUserAuthenticity = async () => {
     if (!redirectUrl) {
@@ -23,10 +23,11 @@ const ProtectedRoutes: React.FC = () => {
         const response = await get('NOTIFICATIONS', {
           BASE_URLS: 'user',
         });
+
         const { data } = response;
         dispatch(loadNotifications(data));
       } catch (error) {
-        // Error is automatically handled
+        navigate(getRoutePath('LOGIN'), { state: { from: location } });
       } finally {
         dispatch(setLoading(false));
       }
@@ -41,10 +42,6 @@ const ProtectedRoutes: React.FC = () => {
 
   if (isAuthenticated && (!redirectUrl || redirectUrl === location.pathname)) {
     return <Outlet />;
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to={getRoutePath('LOGIN')} state={{ from: location }} replace />;
   }
 
   return null;
