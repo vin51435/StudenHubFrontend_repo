@@ -1,4 +1,4 @@
-import { getRouteDetails, getRoutePath } from '@src/utils/getRoutePath';
+import { getExactRoutePath, getRouteDetails, getRoutePath } from '@src/utils/getRoutePath';
 import { describe, it, expect } from 'vitest';
 
 describe('getRoutePath', () => {
@@ -17,6 +17,14 @@ describe('getRoutePath', () => {
 
   it('should return /route_not_found for an invalid key', () => {
     expect(getRoutePath('INVALID.KEY')).toBe('/route_not_found');
+  });
+});
+
+describe('getExactRoutePath', () => {
+  it('should return the correct path for a valid key', () => {
+    expect(getExactRoutePath('WEBSITE')).toBe('/');
+    expect(getExactRoutePath('AUTH.LOGIN')).toBe('/login');
+    expect(getExactRoutePath('APP.PROFILE')).toBe('/profile');
   });
 });
 

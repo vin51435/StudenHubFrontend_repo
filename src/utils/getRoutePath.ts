@@ -37,6 +37,23 @@ export function getRouteDetails(
 }
 
 /**
+ * Get the exact route path by key, resolving from any level.
+ * If the key does not resolve to a route, '/route_not_found' is returned.
+ * @param key the key to search for
+ * @param config the route configuration to search
+ * @returns the exact route path, or '/route_not_found' if not found
+ */
+export function getExactRoutePath(key: string, config: RouteConfig = ROUTES): string {
+  const node = searchByKey(config, key);
+  if (!node?.path) {
+    console.error(`Exact route not found for key: ${key}`);
+    return '/route_not_found';
+  }
+
+  return node.path.startsWith('/') ? node.path : '/' + node.path;
+}
+
+/**
  * Recursively build full path from node up to root.
  */
 function buildFullPath(node: SearchableNode): string {
