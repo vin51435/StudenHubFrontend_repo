@@ -3,7 +3,7 @@ import { UserInfoResponse } from '@src/types';
 
 const fetchUserInfo = async (): Promise<UserInfoResponse> => {
   try {
-    const response: UserInfoResponse = await get('USER_INFO', {
+    const response: UserInfoResponse = await get('USER', {
       BASE_URLS: 'user',
     });
 

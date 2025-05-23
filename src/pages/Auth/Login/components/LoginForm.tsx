@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Spin, FormInstance } from 'antd';
-import { useDispatch } from 'react-redux';
+import { Form, Input, Button, Typography, FormInstance } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { post } from '@src/libs/apiConfig';
-import { loginSuccess } from '@src/redux/reducers/auth';
 import {
   FormLogin1Schema,
   login1FormSchema,
@@ -44,7 +42,9 @@ const LoginForm: React.FC = () => {
         data: values,
       })
         .then((response) => {
-          navigate(getRoutePath('APP')); // /home
+          if (!response.redirectUrl) {
+            navigate(getRoutePath('APP'));
+          }
         })
         .catch((err) => {
           notif(err.message);

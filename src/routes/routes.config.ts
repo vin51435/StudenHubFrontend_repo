@@ -44,8 +44,9 @@ const ROUTES: RouteConfig = [
   {
     name: 'APP',
     path: '/home',
+    title: 'Home',
     children: [
-      { name: 'PROFILE', path: '/profile' },
+      { name: 'PROFILE', title: 'Profile', path: '/profile' },
       { name: 'INBOX', path: '/inbox' },
     ],
   },

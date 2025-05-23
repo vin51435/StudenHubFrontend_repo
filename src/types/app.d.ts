@@ -7,6 +7,7 @@ export type SelectState = {
 export interface RouteNode {
   name: string;
   path: string;
+  title?: string;
   children?: RouteNode[];
 }
 

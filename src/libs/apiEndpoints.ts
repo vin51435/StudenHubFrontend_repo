@@ -12,7 +12,8 @@ export const BASE_URLS = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  USER_INFO: '/',
+  USER: '/',
+  USER_PICTURE: '/picture',
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',
   USER_SIGNUP: '/signup',

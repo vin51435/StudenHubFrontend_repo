@@ -10,9 +10,9 @@ import { IPaginatedResponse } from '@src/types';
 import { debounce } from 'lodash';
 import { SelectState } from '@src/types/app';
 import { Gender, UserType } from '@src/types/enum';
-import { useLoader } from '@src/hooks/useLoader';
 import { ZodError } from 'zod';
 import { useNavigate } from 'react-router-dom';
+import { getRoutePath } from '@src/utils/getRoutePath';
 
 const SignupAddDetails: React.FC = () => {
   const [load, setLoad] = useState<boolean>(false);
@@ -24,6 +24,7 @@ const SignupAddDetails: React.FC = () => {
   });
 
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCities();
@@ -32,13 +33,13 @@ const SignupAddDetails: React.FC = () => {
   const fetchCities = useCallback(
     debounce((value?: string) => {
       setSelectState((prev) => ({ ...prev, load: true }));
-      get<IPaginatedResponse<string>>(`GET_CITIES`, {
+      get<IPaginatedResponse<{ city: string }>>(`GET_CITIES`, {
         BASE_URLS: 'userFormats',
-        queries: [{ searchValue: value ?? '' }],
+        queries: [{ searchValue: value ?? '', sortField: 'city' }],
       }).then((res) => {
         setSelectState((prev) => ({
           ...prev,
-          options: { cities: res.data.map((state) => ({ label: state, value: state })) },
+          options: { cities: res.data.map((ele) => ({ label: ele.city, value: ele.city })) },
           load: false,
         }));
       });
@@ -46,7 +47,7 @@ const SignupAddDetails: React.FC = () => {
     []
   );
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     console.log('handlefineish');
     const values = form.getFieldsValue(); // Get raw form values without validation
     setTouched(true);
@@ -55,10 +56,16 @@ const SignupAddDetails: React.FC = () => {
       signupDetailsSchema.parse(values); // Validate with Zod only
       setLoad(true);
 
-      put('USER_SIGNUP_DETAILS', {
+      const res = await put('USER_SIGNUP_DETAILS', {
         BASE_URLS: 'auth',
         data: values,
-      }).finally(() => setLoad(false));
+      });
+
+      if (!res.redirectUrl) {
+        navigate(getRoutePath('APP'));
+      }
+
+      setLoad(false);
     } catch (zodError) {
       if (zodError instanceof ZodError) {
         console.log('error', zodError);

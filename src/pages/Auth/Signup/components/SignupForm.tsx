@@ -177,7 +177,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ setShowLoginService }: SignupFo
         data: values,
       })
         .then((response) => {
-          navigate(getRoutePath('APP')); // /home
+          if (!response.redirectUrl) {
+            navigate(getRoutePath('APP'));
+          }
         })
         .catch((err) => {
           notif('Server Error', err?.message, {

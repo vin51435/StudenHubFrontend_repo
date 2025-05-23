@@ -28,3 +28,15 @@
     }
   }
 }
+
+.ant-upload-list-item {
+  border: none !important;
+  padding: 0 !important;
+  &.ant-upload-list-item-done,
+  &.ant-upload-list-item-undefined {
+    &::before {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  }
+}
