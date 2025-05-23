@@ -93,6 +93,22 @@ export const put = async <ResponseBody = any>(
   return api.put(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError);
 };
 
+export const patch = async <ResponseBody = any>(
+  apiEndpoint: ApiEndpointKey,
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
+): Promise<ResponseBody> => {
+  const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
+  const api = createApiInstance(BASE_URLS, headers);
+
+  if (queue) {
+    return addToQueue(() =>
+      api.patch(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError)
+    );
+  }
+
+  return api.patch(getApiEndpoint(apiEndpoint), data).then(handleResponse).catch(handleError);
+};
+
 export const deleteResource = async (
   apiEndpoint: ApiEndpointKey,
   options: Pick<IMethodOptions, 'BASE_URLS' | 'headers' | 'queue'> = {}

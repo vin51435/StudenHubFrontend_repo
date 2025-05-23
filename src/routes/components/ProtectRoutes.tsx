@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '@src/redux/store';
 import fetchUserInfo from '@src/api/fetchUser';
@@ -7,14 +7,34 @@ import { get } from '@src/libs/apiConfig';
 import { loadNotifications } from '@src/redux/reducers/notifications';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 import { useLogout } from '@src/hooks/useLogout';
+import { useNotification } from '@src/contexts/NotificationContext';
 
 const ProtectedRoutes: React.FC = () => {
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   const { isAuthenticated, redirectUrl, user } = useSelector((state: RootState) => state.auth);
+  const loading = useSelector((state: RootState) => state.ui.loading);
+  const { notif, startRemoveNotification } = useNotification();
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const logout = useLogout();
 
+  useEffect(() => {
+    dispatch(setLoading(true));
+    Promise.all([verifyUserAuthenticity()]).finally(() => {
+      setTimeout(() => setCheckingAuth(false), 0);
+      dispatch(setLoading(false));
+    });
+  }, []);
+
   const verifyUserAuthenticity = async () => {
+    let notifId: string | null = null;
+    const timeoutId = setTimeout(() => {
+      notifId = notif('Please wait while we connect to the server...', null, {
+        key: 'connecting_server',
+      });
+    }, 5000);
+
     if (!redirectUrl) {
       try {
         await fetchUserInfo();
@@ -27,20 +47,19 @@ const ProtectedRoutes: React.FC = () => {
         const { data } = response;
         dispatch(loadNotifications(data));
       } catch (error) {
+        // navigate(getRoutePath('LOGIN'));
         logout();
       } finally {
-        dispatch(setLoading(false));
+        clearTimeout(timeoutId);
+        if (notifId) startRemoveNotification(notifId);
       }
     }
   };
 
-  useEffect(() => {
-    dispatch(setLoading(true));
-    verifyUserAuthenticity();
-  }, []);
-  // Adding any of the isAuthenticated,redirectUrl,dispatch dependency, makes it run twice
+  if (checkingAuth || loading) return null;
 
-  if (isAuthenticated && (!redirectUrl || redirectUrl === location.pathname)) {
+  if (isAuthenticated) {
+    console.log('rendering outlet');
     return <Outlet />;
   }
 
