@@ -21,9 +21,10 @@ const authSlice = createSlice({
   reducers: {
     loginSuccess: (state, action: PayloadAction<LoginPayload>) => {
       state.user = action.payload.user;
-      state.isAuthenticated = true;
       state.redirectUrl = action.payload.redirectUrl ?? null;
-
+      if (action.payload.user) {
+        state.isAuthenticated = true;
+      }
       if (action.payload.token) {
         state.token = action.payload.token;
         setCookie('accessToken', action.payload.token);
@@ -35,10 +36,13 @@ const authSlice = createSlice({
       state.token = null;
       setCookie('accessToken', '', { delete: true });
     },
+    setRedirectUrl: (state, action: PayloadAction<string>) => {
+      state.redirectUrl = action.payload;
+    },
   },
 });
 
-export const { loginSuccess, logoutSuccess } = authSlice.actions;
+export const { loginSuccess, logoutSuccess, setRedirectUrl } = authSlice.actions;
 export const selectAuthToken = (state: RootState) => state.auth.token;
 
 const authReducer = authSlice.reducer;

@@ -6,15 +6,18 @@ import '@src/assets/styles/main.scss';
 import store from '@src/redux/store';
 import RouterWrapper from '@src/routes';
 import AppLoader from '@src/components/AppLoader';
+import { ThemeProvider } from '@src/theme/ThemeProvider';
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <AppLoader>
-        <NotificationProvider>
-          <RouterWrapper />
-        </NotificationProvider>
-      </AppLoader>
+      <ThemeProvider>
+        <AppLoader>
+          <NotificationProvider>
+            <RouterWrapper />
+          </NotificationProvider>
+        </AppLoader>
+      </ThemeProvider>
     </Provider>
   );
 };
