@@ -1,36 +1,100 @@
 import ROUTES from '@src/routes/routes.config';
-import { RouteConfig } from '@src/types/app';
+import { RouteConfig, RouteNode } from '@src/types/app';
 
+type SearchableNode = RouteNode & { _parent?: SearchableNode };
+
+/**
+ * Get the full route path by key, resolving from any level.
+ */
 export function getRoutePath(key: string, config: RouteConfig = ROUTES): string {
-  const parts = key.split('.');
+  const node = searchByKey(config, key);
 
-  function search(nodes: RouteConfig, index: number): string | null {
-    for (const node of nodes) {
-      if (node.name === parts[index]) {
-        // If it's the last part, return its path
-        if (index === parts.length - 1) return node.path;
-
-        // If it has children, search deeper
-        if (node.children) {
-          const childPath = search(node.children, index + 1);
-          if (childPath) return node.path + childPath;
-        }
-      }
-
-      // Even if this node doesn't match, search its children
-      if (node.children) {
-        const found = search(node.children, index);
-        if (found) return found;
-      }
-    }
-    return null;
-  }
-
-  const result = search(config, 0);
-  if (!result) {
+  if (!node) {
     console.error(`Route not found: ${key}`);
     return '/route_not_found';
   }
 
-  return result.startsWith('/') ? result : '/' + result;
+  const fullPath = buildFullPath(node);
+  return fullPath.startsWith('/') ? fullPath : '/' + fullPath;
+}
+
+/**
+ * Get node details using name or path.
+ */
+export function getRouteDetails(
+  search: { name?: string; path?: string },
+  config: RouteConfig = ROUTES
+) {
+  const { name, path } = search;
+
+  if (name) {
+    return searchByKey(config, name);
+  } else if (path) {
+    return searchByPath(config, path);
+  }
+
+  return null;
+}
+
+/**
+ * Recursively build full path from node up to root.
+ */
+function buildFullPath(node: SearchableNode): string {
+  const pathParts: string[] = [];
+  let current: SearchableNode | undefined = node;
+
+  while (current) {
+    if (current.path) pathParts.unshift(current.path);
+    current = current._parent;
+  }
+
+  return pathParts.join('').replace(/\/{2,}/g, '/');
+}
+
+/**
+ * Searches by a dot-separated key (e.g., 'LOGIN.CALLBACK').
+ * Supports partial or nested keys starting from any level.
+ */
+function searchByKey(nodes: RouteConfig, key: string): SearchableNode | null {
+  const parts = key.split('.');
+
+  const dfs = (
+    nodes: RouteConfig,
+    index: number,
+    parent?: SearchableNode
+  ): SearchableNode | null => {
+    for (const node of nodes) {
+      const current: SearchableNode = { ...node, _parent: parent };
+
+      if (current.name === parts[index]) {
+        if (index === parts.length - 1) return current;
+        if (current.children) {
+          const childResult = dfs(current.children, index + 1, current);
+          if (childResult) return childResult;
+        }
+      }
+
+      if (current.children) {
+        const childResult = dfs(current.children, index, current);
+        if (childResult) return childResult;
+      }
+    }
+    return null;
+  };
+
+  return dfs(nodes, 0);
+}
+
+/**
+ * Recursively search a node by path.
+ */
+function searchByPath(nodes: RouteConfig, path: string): null | RouteNode {
+  for (const node of nodes) {
+    if (node.path === path) return node;
+    if (node.children) {
+      const found = searchByPath(node.children, path);
+      if (found) return found;
+    }
+  }
+  return null;
 }

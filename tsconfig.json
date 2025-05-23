@@ -20,6 +20,6 @@
       "@styles/*": ["src/assets/styles/*"]
     }
   },
-  "include": ["./src"],
+  "include": ["./src", "tailwind.config.js", "tests", "vitest.setup.ts"],
   "exclude": ["node_modules", "dist"]
 }
