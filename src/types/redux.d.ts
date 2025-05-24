@@ -3,7 +3,7 @@ import { User } from './users';
 interface AuthState {
   isAuthenticated: boolean;
   redirectUrl: string | null;
-  user: User | null;
+  user: User;
   token: string | null;
 }
 

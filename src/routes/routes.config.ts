@@ -47,7 +47,7 @@ const ROUTES: RouteConfig = [
     title: 'Home',
     children: [
       { name: 'PROFILE', title: 'Profile', path: '/profile' },
-      { name: 'INBOX', path: '/inbox' },
+      { name: 'CHATS', path: '/chats' },
     ],
   },
 ] as const;

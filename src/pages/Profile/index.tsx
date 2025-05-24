@@ -90,7 +90,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto  bg-white dark:bg-gray-900 p-3 rounded-xl shadow">
+    <div className="mx-auto  bg-white dark:bg-gray-900">
       <Row className="flex items-center space-x-6 mb-8">
         <Col className="flex flex-col items-center">
           <ImageUpload

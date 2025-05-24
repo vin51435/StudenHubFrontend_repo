@@ -55,20 +55,20 @@ const Signup: React.FC = () => {
           xs={0}
           md={14}
           lg={16}
-          className="right_container hidden md:block h-full"
+          className="right_container signup_panel_image hidden md:block h-full"
           style={{
-            background: 'linear-gradient(to right bottom, rgb(3, 73, 145), rgb(3, 73, 146))',
-            display: 'flex',
+            // background: 'linear-gradient(to right bottom, rgb(3, 73, 145), rgb(3, 73, 146))',
+            // display: 'flex',
           }}
         >
-          <Image
+          {/* <Image
             wrapperClassName="[&&]:m-auto"
             src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/signuppanel.png"
             alt="StudenHub"
             preview={false}
             className="object-cover object-left-top w-full overflow-clip "
             loading="lazy"
-          />
+          /> */}
         </Col>
       </Row>
     </div>

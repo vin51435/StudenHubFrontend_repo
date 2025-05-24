@@ -17,3 +17,8 @@ export enum Role {
   Teacher = 'Teacher',
   Admin = 'Admin',
 }
+
+export enum NotificationType {
+  NEWCHAT = 'newChat',
+  NEWMESSAGE = 'newMessage',
+}

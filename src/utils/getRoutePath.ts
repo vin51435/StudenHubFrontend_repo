@@ -1,5 +1,6 @@
 import ROUTES from '@src/routes/routes.config';
 import { RouteConfig, RouteNode } from '@src/types/app';
+import { generateNestedUnionTypeFromKey } from '@src/utils/common';
 
 type SearchableNode = RouteNode & { _parent?: SearchableNode };
 
@@ -36,6 +37,8 @@ export function getRouteDetails(
   return null;
 }
 
+const routesNameKeyType = generateNestedUnionTypeFromKey('name')
+
 /**
  * Get the exact route path by key, resolving from any level.
  * If the key does not resolve to a route, '/route_not_found' is returned.
@@ -43,7 +46,7 @@ export function getRouteDetails(
  * @param config the route configuration to search
  * @returns the exact route path, or '/route_not_found' if not found
  */
-export function getExactRoutePath(key: string, config: RouteConfig = ROUTES): string {
+export function getExactRoutePath(key: typeof routesNameKeyType | string, config: RouteConfig = ROUTES): string {
   const node = searchByKey(config, key);
   if (!node?.path) {
     console.error(`Exact route not found for key: ${key}`);

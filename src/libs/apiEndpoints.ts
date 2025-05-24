@@ -32,6 +32,7 @@ export const USER_ENDPOINTS = {
   NOTIFICATIONS: '/notifications',
 
   // Communication
+  NOTIFICATION_SUBSCRIBE: '/subscribe',
   GET_INBOX_PARTICIPANTS: '/getSecondParticipants',
   USERS_BY_ID: '/usersbyid',
   CHAT_ID: '/chatid',

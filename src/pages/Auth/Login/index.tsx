@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 const Login: React.FC = () => {
   return (
     <div className="auth-page_main relative h-full">
-      <Row className="h-full">
+      <Row className="h-full ">
         {/* <Col span={24} className={`top_container ${windowSize.medium ? 'hidden' : 'hidden'}`}>
           <div>
             <p>Know about StudenHub-</p>
@@ -46,15 +46,15 @@ const Login: React.FC = () => {
           xs={0}
           md={14}
           lg={16}
-          className="right_container hidden md:block h-full"
+          className="right_container login_panel_image hidden md:block h-full"
           style={{
             // background:
             //   'radial-gradient(circle at top left, #003c7d, #0c67bd), radial-gradient(circle at top right, #0f71c6, transparent 70%), radial-gradient(circle at bottom left, #00a2ff, transparent 70%), radial-gradient(circle at bottom right, #b3e0ff, transparent 70%);',
-            background: 'linear-gradient(to bottom right, #003c7d, #0c67bd)',
+            // background: 'linear-gradient(to bottom right, #003c7d, #0c67bd)',
             display: 'flex',
           }}
         >
-          <Image
+          {/* <Image
             wrapperClassName="[&&]:m-auto"
             src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginnarrow.png"
             // src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginpanel.jpg"
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
             className="object-cover object-left-top w-full overflow-clip "
             alt="StudenHub"
             loading="lazy"
-          />
+          /> */}
         </Col>
       </Row>
     </div>

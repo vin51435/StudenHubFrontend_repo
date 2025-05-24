@@ -3,52 +3,68 @@
 // ?Auth (login/signup) page css
 .auth-page_main {
   // height: 100vh;
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
   display: grid;
   align-items: center;
+
   &::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
+    display: none;
+    /* Safari and Chrome */
   }
+
   .left_container {
     background-color: $secondary-color;
     display: flex;
     align-items: center;
     flex-direction: column;
     height: 100%;
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+
+    /* Firefox */
     &::-webkit-scrollbar {
-      display: none; /* Safari and Chrome */
+      display: none;
+      /* Safari and Chrome */
     }
+
     @include mediaMax(small) {
       padding: 2rem;
       justify-content: flex-start;
       gap: 0.8rem;
       height: auto;
     }
+
     .auth_form {
       form {
         label {
           font-size: 1.1rem;
           font-weight: 500;
+
           @include mediaMax(small) {
             font-size: 0.8rem;
             font-weight: 600;
           }
         }
+
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
+
         /* Firefox */
         input[type='number'] {
           -moz-appearance: textfield;
         }
+
         input:is(:-webkit-autofill, :autofill) {
           background-color: white !important;
         }
+
         input {
           appearance: none;
           background-color: white !important;
@@ -57,39 +73,48 @@
           padding: 6px 8px;
           position: relative;
           transition: all 0.12s ease-in;
+
           @include mediaMax(small) {
             padding: 9px;
           }
+
           &:focus {
             box-shadow: 0px 0px 0px 3px #057dcdb8;
             border-color: #057dcdb8;
           }
+
           &.wrongInput,
           &.wrongInput:focus {
             box-shadow: 0px 0px 0px 3px $danger !important;
             border-color: $danger !important;
           }
+
           &.rightInput,
           &.rightInput:focus {
             box-shadow: 0px 0px 0px 3px $success !important;
             border-color: $success !important;
           }
+
           &:focus-visible {
             outline: none;
           }
-          & + span {
+
+          &+span {
             display: block;
             color: $danger;
             font-size: 0.8rem;
             margin-top: 0.3rem;
           }
         }
+
         input:-internal-autofill-selected {
           appearance: none;
         }
+
         input:disabled {
           background-color: $disabled-color !important;
         }
+
         .password_requirements {
           span {
             display: flex;
@@ -98,14 +123,17 @@
             margin-top: 0.3rem;
             margin-bottom: 0.8rem;
             font-size: 0.8rem;
-            & > svg {
+
+            &>svg {
               height: 0.6rem;
             }
           }
-          span > svg {
+
+          span>svg {
             margin-right: 0.3rem;
           }
         }
+
         .btn {
           @include mediaMax(medium) {
             width: 100%;
@@ -114,14 +142,33 @@
         }
       }
     }
+
     .signup_link {
       font-weight: 600;
+
       a {
         text-decoration: none;
       }
     }
   }
+
   .right_container {
+    &.login_panel_image {
+      background-color: rgb(0, 60, 125);
+      background-image: url(https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginnarrow.png);
+      background-blend-mode: initial;
+      width: 100%;
+      background-size: cover;
+    }
+
+    &.signup_panel_image {
+      background-color: rgb(0, 60, 125);
+      background-image: url(https://studenhub-media.s3.ap-south-1.amazonaws.com/app/signuppanel.png);
+      background-blend-mode: initial;
+      width: 100%;
+      background-size: cover;
+    }
+
     .auth-page_main_img {
       height: 100%;
       width: 100%;
@@ -134,6 +181,7 @@
 
 .auth_btn_container {
   width: 100%;
+
   .gsi-material-button {
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -165,6 +213,7 @@
     min-width: min-content;
     width: 100%;
     border-radius: $border-radius;
+
     @include mediaMax(medium) {
       height: 42px;
       height: 3rem;
@@ -261,13 +310,16 @@
 
 .signup-details {
   height: 100%;
-  & > div {
+
+  &>div {
     // height: 75%;
     width: 60%;
+
     @include mediaMax(medium) {
       width: 85%;
     }
   }
+
   .signup-details_container {
     // height: 85%;
     max-height: 550px;
@@ -275,10 +327,12 @@
     overflow: hidden;
     @include apply-styles($border-styles);
     border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
+
     .signup-details_right_container {
-      & > div:first-child {
+      &>div:first-child {
         // max-height: 470px;
       }
+
       .signup-details-header_container {
         width: fit-content;
       }
@@ -287,6 +341,7 @@
         -webkit-box-shadow: 0px 0px 27px -8px $disabled-color;
         -moz-box-shadow: 0px 0px 27px -8px $disabled-color;
         box-shadow: 0px 0px 27px -8px $disabled-color;
+
         .btn {
           border-radius: $border-radius-rounded !important;
         }
@@ -297,13 +352,16 @@
 
 .signup-interest_container {
   position: relative;
-  & > form {
+
+  &>form {
     width: 75%;
     padding-bottom: 60px;
+
     @include mediaMax(small) {
       width: 90%;
     }
   }
+
   .signup-interest-btn_container {
     position: fixed;
     width: 100%;
@@ -311,47 +369,51 @@
     background-color: $white;
     text-align: end;
   }
+
   .interest_subheader {
     font-size: 0.8rem;
   }
-  .interest_grid {
-    margin-top: 1rem;
+
+}
+
+.interest_grid {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; // Adjust the gap between the images
+  justify-content: space-between; // Distributes the images evenly
+
+  .image_grid_item {
+    flex: 1 1 calc(33.33% - 20px); // 3 images per row, accounting for the gap
+    background-size: cover;
+    background-position: center;
+    min-height: 140px; // Set the height of the div; adjust as needed
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px; // Adjust the gap between the images
-    justify-content: space-between; // Distributes the images evenly
+    justify-content: start;
+    align-items: end;
+    color: white; // Text color
+    font-weight: bold;
+    border-radius: $border-radius;
+    background-color: rgba(0, 0, 0, 0.5); // Fallback background color
+    -webkit-box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
 
-    .image_grid_item {
-      flex: 1 1 calc(33.33% - 20px); // 3 images per row, accounting for the gap
-      background-size: cover;
-      background-position: center;
-      min-height: 140px; // Set the height of the div; adjust as needed
+    .image_text {
+      width: 100%;
+      height: 100%;
       display: flex;
-      justify-content: start;
       align-items: end;
-      color: white; // Text color
-      font-weight: bold;
+      font-size: 0.9rem;
+      line-height: 1em;
       border-radius: $border-radius;
-      background-color: rgba(0, 0, 0, 0.5); // Fallback background color
-      -webkit-box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
-      -moz-box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
-      box-shadow: inset 0px -54px 60px 4px rgba(0, 0, 0, 0.3);
-      .image_text {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: end;
-        font-size: 0.9rem;
-        line-height: 1em;
-        border-radius: $border-radius;
-        transition: 0.2s;
-      }
+      transition: 0.2s;
     }
+  }
 
-    .interest_selected {
-      -webkit-box-shadow: 0px 0px 0px 4px $primary-color1;
-      -moz-box-shadow: 0px 0px 0px 4px $primary-color1;
-      box-shadow: 0px 0px 0px 4px $primary-color1;
-    }
+  .interest_selected {
+    -webkit-box-shadow: 0px 0px 0px 4px $primary-color;
+    -moz-box-shadow: 0px 0px 0px 4px $primary-color;
+    box-shadow: 0px 0px 0px 4px $primary-color;
   }
 }

@@ -25,18 +25,13 @@ export interface IRequestQueue {
   reject: (reason?: any) => void;
 }
 
-export interface IResponseData<T = unknown> {
-  data: T;
-  email;
-}
-
 export interface IBaseResponse {
   status: string;
   message: string;
 }
 
 export interface IResponse<T = any> extends IBaseResponse {
-  data?: IResponseData<T>;
+  data?: T;
   authenticated?: boolean;
   redirectUrl?: string;
 }

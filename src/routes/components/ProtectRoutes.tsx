@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '@src/redux/store';
 import fetchUserInfo from '@src/api/fetchUser';
@@ -16,7 +16,6 @@ const ProtectedRoutes: React.FC = () => {
   const loading = useSelector((state: RootState) => state.ui.loading);
   const { notif, startRemoveNotification } = useNotification();
   const dispatch = useDispatch<AppDispatch>();
-  const location = useLocation();
   const logout = useLogout();
 
   useEffect(() => {

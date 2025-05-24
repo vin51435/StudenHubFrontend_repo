@@ -1,12 +1,11 @@
 import fetchUserInfo from '@src/api/fetchUser';
 import { useNotification } from '@src/contexts/NotificationContext';
-import { useLogout } from '@src/hooks/useLogout';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 import { RootState } from '@src/redux/store';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const ProtectAuthRoutes: React.FC = () => {
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -24,12 +23,10 @@ const ProtectAuthRoutes: React.FC = () => {
     Promise.all([checkIfAlreadyLoggedIn(), handleAuthCheck()])
       .catch(console.error)
       .finally(() => {
-        console.log('before finally', loading, 'authcheckdone', checkingAuth);
         setTimeout(() => setCheckingAuth(false), 0);
         dispatch(setLoading(false));
-        console.log('after finally', loading, 'authcheckdone', checkingAuth);
       });
-  }, [pathname, search, dispatch, navigate]);
+  }, [pathname, dispatch]);
 
   async function checkIfAlreadyLoggedIn() {
     let notifId: string | null = null;
@@ -43,8 +40,6 @@ const ProtectAuthRoutes: React.FC = () => {
       const response = await fetchUserInfo();
 
       if (!response.redirectUrl) {
-        console.info('success');
-        console.log('home', loading);
         await navigate(getRoutePath('APP'));
       }
     } catch (error) {
@@ -53,7 +48,6 @@ const ProtectAuthRoutes: React.FC = () => {
     } finally {
       clearTimeout(timeoutId);
       if (notifId) startRemoveNotification(notifId);
-      console.log('finally', loading);
     }
   }
 
@@ -123,8 +117,7 @@ const ProtectAuthRoutes: React.FC = () => {
   if (checkingAuth || loading) return null;
 
   // ✅ If authenticated, continue to protected route
-  if (isAuthenticated) {
-    console.log('rendering outlet');
+  if (!isAuthenticated || (isAuthenticated && !checkingAuth && (location.pathname === getRoutePath('SIGNUP.DETAILS') || location.pathname === getRoutePath('SIGNUP.INTERESTS')))) {
     return <Outlet />;
   }
 

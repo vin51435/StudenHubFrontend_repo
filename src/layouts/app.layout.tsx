@@ -7,6 +7,7 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { ItemType, MenuItemType } from 'antd/es/menu/interface';
 import { HeaderRightActions } from '@src/layouts/components/HeaderRightActions';
 import { getRouteDetails } from '@src/utils/getRoutePath';
+import { SocketProvider } from '@src/contexts/Socket.context';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -44,68 +45,71 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   return (
-    <Layout hasSider>
-      <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical text-2xl text-white w-full flex justify-center items-center my-3">
-          StudenHub
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={selectedKey ? [selectedKey] : []}
-          items={
-            (sidebarMenuItems as MenuItem[]).map(({ key, icon, label, path }) => ({
-              key,
-              icon,
-              label: path ? <Link to={path}>{label}</Link> : label,
-            })) as ItemType<MenuItemType>[]
-          }
-        />
-      </Sider>
-      <Layout>
-        <Header
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-            }}
-          />
-          <div className="!ml-auto !mr-3">
-            <HeaderRightActions />
+    <SocketProvider>
+      <Layout hasSider>
+        <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed}>
+          <div className="demo-logo-vertical text-2xl text-white w-full flex justify-center items-center my-3">
+            StudenHub
           </div>
-        </Header>
-        <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-          <div
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={selectedKey ? [selectedKey] : []}
+            items={
+              (sidebarMenuItems as MenuItem[]).map(({ key, icon, label, path }) => ({
+                key,
+                icon,
+                label: path ? <Link to={path}>{label}</Link> : label,
+              })) as ItemType<MenuItemType>[]
+            }
+          />
+        </Sider>
+        <Layout>
+          <Header
             style={{
-              padding: 24,
-              textAlign: 'center',
+              position: 'sticky',
+              top: 0,
+              zIndex: 1,
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              padding: 0,
               background: colorBgContainer,
-              borderRadius: borderRadiusLG,
             }}
           >
-            <Outlet />
-          </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: '16px',
+                width: 64,
+                height: 64,
+              }}
+            />
+            <div className="!ml-auto !mr-3">
+              <HeaderRightActions />
+            </div>
+          </Header>
+          <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+            <div
+              style={{
+                padding: 24,
+                textAlign: 'center',
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              <Outlet />
+            </div>
+          </Content>
+          {/* <Footer style={{ textAlign: 'center' }}>
+          StudenHub ©{new Date().getFullYear()} Created by VIN
+        </Footer> */}
+        </Layout>
       </Layout>
-    </Layout>
+    </SocketProvider>
+
   );
 };
 

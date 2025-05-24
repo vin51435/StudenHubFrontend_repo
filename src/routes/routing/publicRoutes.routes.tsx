@@ -1,10 +1,11 @@
 import NotFoundPage from '@src/pages/NotFound';
-import { RouteObject } from 'react-router-dom';
+import { getRoutePath } from '@src/utils/getRoutePath';
+import { Navigate, RouteObject } from 'react-router-dom';
 
 export const publicRoutes: RouteObject[] = [
   {
     path: '/',
-    element: <div>Website</div>,
+    element: <Navigate to={getRoutePath('APP')} />,
   },
   {
     path: '*',

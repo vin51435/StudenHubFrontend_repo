@@ -1,133 +1,128 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { useNotification } from '@src/contexts/NotificationContext';
 import { get, put } from '@src/libs/apiConfig';
+import { IPaginatedResponse } from '@src/types';
 import { getRoutePath } from '@src/utils/getRoutePath';
-import { Input, Checkbox, Button } from 'antd';
+import { Input, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+type IInterest = {
+  name: string;
+  imageURL: string;
+};
+
+const REQUIRED_INTEREST_COUNT = 3;
+
 const SignupInterests: React.FC = () => {
-  const [interest, setInterest] = useState({
-    selected: [] as string[],
-    search: '',
-    data: [] as { name: string; imageURL: string }[],
-    error: null as null | boolean,
-    required: 3,
-  });
-  const [load, setLoad] = useState(false);
+  const [interests, setInterests] = useState<IInterest[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { notif } = useNotification();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getInterests();
+    fetchInterests();
   }, []);
 
-  async function getInterests() {
-    get('GET_INTERESTS', {
-      BASE_URLS: 'userFormats',
-    }).then((response) => {
+  const fetchInterests = async () => {
+    try {
+      const response = await get<IInterest, IPaginatedResponse>('GET_INTERESTS', {
+        BASE_URLS: 'userFormats',
+      });
       if (response.data) {
-        setInterest((prev) => ({
-          ...prev,
-          data: response.data.interests,
-          // required: response.data.required,
-        }));
+        setInterests(response.data);
       }
-    });
-  }
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (load) return;
-    const { value, checked } = event.target;
-    if (checked) {
-      setInterest((prev) => ({ ...prev, selected: [...prev.selected, value] }));
-    } else {
-      setInterest((prev) => ({
-        ...prev,
-        selected: prev.selected.filter((option) => option !== value),
-      }));
+    } catch (e) {
+      notif('Failed to load interests');
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const toggleSelection = (name: string) => {
+    if (loading) return;
+
+    setSelected((prev) =>
+      prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name]
+    );
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (selected.length < REQUIRED_INTEREST_COUNT) {
+      setError(true);
+      notif(`Select at least ${REQUIRED_INTEREST_COUNT} interests`, null, { timeOut: 5000 });
+      return;
+    }
+
+    setError(false);
+    setLoading(true);
+
     try {
-      if (interest.selected.length < interest.required) {
-        setInterest((prev) => ({ ...prev, error: true }));
-        notif(`Select at least ${interest.required} interest`, null, { timeOut: 5000 });
-        return;
-      }
-      setInterest((prev) => ({ ...prev, error: false }));
-      setLoad(true);
-      const res = await put('USER_SIGNUP_INTEREST', {
+      const res = await put<IInterest>('USER_SIGNUP_INTEREST', {
         BASE_URLS: 'auth',
-        data: { interests: interest.selected },
+        data: { interests: selected },
       });
-      console.log(res);
+
       if (!res.redirectUrl) {
         navigate(getRoutePath('APP'));
       }
-    } catch (e) {
+    } catch {
       notif('Unable to save');
     } finally {
-      setLoad(false);
+      setLoading(false);
     }
   };
 
+  const filteredInterests = interests.filter((interest) =>
+    interest.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="w-full min-h-screen flex justify-center items-center bg-white dark:bg-gray-900 px-4">
-      <form className="w-full max-w-6xl h-full flex flex-col items-center justify-center">
+      <form onSubmit={handleSubmit} className="w-full max-w-6xl flex flex-col items-center justify-center">
         <div className="w-full text-center md:text-left">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-            Pick your favorite Topics/Interest
+            Pick your favorite Topics/Interests
           </h1>
-          <h6
-            className={`text-sm mt-1 ${
-              interest.error ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'
-            }`}
-          >
-            Choose at least {interest.required} - It'll help us personalize your feed the way you
-            like it.
+          <h6 className={`text-sm mt-1 ${error ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'}`}>
+            Choose at least {REQUIRED_INTEREST_COUNT} – It'll help us personalize your feed.
           </h6>
         </div>
 
-        <div className="w-full mt-6 max-w-md">
+        <div className=" w-full mt-6 max-w-md">
           <div className="relative">
-            <SearchOutlined className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
+            <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
             <Input
               className="pl-10"
               size="large"
-              placeholder="Search Interest"
-              value={interest.search ?? ''}
-              onChange={(e) => setInterest((prev) => ({ ...prev, search: e.target.value }))}
+              placeholder="Search Interests"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-          {interest.data.map((ele, i) => {
-            const isSelected = interest.selected.includes(ele.name);
+        <div className="interest_grid w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+          {filteredInterests.map((item, index) => {
+            const isSelected = selected.includes(item.name);
             return (
               <div
-                key={`${i}-interest-key`}
-                className={`relative rounded-lg overflow-hidden shadow-md cursor-pointer group transition-transform transform hover:scale-105`}
+                key={index}
+                className={`image_grid_item relative rounded-lg overflow-hidden shadow-md cursor-pointer group transition-transform transform hover:scale-105 ${isSelected ? 'ring-4 ring-blue-500 interest_selected' : ''
+                  }`}
                 style={{
-                  backgroundImage: `url(${ele.imageURL})`,
+                  backgroundImage: `url(${item.imageURL})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
+                onClick={() => toggleSelection(item.name)}
               >
-                <Checkbox
-                  checked={isSelected}
-                  onChange={(e) => handleCheckboxChange(e, ele.name)}
-                  className="absolute top-2 left-2 z-10"
-                />
-                <div
-                  className={`absolute bottom-0 w-full p-2 bg-black bg-opacity-50 text-white text-center font-medium ${
-                    isSelected ? 'bg-opacity-80' : ''
-                  }`}
-                >
-                  {ele.name}
+                <div className="inset-0 bg-opacity-30 flex items-end">
+                  <span className="text-white font-semibold p-2">{item.name}</span>
                 </div>
               </div>
             );
@@ -136,9 +131,9 @@ const SignupInterests: React.FC = () => {
 
         <div className="w-full flex justify-end items-center mt-6 px-4">
           <span className="text-sm mr-4 text-gray-600 dark:text-gray-300">
-            {interest.selected.length} Selected
+            {selected.length} Selected
           </span>
-          <Button type="primary" onClick={handleSubmit} loading={load}>
+          <Button type="primary" htmlType="submit" loading={loading}>
             Proceed
           </Button>
         </div>

@@ -68,7 +68,7 @@ const notificationSlice = createSlice({
       action: PayloadAction<{
         type: NotificationType;
         userId?: string;
-        notificationId?: string;
+        notificationId?: string | null;
       }>,
     ) => {
       const { type, userId, notificationId } = action.payload;

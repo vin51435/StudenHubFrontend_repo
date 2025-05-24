@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { ApiEndpointKey, IMethodOptions, IRequestQueue } from '../types';
+import { ApiEndpointKey, IMethodOptions, IRequestQueue, IResponse } from '../types';
 import { createApiInstance } from './interceptors';
 import { getApiEndpoint } from '../utils/apiUtils';
 
@@ -45,10 +45,10 @@ const handleError = (error: any) => {
 
 // Public API methods
 
-export const get = async <ResponseBody = any>(
+export const get = async <ResponseBody = any, T = IResponse<ResponseBody>>(
   apiEndpoint: ApiEndpointKey,
   options: Pick<IMethodOptions, 'BASE_URLS' | 'headers' | 'queue' | 'queries'> = {}
-): Promise<ResponseBody> => {
+): Promise<T> => {
   const { BASE_URLS, headers = {}, queue = false, queries } = options;
   const api = createApiInstance(BASE_URLS, headers, queries);
 
@@ -64,7 +64,7 @@ export const get = async <ResponseBody = any>(
 export const post = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
   options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
-): Promise<ResponseBody> => {
+): Promise<IResponse<ResponseBody>> => {
   const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
   const api = createApiInstance(BASE_URLS, headers);
 
@@ -80,7 +80,7 @@ export const post = async <ResponseBody = any>(
 export const put = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
   options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
-): Promise<ResponseBody> => {
+): Promise<IResponse<ResponseBody>> => {
   const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
   const api = createApiInstance(BASE_URLS, headers);
 

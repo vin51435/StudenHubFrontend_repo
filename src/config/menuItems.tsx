@@ -8,6 +8,7 @@ import {
   UploadOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
+import { getExactRoutePath } from '@src/utils/getRoutePath';
 import { MenuProps } from 'antd';
 
 export type MenuItem = NonNullable<MenuProps['items']>[number] & {
@@ -27,7 +28,7 @@ const sidebarMenuItems: MenuItem[] = [
     key: '2',
     icon: <TeamOutlined />,
     label: 'Chats',
-    path: '/chats',
+    path: getExactRoutePath('CHATS'),
   },
   {
     key: '3',

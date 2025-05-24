@@ -12,7 +12,7 @@ function redirection(redirectUrl: string, errorCode?: string) {
   let redirectPath: string = redirectUrl;
 
   if (
-    errorCode === ErrorCodes.CLIENT.UNAUTHENTICATED &&
+    (errorCode === ErrorCodes.CLIENT.UNAUTHENTICATED || errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_LOGIN) &&
     (window.location.pathname === getRoutePath('LOGIN') ||
       window.location.pathname === getRoutePath('SIGNUP'))
   ) {
