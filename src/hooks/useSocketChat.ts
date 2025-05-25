@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useSocket } from './Socket.context';
 import { post } from '@src/libs/apiConfig';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux/store';
+import { useSocket } from '@src/contexts/Socket.context';
 
 type MessageStatus = 'local' | 'sent' | 'delivered' | 'read';
 

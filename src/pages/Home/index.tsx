@@ -1,17 +1,22 @@
 import { useLogout } from '@src/hooks/useLogout';
+import { get } from '@src/libs/apiConfig';
 import { Button } from 'antd';
+import { useEffect } from 'react';
 
 export default function Home() {
-  const logout = useLogout();
+
+  useEffect(() => {
+    FetchFeed();
+  }, [])
+
+  async function FetchFeed() {
+    const res = await get('FEED', { BASE_URLS: 'user' });
+    console.log('feed: ', res.data);
+  }
+
   return (
     <div>
-      <div className="bg-white dark:bg-gray-900 text-black dark:text-white">Hello</div>
-      <div className="bg-white text-black dark:bg-gray-900 dark:text-white p-4 rounded">
-        Dark mode test
-      </div>
-
-      <br />
-      <Button onClick={logout}>Logout</Button>
+      HOme
     </div>
   );
 }

@@ -3,6 +3,9 @@ import {
   BarChartOutlined,
   CloudOutlined,
   HomeOutlined,
+  MailOutlined,
+  PlusOutlined,
+  SettingOutlined,
   ShopOutlined,
   TeamOutlined,
   UploadOutlined,
@@ -11,10 +14,9 @@ import {
 import { getExactRoutePath } from '@src/utils/getRoutePath';
 import { MenuProps } from 'antd';
 
-export type MenuItem = NonNullable<MenuProps['items']>[number] & {
+export type MenuItem = Required<MenuProps>['items'][number] & {
   path?: string;
-  icon: React.ReactNode;
-  label: React.ReactNode;
+  children?: MenuItem[];
 };
 
 const sidebarMenuItems: MenuItem[] = [
@@ -41,7 +43,24 @@ const sidebarMenuItems: MenuItem[] = [
     label: 'profile',
     icon: <CloudOutlined />,
     path: '/profile',
+    type: 'item',
+  },
+  {
+    key: 'sub1',
+    label: 'Communities',
+    icon: <MailOutlined />,
+    type: 'submenu',
+    className: 'community-submenu',
+    children: [
+      {
+        icon: <PlusOutlined />,
+        key: 'g1',
+        label: 'Create a Community',
+        type: 'item',
+        onClick: () => console.log('create community'),
+      },
+    ],
   },
 ];
 
-export default sidebarMenuItems as Required<MenuProps>['items'][number][];
+export default sidebarMenuItems;

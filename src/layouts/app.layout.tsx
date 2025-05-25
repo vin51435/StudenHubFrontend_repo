@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Layout, Menu, theme } from 'antd';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Button, Layout, Menu, MenuProps, theme } from 'antd';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import ThemeToggle from '@src/components/themeToggle';
 import sidebarMenuItems, { MenuItem } from '@src/config/menuItems';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { ItemType, MenuItemType } from 'antd/es/menu/interface';
-import { HeaderRightActions } from '@src/layouts/components/HeaderRightActions';
+import TopHeader from '@src/layouts/components/TopHeader';
 import { getRouteDetails } from '@src/utils/getRoutePath';
 import { SocketProvider } from '@src/contexts/Socket.context';
+import { searchArrayNestedObjByKey } from '@src/utils/common';
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const siderStyle: React.CSSProperties = {
-  overflow: 'auto',
-  height: '100vh',
+  // overflow: 'auto',
+  height: '100%',
   position: 'sticky',
   insetInlineStart: 0,
   top: 0,
@@ -22,75 +23,93 @@ const siderStyle: React.CSSProperties = {
   scrollbarGutter: 'stable',
 };
 
+const toggleButtonStyle: React.CSSProperties = {
+  fontSize: '16px',
+  position: 'absolute',
+  top: '10%',
+  left: '90%',
+  backgroundColor: 'white',
+  padding: '0px',
+  margin: '0px',
+};
+
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [routeDetails, setRouteDetails] = useState({});
   const [selectedKey, setSelectedKey] = useState<string | null>();
+  const navigate = useNavigate();
   const location = useLocation();
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   useEffect(() => {
-    setSelectedKey(() =>
-      (sidebarMenuItems as MenuItem[])
-        .find((item) => item?.path === location.pathname)
-        ?.key?.toString()
-    );
+    setSelectedMenu();
 
     const routeDetails = getRouteDetails({ path: location.pathname });
     document.title = `StudenHub ${routeDetails?.title ? `| ${routeDetails?.title}` : ''}`;
     setRouteDetails(routeDetails ?? {});
   }, [location]);
 
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  function setSelectedMenu() {
+    setSelectedKey(() => {
+      return (
+        searchArrayNestedObjByKey(
+          sidebarMenuItems,
+          'path',
+          location.pathname,
+          'children'
+        )?.key?.toString() || ''
+      );
+    });
+  }
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    const item = searchArrayNestedObjByKey(sidebarMenuItems, 'key', e.key, 'children');
+    if (item?.path) {
+      navigate(item.path);
+    }
+  };
 
   return (
     <SocketProvider>
-      <Layout hasSider>
-        <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed}>
-          <div className="demo-logo-vertical text-2xl text-white w-full flex justify-center items-center my-3">
-            StudenHub
+      <Layout className="h-full">
+        <Header
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            padding: 0,
+            background: colorBgContainer,
+          }}
+        >
+          <div className="!ml-auto !mr-3 h-full w-full">
+            <TopHeader />
           </div>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={selectedKey ? [selectedKey] : []}
-            items={
-              (sidebarMenuItems as MenuItem[]).map(({ key, icon, label, path }) => ({
-                key,
-                icon,
-                label: path ? <Link to={path}>{label}</Link> : label,
-              })) as ItemType<MenuItemType>[]
-            }
-          />
-        </Sider>
-        <Layout>
-          <Header
-            style={{
-              position: 'sticky',
-              top: 0,
-              zIndex: 1,
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              padding: 0,
-              background: colorBgContainer,
-            }}
-          >
+        </Header>
+        <Layout hasSider className="overflow-auto h-full sticky">
+          <section style={siderStyle} className="relative">
+            <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed}>
+              <Menu
+                theme="dark"
+                mode="inline"
+                selectedKeys={selectedKey ? [selectedKey] : []}
+                onClick={handleMenuClick}
+                items={sidebarMenuItems}
+              />
+            </Sider>
+
             <Button
+              className="absolute top-2 left-2 z-10"
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={() => setCollapsed(!collapsed)}
-              style={{
-                fontSize: '16px',
-                width: 64,
-                height: 64,
-              }}
+              style={toggleButtonStyle}
             />
-            <div className="!ml-auto !mr-3">
-              <HeaderRightActions />
-            </div>
-          </Header>
+          </section>
           <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
             <div
               style={{
@@ -101,6 +120,15 @@ const App: React.FC = () => {
               }}
             >
               <Outlet />
+              {[...Array(10)].map((_, i) => (
+                <p key={i}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
+                  Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh
+                  elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed
+                  augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent
+                  taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                </p>
+              ))}
             </div>
           </Content>
           {/* <Footer style={{ textAlign: 'center' }}>
@@ -109,7 +137,6 @@ const App: React.FC = () => {
         </Layout>
       </Layout>
     </SocketProvider>
-
   );
 };
 

@@ -40,3 +40,16 @@
     }
   }
 }
+
+.ant-menu {
+  .ant-menu-sub {
+    .ant-menu-item-group {
+      cursor: pointer !important;
+    }
+  }
+  .community-submenu {
+    li {
+      padding-left: 30px !important;
+    }
+  }
+}

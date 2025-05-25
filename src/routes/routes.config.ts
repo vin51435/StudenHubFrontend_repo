@@ -48,6 +48,7 @@ const ROUTES: RouteConfig = [
     children: [
       { name: 'PROFILE', title: 'Profile', path: '/profile' },
       { name: 'CHATS', path: '/chats' },
+      { name: 'CREATE_COMMUNITY', path: '/create' },
     ],
   },
 ] as const;

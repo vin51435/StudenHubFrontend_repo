@@ -9,6 +9,7 @@ export const BASE_URLS = {
   auth: `${activeHost}/api/v1/auth`,
   user: `${activeHost}/api/v1/user`,
   userFormats: `${activeHost}/api/v1/userformat`,
+  center: `${activeHost}/api/v1/center`,
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -38,7 +39,17 @@ export const USER_ENDPOINTS = {
   CHAT_ID: '/chatid',
   GET_MESSAGES_BY_CHAT_ID: '/messages',
   CHATS: '/chats',
+
+  FEED: '/feed',
 } as const;
+
+export const CENTER_ENDPOINTS = {
+  COMMUNITY: '/community',
+
+  POSTS: '/posts',
+  POST: (id: string | number) => `/posts/${id}`,
+  POST_COMMENTS: (id: string | number) => `/posts/${id}/comments`,
+}
 
 export const FORMAT_ENDPOINTS = {
   GET_STATES: '/allstates',
@@ -58,6 +69,7 @@ export const flatEndpointObjects = {
   ...AUTH_ENDPOINTS,
   ...USER_ENDPOINTS,
   ...FORMAT_ENDPOINTS,
+  ...CENTER_ENDPOINTS
 } as const;
 
 const githubAuthBaseURL = BASE_URLS.githubAuth;

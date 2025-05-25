@@ -36,6 +36,24 @@ export interface IResponse<T = any> extends IBaseResponse {
   redirectUrl?: string;
 }
 
+export type DefaultProjectionType = Record<string, '0' | '1'>;
+export type SortOrder = 'asc' | 'desc';
+
+export interface IPaginationRequestQueries<T = any> extends ParsedQs {
+  page?: string;
+  pageSize?: string;
+  selectFields?: string;
+  sortOrder?: SortOrder;
+  sortField?: string;
+  projection?: string;
+  populateFields?: string;
+  defaultProjection?: DefaultProjectionType;
+  searchValue?: string;
+  searchFields?: string[] | string;
+  excludeIds?: string | string[]; // optional: to exclude some _id values
+  ids?: string | string[];
+}
+
 export interface IPaginatedResponse<T = any> extends IBaseResponse {
   data: T[];
   totalItems: number;

@@ -6,7 +6,7 @@ import { useSocket } from '@src/contexts/Socket.context';
 import { User } from '@src/types';
 import { MessageType } from 'antd/es/message/interface';
 import { post } from '@src/libs/apiConfig';
-import { useSocketChat } from '@src/contexts/useSocketChat';
+import { useSocketChat } from '@src/hooks/useSocketChat';
 
 const roles = {
   ai: {

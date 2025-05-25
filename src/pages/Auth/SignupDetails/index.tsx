@@ -33,13 +33,13 @@ const SignupAddDetails: React.FC = () => {
   const fetchCities = useCallback(
     debounce((value?: string) => {
       setSelectState((prev) => ({ ...prev, load: true }));
-      get<IPaginatedResponse<{ city: string }>>(`GET_CITIES`, {
+      get<{}, IPaginatedResponse<{ city: string }>>(`GET_CITIES`, {
         BASE_URLS: 'userFormats',
         queries: [{ searchValue: value ?? '', sortField: 'city' }],
       }).then((res) => {
         setSelectState((prev) => ({
           ...prev,
-          options: { cities: res.data.map((ele) => ({ label: ele.city, value: ele.city })) },
+          options: { cities: res?.data?.map((ele) => ({ label: ele.city, value: ele.city })) },
           load: false,
         }));
       });
