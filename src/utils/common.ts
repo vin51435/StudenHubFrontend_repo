@@ -89,3 +89,43 @@ export const flattenMenuItems = <T extends Record<string, any>>(
     return [current];
   }) as (T & { parentKeys: string[] })[];
 };
+
+/**
+ * Groups an array of objects by the specified key. If the `name` parameter is provided,
+ * the group names will be overwritten with the provided value.
+ *
+ * @param {T[]} array The array of objects to group.
+ * @param {string} key The key to group by.
+ * @param {string} [name] The name to overwrite the group names with.
+ * @returns {Record<string, T[]>} A record with the group names as keys and an array of objects as values.
+ *
+ * @example
+ * const array = [
+ *   { id: 1, type: 'A', name: 'John' },
+ *   { id: 2, type: 'B', name: 'Jane' },
+ *   { id: 3, type: 'A', name: 'Bob' },
+ * ];
+ *
+ * const result = groupArrayOfObjects(array, 'type');
+ * // result = {
+ * //   A: [{ id: 1, type: 'A', name: 'John' }, { id: 3, type: 'A', name: 'Bob' }],
+ * //   B: [{ id: 2, type: 'B', name: 'Jane' }],
+ * // };
+ *
+ */
+export const groupArrayOfObjects = <T extends Record<string, any>>(
+  array: T[],
+  key: string,
+  name?: string
+): Record<string, T[]> => {
+  return array.reduce((acc, item) => {
+    let group = item[key];
+    if (!group) return acc;
+    if (name) group = name;
+    if (!acc[group]) {
+      acc[group] = [];
+    }
+    acc[group].push(item);
+    return acc;
+  }, {} as Record<string, T[]>);
+};

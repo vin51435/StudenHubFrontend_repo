@@ -1,10 +1,15 @@
-import { post } from "@src/libs/apiConfig";
-import { activeHost } from "@src/libs/apiEndpoints";
-import { markAsRead, receiveNotification } from "@src/redux/reducers/notifications";
-import { HandleReadNotificationType, SocketContextType } from "@src/types/SocketContext.type";
-import { useContext, createContext, useState, useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { io, Socket } from "socket.io-client";
+import { post } from '@src/libs/apiConfig';
+import { activeHost } from '@src/libs/apiEndpoints';
+import {
+  markAsRead,
+  NotificationType,
+  receiveNotification,
+} from '@src/redux/reducers/notifications';
+import { SocketContextType } from '@src/types/SocketContext.type';
+import { notification } from 'antd';
+import { useContext, createContext, useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { io, Socket } from 'socket.io-client';
 
 const WEBPUSH_PUBLIC_KEY = import.meta.env.VITE_WEBPUSH_PUBLICKEY;
 const SocketContext = createContext<SocketContextType | null>(null);
@@ -32,7 +37,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         transports: ['websocket'],
       });
 
-      socket.on("newNotification", (notification) => {
+      socket.on('newNotification', (notification) => {
         console.log('New message notification received:', notification);
         dispatch(receiveNotification(notification));
       });
@@ -41,11 +46,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('Socket disconnected');
       });
 
-      socket.on("connect_error", (error) => {
+      socket.on('connect_error', (error) => {
         console.log('Socket connection error:', error.message);
       });
 
-      socket.on("socketError", (error) => {
+      socket.on('socketError', (error) => {
         console.log('Socket error:', error);
       });
 
@@ -64,7 +69,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       try {
-        const registration = await navigator.serviceWorker.register("/service-worker.js");
+        const registration = await navigator.serviceWorker.register('/service-worker.js');
 
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
@@ -84,16 +89,12 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  const handleReadNotification = ({ userId, type, notificationId = null }: HandleReadNotificationType) => {
-    console.log('handleReadNotification called with:', { userId, type, notificationId });
+  function readNotification(notificationId: string, type: NotificationType) {
     if (socketRef.current) {
-      socketRef.current.emit('readNotification', { userBId: userId, type, notificationId });
-      dispatch(markAsRead({ userId, type, notificationId }));
-    } else {
-      connectToSocket();
-      console.log('Socket is not connected, cannot emit readNotification event');
+      socketRef.current.emit('readNotification', notificationId);
+      dispatch(markAsRead({ type, notificationId }));
     }
-  };
+  }
 
   async function requestNotificationPermission() {
     const permission = await Notification.requestPermission();
@@ -102,7 +103,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, handleReadNotification }}>
+    <SocketContext.Provider value={{ socket: socketRef.current, readNotification }}>
       {children}
     </SocketContext.Provider>
   );

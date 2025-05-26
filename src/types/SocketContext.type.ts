@@ -1,9 +1,9 @@
-import { Socket } from "socket.io-client";
-import { NotificationType } from "./enum";
+import { Socket } from 'socket.io-client';
+import { NotificationType } from './enum';
 
-export interface HandleReadNotificationType { userId: string; type: NotificationType; notificationId?: string | null }
+export interface ReadNotification {}
 
 export interface SocketContextType {
-    socket: Socket | null;
-    handleReadNotification: (notification: HandleReadNotificationType) => void;
+  socket: Socket | null;
+  readNotification: (notificationId: string, type: NotificationType) => void;
 }

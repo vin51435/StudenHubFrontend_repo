@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, MenuProps, theme } from 'antd';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import ThemeToggle from '@src/components/themeToggle';
-import sidebarMenuItems, { MenuItem } from '@src/config/menuItems';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import sidebarMenuItems from '@src/config/menuItems';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
-import { ItemType, MenuItemType } from 'antd/es/menu/interface';
 import TopHeader from '@src/layouts/components/TopHeader';
 import { getRouteDetails } from '@src/utils/getRoutePath';
-import { SocketProvider } from '@src/contexts/Socket.context';
 import { searchArrayNestedObjByKey } from '@src/utils/common';
+import { SocketProvider } from '@src/contexts/Socket.context';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const siderStyle: React.CSSProperties = {
   // overflow: 'auto',
@@ -110,25 +108,30 @@ const App: React.FC = () => {
               style={toggleButtonStyle}
             />
           </section>
-          <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+          <Content
+            style={{
+              // margin: '24px 16px 0',
+              overflow: 'initial',
+            }}
+          >
             <div
+              className="h-full p-1"
               style={{
-                padding: 24,
                 textAlign: 'center',
                 background: colorBgContainer,
                 borderRadius: borderRadiusLG,
               }}
             >
               <Outlet />
-              {[...Array(10)].map((_, i) => (
-                <p key={i}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
-                  Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh
-                  elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed
-                  augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent
-                  taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-                </p>
-              ))}
+              {/* {[...Array(10)].map((_, i) => (
+              <p key={i}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent
+                libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum
+                imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper
+                porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti
+                sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+              </p>
+            ))} */}
             </div>
           </Content>
           {/* <Footer style={{ textAlign: 'center' }}>

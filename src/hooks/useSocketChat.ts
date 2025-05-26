@@ -1,8 +1,10 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { post } from '@src/libs/apiConfig';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@src/redux/store';
 import { useSocket } from '@src/contexts/Socket.context';
+import { groupArrayOfObjects } from '@src/utils/common';
+import { deleteNotification } from '@src/redux/reducers/notifications';
 
 type MessageStatus = 'local' | 'sent' | 'delivered' | 'read';
 type MessageAgency = 'local' | 'remote';
@@ -27,6 +29,7 @@ export type ResponseMessages = {
   senderUsername: string;
   content: string;
   status: MessageStatus; // No use
+  isRead: boolean;
   deleted: {
     status: boolean;
     by: string | null;
@@ -36,27 +39,39 @@ export type ResponseMessages = {
   updatedAt: string;
 };
 
-export function useSocketChat(chatId: string, recipientId: string) {
+export function useSocketChat(chatId?: string, recipientId?: string) {
   const [messages, setMessages] = useState<Record<string, ChatMessage[]>>({});
   const [chatLoaded, setChatLoaded] = useState(true);
   const userId = useSelector((state: RootState) => state.auth.user!._id);
+  const { newMessage: newMessageNotifications } = useSelector(
+    (state: RootState) => state.notification.notifications
+  );
   const socket = useSocket()?.socket!;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!socket) return;
     socket.on('receiveMessage', receiveMessage);
     return () => {
-      console.log('reciveMessage off');
       socket.off('receiveMessage', receiveMessage);
     };
   }, [socket]);
 
+  const chatNotifications = useMemo(() => {
+    return groupArrayOfObjects<ChatMessage>(
+      newMessageNotifications.filter((n) => n.isRead === false) as unknown as ChatMessage[],
+      'relatedChatId'
+    );
+  }, [newMessageNotifications]);
+
   const receiveMessage = useCallback((receiveMessageData: ChatMessage) => {
-    console.log('receiveMessagehandler hit');
+    console.log('receiveMessage', receiveMessageData);
     const message = {
       ...receiveMessageData,
       role: receiveMessageData.senderId === userId ? 'local' : ('remote' as MessageAgency),
     };
+
+    const chatId = message.chatId;
 
     setMessages((prev) => {
       const existingMessages = prev?.[chatId] || [];
@@ -77,7 +92,6 @@ export function useSocketChat(chatId: string, recipientId: string) {
       } else {
         updatedMessages = [...existingMessages, message];
       }
-      console.log('updatedMessages', updatedMessages);
       return {
         ...prev,
         [chatId]: updatedMessages,
@@ -87,7 +101,7 @@ export function useSocketChat(chatId: string, recipientId: string) {
 
   const sendMessage = useCallback(
     (content: string) => {
-      if (!socket) return;
+      if (!socket || !chatId || !recipientId) return;
 
       const localId = `local_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
@@ -122,6 +136,7 @@ export function useSocketChat(chatId: string, recipientId: string) {
   }
 
   async function fetchMessagesForChat() {
+    if (!chatId || !recipientId) return;
     if (messages?.[chatId]) return;
     const res = await post<{ chatId: string; messages: ResponseMessages[] }>(
       'GET_MESSAGES_BY_CHAT_ID',
@@ -134,16 +149,15 @@ export function useSocketChat(chatId: string, recipientId: string) {
     if (res?.data?.chatId) {
       setMessages((prev) => {
         const messages = res?.data?.messages
-          ?.map(
-            (msg) =>
-              ({
-                ...msg,
-                role: msg.senderId === userId ? 'local' : ('remote' as MessageAgency),
-                recipientId: msg.senderId === userId ? recipientId : userId,
-                timestamp: msg.createdAt,
-              } as ChatMessage)
-          )
-          .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()); // ascending
+          ?.map((msg) => {
+            return {
+              ...msg,
+              role: msg.senderId === userId ? 'local' : ('remote' as MessageAgency),
+              recipientId: msg.senderId === userId ? recipientId : userId,
+              timestamp: msg.createdAt,
+            } as ChatMessage;
+          })
+          .sort((a, b) => new Date(a!.timestamp).getTime() - new Date(b!.timestamp).getTime()); // ascending
 
         return { ...prev, [res.data!.chatId]: messages } as Record<string, ChatMessage[]>;
       });
@@ -162,5 +176,35 @@ export function useSocketChat(chatId: string, recipientId: string) {
     }
   }
 
-  return { messages, sendMessage, loadChatFn, joinChat, leaveChat, chatLoaded };
+  function markChatMessageNotificationsAsRead() {
+    console.log('markChatMessageNotificationsAsRead');
+    if (!socket || !chatId || !chatNotifications?.[chatId]) return;
+    const chatMessageIds = chatNotifications?.[chatId]?.map((msg) => msg._id) as string[];
+    if (!chatMessageIds?.length) return;
+
+    console.log('chatMessageIds', chatMessageIds);
+
+    dispatch(
+      deleteNotification({
+        type: 'newMessage',
+        notificationIds: chatMessageIds,
+      })
+    );
+
+    if (socket?.connected) {
+      socket.emit('deleteNotification', chatMessageIds);
+    }
+  }
+
+  return {
+    sendMessage,
+    loadChatFn,
+    joinChat,
+    leaveChat,
+    receiveMessage,
+    markChatMessageNotificationsAsRead,
+    messages,
+    chatLoaded,
+    chatNotifications,
+  };
 }

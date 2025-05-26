@@ -1,0 +1,26 @@
+@use '@styles/scss.import.scss' as *;
+
+.selected-chat {
+  position: relative;
+  background-color: $primary-light-color;
+
+  &:hover {
+    background-color: $secondary-light-color;
+    &::after {
+      border-color: transparent transparent transparent $secondary-light-color;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(100%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 15px;
+    border-color: transparent transparent transparent $primary-light-color;
+  }
+}

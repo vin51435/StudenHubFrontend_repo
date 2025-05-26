@@ -1,18 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ChatMessage } from '@src/hooks/useSocketChat';
 
-type NotificationType = 'newChat' | 'newMessage' | string;
+export type NotificationType = 'newChat' | 'newMessage';
 
 interface Notification {
   _id: string;
   type: NotificationType;
-  senderId?: string;
-  isRead?: boolean;
   [key: string]: unknown;
 }
 
 interface NotificationState {
   notifications: {
-    [key: string]: Notification[];
+    [key in NotificationType]: Notification[];
   };
 }
 
@@ -45,52 +44,46 @@ const notificationSlice = createSlice({
       state,
       action: PayloadAction<{
         type: NotificationType;
-        userId?: string;
-        notificationId?: string;
-      }>,
+        notificationIds: string[];
+      }>
     ) => {
-      const { type, userId, notificationId } = action.payload;
-      if (!state.notifications[type]) return;
+      console.log('DELETE NOTIFICATION', action.payload);
+      const { type, notificationIds } = action.payload;
+      if (!state.notifications[type].length) return;
 
-      state.notifications[type] = state.notifications[type].filter(
-        (notification) => {
-          if (type === 'newMessage') {
-            return notification.senderId !== userId;
-          } else {
-            return notification._id !== notificationId;
-          }
-        },
-      );
+      const updatedNotifications = state.notifications[type].filter((notification) => {
+        return !notificationIds.includes(notification._id);
+      });
+      return { ...state, notifications: { ...state.notifications, [type]: updatedNotifications } };
     },
 
     markAsRead: (
       state,
       action: PayloadAction<{
         type: NotificationType;
-        userId?: string;
-        notificationId?: string | null;
-      }>,
+        notificationIds: string[];
+      }>
     ) => {
-      const { type, userId, notificationId } = action.payload;
+      const { type, notificationIds } = action.payload;
       const notifications = state.notifications[type];
-      if (!notifications) return;
+      if (!notifications || !notificationIds) return;
 
-      if (type === 'newMessage' && userId) {
-        notifications.forEach((notif) => {
-          if (notif.senderId === userId) notif.isRead = true;
+      if (type === 'newMessage' && notificationIds) {
+        const updatedNotifications = notifications.map((n) => {
+          if (notificationIds.includes(n._id)) {
+            return { ...n, isRead: true };
+          }
+          return n;
         });
-      } else if (notificationId) {
-        const notificationToUpdate = notifications.find(
-          (n) => n._id === notificationId,
-        );
-        if (notificationToUpdate) notificationToUpdate.isRead = true;
+        return {
+          ...state,
+          notifications: { ...state.notifications, [type]: updatedNotifications },
+        };
       }
+      return state;
     },
 
-    clearNotifications: (
-      state,
-      action: PayloadAction<{ type?: NotificationType }>,
-    ) => {
+    clearNotifications: (state, action: PayloadAction<{ type?: NotificationType }>) => {
       const { type } = action.payload || {};
       if (type && state.notifications[type]) {
         state.notifications[type] = [];
@@ -136,4 +129,3 @@ export const {
 
 const notificationReducer = notificationSlice.reducer;
 export default notificationReducer;
-
