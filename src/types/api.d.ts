@@ -1,3 +1,4 @@
+import { DeepFlatten } from '@src/utils/type.utils';
 import {
   AUTH_ENDPOINTS,
   BASE_URLS,
@@ -6,6 +7,7 @@ import {
   FORMAT_ENDPOINTS,
   USER_ENDPOINTS,
 } from '../libs/apiEndpoints';
+import { ErrorCodes } from '@src/contants/errorCodes';
 
 export type BaseUrlType = keyof typeof BASE_URLS;
 
@@ -26,14 +28,16 @@ export interface IRequestQueue {
 }
 
 export interface IBaseResponse {
+  statusCode: number;
   status: string;
   message: string;
+  redirectUrl?: string;
+  errorCode?: DeepFlatten<typeof ErrorCodes>;
 }
 
 export interface IResponse<T = any> extends IBaseResponse {
   data?: T;
   authenticated?: boolean;
-  redirectUrl?: string;
 }
 
 export type DefaultProjectionType = Record<string, '0' | '1'>;
@@ -61,3 +65,5 @@ export interface IPaginatedResponse<T = any> extends IBaseResponse {
   currentPage: number;
   pageSize: number;
 }
+
+export interface IErrorResponse extends IBaseResponse {}

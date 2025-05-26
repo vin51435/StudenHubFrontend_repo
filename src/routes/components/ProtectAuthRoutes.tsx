@@ -43,7 +43,6 @@ const ProtectAuthRoutes: React.FC = () => {
         await navigate(getRoutePath('APP'));
       }
     } catch (error) {
-      console.error('Error signing up', error);
       // notif('Something went wrong');
     } finally {
       clearTimeout(timeoutId);
@@ -117,7 +116,13 @@ const ProtectAuthRoutes: React.FC = () => {
   if (checkingAuth || loading) return null;
 
   // ✅ If authenticated, continue to protected route
-  if (!isAuthenticated || (isAuthenticated && !checkingAuth && (location.pathname === getRoutePath('SIGNUP.DETAILS') || location.pathname === getRoutePath('SIGNUP.INTERESTS')))) {
+  if (
+    !isAuthenticated ||
+    (isAuthenticated &&
+      !checkingAuth &&
+      (location.pathname === getRoutePath('SIGNUP.DETAILS') ||
+        location.pathname === getRoutePath('SIGNUP.INTERESTS')))
+  ) {
     return <Outlet />;
   }
 

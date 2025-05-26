@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import store from '../redux/store';
 import { loginSuccess, setRedirectUrl } from '../redux/reducers/auth';
 import { BASE_URLS } from './apiEndpoints';
-import { BaseUrlType } from '../types';
+import { BaseUrlType, IErrorResponse } from '../types';
 import { ErrorCodes } from '@src/contants/errorCodes';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
@@ -12,7 +12,8 @@ function redirection(redirectUrl: string, errorCode?: string) {
   let redirectPath: string = redirectUrl;
 
   if (
-    (errorCode === ErrorCodes.CLIENT.UNAUTHENTICATED || errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_LOGIN) &&
+    (errorCode === ErrorCodes.CLIENT.UNAUTHENTICATED ||
+      errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_LOGIN) &&
     (window.location.pathname === getRoutePath('LOGIN') ||
       window.location.pathname === getRoutePath('SIGNUP'))
   ) {
@@ -75,21 +76,16 @@ export const attachInterceptors = (api: AxiosInstance, queries?: Array<Record<st
       return response;
     },
     (error) => {
-      const { status, errorCode, redirectUrl } = error?.response?.data || {};
+      const errorData = error?.response?.data as IErrorResponse;
+      const { status, statusCode, errorCode, redirectUrl } = errorData || {};
 
-      if (status === 401 || errorCode === ErrorCodes.SIGNUP.REDIRECT_TO_LOGIN) {
-        console.warn('Unauthorized - redirecting to login');
-      } else if (status === 500) {
-        console.error('Server error - please try again later');
-      } else {
-        console.error('Network error:', error.message);
-      }
+      console.error('Error:', error.message);
 
       if (redirectUrl) {
         redirection(redirectUrl, errorCode);
       }
 
-      return Promise.reject(error);
+      return Promise.reject(errorData);
     }
   );
 };

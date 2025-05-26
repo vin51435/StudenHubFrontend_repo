@@ -1,14 +1,16 @@
 import { useEffect, useState, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
 import { post } from '@src/libs/apiConfig';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux/store';
 import { useSocket } from '@src/contexts/Socket.context';
 
 type MessageStatus = 'local' | 'sent' | 'delivered' | 'read';
+type MessageAgency = 'local' | 'remote';
 
 export interface ChatMessage {
-  id?: string;
+  role: MessageAgency;
+  localId?: string;
+  _id?: string;
   chatId: string;
   recipientId: string;
   senderId?: string;
@@ -18,72 +20,147 @@ export interface ChatMessage {
   status: MessageStatus;
 }
 
-export interface InboxChats {
-  [chatId: string]: ChatMessage[];
-}
+export type ResponseMessages = {
+  _id: string;
+  chatId: string;
+  senderId: string;
+  senderUsername: string;
+  content: string;
+  status: MessageStatus; // No use
+  deleted: {
+    status: boolean;
+    by: string | null;
+  }; // no use
+  reactions: []; // not use
+  createdAt: string;
+  updatedAt: string;
+};
 
 export function useSocketChat(chatId: string, recipientId: string) {
-  const [messages, setMessages] = useState<InboxChats>();
-  const [loadChat, setLoadChat] = useState(true);
-  const { _id: userId } = useSelector((state: RootState) => state.auth.user);
+  const [messages, setMessages] = useState<Record<string, ChatMessage[]>>({});
+  const [chatLoaded, setChatLoaded] = useState(true);
+  const userId = useSelector((state: RootState) => state.auth.user!._id);
   const socket = useSocket()?.socket!;
 
   useEffect(() => {
-    socket.on('receiveMessage', receiveMessage);
-
-    return () => {
-      socket.off('receiveMessage', receiveMessage);
-      if (socket.connected) {
-        socket.emit('leaveChat', chatId);
-      }
-    };
-  }, [socket, chatId]);
-
-  const receiveMessage = useCallback((receiveMessageData: ChatMessage) => {
-    console.log('recieveMessage', receiveMessageData);
-    setMessages((prev) => ({
-      ...prev,
-      [receiveMessageData.chatId]: [...(prev?.[receiveMessageData.chatId] || []), receiveMessageData],
-    }))
-  }, [socket])
-
-  const sendMessage = useCallback((content: string) => {
     if (!socket) return;
-
-    const localId = `local_${Date.now()}`;
-    const message: ChatMessage = {
-      id: localId,
-      chatId,
-      recipientId,
-      content,
-      timestamp: new Date().toISOString(),
-      status: 'local',
+    socket.on('receiveMessage', receiveMessage);
+    return () => {
+      console.log('reciveMessage off');
+      socket.off('receiveMessage', receiveMessage);
     };
-
-    // Add local message immediately
-    setMessages((prev) => ({ ...prev, [chatId]: [...(prev?.[chatId] || []), message] }));
-    // Emit to server
-    socket.emit('sendMessage', { ...message, status: 'sent' });
   }, [socket]);
 
+  const receiveMessage = useCallback((receiveMessageData: ChatMessage) => {
+    console.log('receiveMessagehandler hit');
+    const message = {
+      ...receiveMessageData,
+      role: receiveMessageData.senderId === userId ? 'local' : ('remote' as MessageAgency),
+    };
+
+    setMessages((prev) => {
+      const existingMessages = prev?.[chatId] || [];
+      const index = existingMessages.findIndex(
+        (msg) =>
+          (msg.localId && msg.localId === message.localId) || (msg._id && msg._id === message._id)
+      );
+
+      let updatedMessages;
+      if (index !== -1) {
+        // Replace local message with server-confirmed message (ensure _id replaces localId)
+        updatedMessages = [...existingMessages];
+        updatedMessages[index] = {
+          ...updatedMessages[index],
+          ...message,
+          localId: undefined, // remove localId to avoid key conflicts
+        };
+      } else {
+        updatedMessages = [...existingMessages, message];
+      }
+      console.log('updatedMessages', updatedMessages);
+      return {
+        ...prev,
+        [chatId]: updatedMessages,
+      };
+    });
+  }, []);
+
+  const sendMessage = useCallback(
+    (content: string) => {
+      if (!socket) return;
+
+      const localId = `local_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
+      const message: ChatMessage = {
+        localId,
+        chatId,
+        recipientId,
+        content,
+        timestamp: new Date().toISOString(),
+        status: 'local',
+        role: 'local',
+      };
+
+      setMessages((prev) => {
+        const existingMessages = prev?.[chatId] || [];
+        return {
+          ...prev,
+          [chatId]: [...existingMessages, message],
+        };
+      });
+
+      socket.emit('sendMessage', message);
+    },
+    [socket, chatId, recipientId]
+  );
+
   async function loadChatFn() {
-    setLoadChat(true)
-    await joinChat();
-    await fetchMessagesForChat().finally(() => setLoadChat(false))
+    setChatLoaded(true);
+    joinChat();
+    await fetchMessagesForChat();
+    setChatLoaded(false);
   }
 
-  async function joinChat() {
-    if (socket.connected) {
+  async function fetchMessagesForChat() {
+    if (messages?.[chatId]) return;
+    const res = await post<{ chatId: string; messages: ResponseMessages[] }>(
+      'GET_MESSAGES_BY_CHAT_ID',
+      {
+        BASE_URLS: 'user',
+        data: { chatId, oldesMessageDat: null },
+        queries: [{ sortOrder: 'asc' }],
+      }
+    );
+    if (res?.data?.chatId) {
+      setMessages((prev) => {
+        const messages = res?.data?.messages
+          ?.map(
+            (msg) =>
+              ({
+                ...msg,
+                role: msg.senderId === userId ? 'local' : ('remote' as MessageAgency),
+                recipientId: msg.senderId === userId ? recipientId : userId,
+                timestamp: msg.createdAt,
+              } as ChatMessage)
+          )
+          .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()); // ascending
+
+        return { ...prev, [res.data!.chatId]: messages } as Record<string, ChatMessage[]>;
+      });
+    }
+  }
+
+  function joinChat() {
+    if (socket?.connected) {
       socket.emit('joinChat', chatId);
     }
   }
 
-  async function fetchMessagesForChat() {
-    if (messages?.[chatId]) return
-    const res = await post('GET_MESSAGES_BY_CHAT_ID', { BASE_URLS: 'user', data: { chatId, oldesMessageDat: null } })
-    console.log('fetchMessagesForChat', res.data);
-    // setChatMessages({ ...chatMessages, [chatId]: res.data });
+  function leaveChat() {
+    if (socket?.connected) {
+      socket.emit('leaveChat', chatId);
+    }
   }
 
-  return { messages, sendMessage, loadChatFn };
+  return { messages, sendMessage, loadChatFn, joinChat, leaveChat, chatLoaded };
 }

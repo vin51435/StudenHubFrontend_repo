@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { ApiEndpointKey, IMethodOptions, IRequestQueue, IResponse } from '../types';
+import { ApiEndpointKey, IErrorResponse, IMethodOptions, IRequestQueue, IResponse } from '../types';
 import { createApiInstance } from './interceptors';
 import { getApiEndpoint } from '../utils/apiUtils';
 
@@ -37,9 +37,9 @@ const handleResponse = (response: AxiosResponse) => {
   return response.data;
 };
 
-const handleError = (error: any) => {
-  const msg = error?.response?.data?.message || 'Server Error';
-  console.error('API Error:', msg);
+const handleError = (error: IErrorResponse) => {
+  const msg = error?.message || 'Server Error';
+  console.error('Error:', msg);
   if (import.meta.env.VITE_NODE_ENV !== 'production') throw new Error(msg);
 };
 
@@ -63,7 +63,7 @@ export const get = async <ResponseBody = any, T = IResponse<ResponseBody>>(
 
 export const post = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue' | 'queries'> = {}
 ): Promise<IResponse<ResponseBody>> => {
   const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
   const api = createApiInstance(BASE_URLS, headers);

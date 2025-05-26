@@ -26,7 +26,7 @@ const siderStyle: React.CSSProperties = {
 const toggleButtonStyle: React.CSSProperties = {
   fontSize: '16px',
   position: 'absolute',
-  top: '10%',
+  top: '30px',
   left: '90%',
   backgroundColor: 'white',
   padding: '0px',
