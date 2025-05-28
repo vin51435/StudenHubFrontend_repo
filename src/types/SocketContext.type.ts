@@ -5,5 +5,5 @@ export interface ReadNotification {}
 
 export interface SocketContextType {
   socket: Socket | null;
-  readNotification: (notificationId: string, type: NotificationType) => void;
+  readNotification: (notificationIds: string[], type: NotificationType) => void;
 }

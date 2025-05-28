@@ -13,9 +13,12 @@ export type BaseUrlType = keyof typeof BASE_URLS;
 
 export type ApiEndpointKey = keyof typeof flatEndpointObjects;
 
+export type RequestBodyType = 'json' | 'form-data';
+
 export interface IMethodOptions {
   BASE_URLS?: BaseUrlType;
   data?: Record<string, any>;
+  bodyType?: RequestBodyType;
   headers?: Record<string, any>;
   queue?: boolean;
   queries?: Record<string, any>[];

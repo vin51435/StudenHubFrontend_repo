@@ -1,0 +1,11 @@
+.ant-modal-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .ant-modal {
+    margin-top: auto;
+    margin-bottom: auto;
+    top: auto !important;
+    padding-bottom: 0px !important;
+  }
+}

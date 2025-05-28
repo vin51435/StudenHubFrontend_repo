@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, MenuProps, theme } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import sidebarMenuItems from '@src/config/menuItems';
+import { getSidebarMenuItems } from '@src/config/menuItems';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import TopHeader from '@src/layouts/components/TopHeader';
 import { getRouteDetails } from '@src/utils/getRoutePath';
 import { searchArrayNestedObjByKey } from '@src/utils/common';
-import { SocketProvider } from '@src/contexts/Socket.context';
+import { useModal } from '@src/contexts/Model.context';
 
 const { Header, Content, Sider } = Layout;
 
@@ -19,27 +19,26 @@ const siderStyle: React.CSSProperties = {
   bottom: 0,
   scrollbarWidth: 'thin',
   scrollbarGutter: 'stable',
+  backgroundColor: 'transparent',
 };
 
 const toggleButtonStyle: React.CSSProperties = {
-  fontSize: '16px',
-  position: 'absolute',
-  top: '30px',
-  left: '90%',
-  backgroundColor: 'white',
-  padding: '0px',
-  margin: '0px',
+  marginTop: '4px',
 };
 
-const App: React.FC = () => {
+const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [routeDetails, setRouteDetails] = useState({});
   const [selectedKey, setSelectedKey] = useState<string | null>();
+
+  const { openModal } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const menuItems = getSidebarMenuItems(collapsed, openModal);
 
   useEffect(() => {
     setSelectedMenu();
@@ -53,7 +52,7 @@ const App: React.FC = () => {
     setSelectedKey(() => {
       return (
         searchArrayNestedObjByKey(
-          sidebarMenuItems,
+          menuItems,
           'path',
           location.pathname,
           'children'
@@ -63,67 +62,72 @@ const App: React.FC = () => {
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    const item = searchArrayNestedObjByKey(sidebarMenuItems, 'key', e.key, 'children');
+    const item = searchArrayNestedObjByKey(menuItems, 'key', e.key, 'children');
     if (item?.path) {
       navigate(item.path);
     }
   };
 
   return (
-    <SocketProvider>
-      <Layout className="h-full">
-        <Header
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        >
-          <div className="!ml-auto !mr-3 h-full w-full">
-            <TopHeader />
-          </div>
-        </Header>
-        <Layout hasSider className="overflow-auto h-full sticky">
-          <section style={siderStyle} className="relative">
-            <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed}>
+    <Layout className="h-full">
+      <Header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          padding: 0,
+          background: colorBgContainer,
+        }}
+      >
+        <div className="!ml-auto !mr-3 h-full w-full">
+          <TopHeader />
+        </div>
+      </Header>
+      <Layout hasSider className="overflow-auto h-full sticky">
+        <section style={siderStyle} className="relative">
+          <div className="flex bg-white relative h-full justify-between">
+            <Sider
+              style={siderStyle}
+              trigger={null}
+              collapsible
+              collapsed={collapsed}
+              collapsedWidth={0}
+            >
               <Menu
-                theme="dark"
                 mode="inline"
                 selectedKeys={selectedKey ? [selectedKey] : []}
                 onClick={handleMenuClick}
-                items={sidebarMenuItems}
+                items={menuItems}
               />
             </Sider>
-
             <Button
-              className="absolute top-2 left-2 z-10"
+              className="absolute t"
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={() => setCollapsed(!collapsed)}
               style={toggleButtonStyle}
             />
-          </section>
-          <Content
+          </div>
+        </section>
+        <Content
+          style={{
+            // margin: '24px 16px 0',
+            overflow: 'initial',
+          }}
+        >
+          <div
+            className="h-full p-1"
             style={{
-              // margin: '24px 16px 0',
-              overflow: 'initial',
+              textAlign: 'center',
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
             }}
           >
-            <div
-              className="h-full p-1"
-              style={{
-                textAlign: 'center',
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
-              <Outlet />
-              {/* {[...Array(10)].map((_, i) => (
+            <Outlet />
+            {/* {[...Array(10)].map((_, i) => (
               <p key={i}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent
                 libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum
@@ -132,15 +136,11 @@ const App: React.FC = () => {
                 sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
               </p>
             ))} */}
-            </div>
-          </Content>
-          {/* <Footer style={{ textAlign: 'center' }}>
-          StudenHub ©{new Date().getFullYear()} Created by VIN
-        </Footer> */}
-        </Layout>
+          </div>
+        </Content>
       </Layout>
-    </SocketProvider>
+    </Layout>
   );
 };
 
-export default App;
+export default MainLayout;

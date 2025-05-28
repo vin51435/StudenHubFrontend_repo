@@ -5,6 +5,7 @@ import { Avatar, Flex } from 'antd';
 import { User } from '@src/types';
 import { ChatMessage, useSocketChat } from '@src/hooks/useSocketChat';
 import DefaultAvatar from '/profile-default.svg';
+import { useSocket } from '@src/contexts/Socket.context';
 
 const roles = {
   remote: {
@@ -28,6 +29,7 @@ interface ChatProps {
 
 const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
   const [content, setContent] = useState('');
+  const socket = useSocket()?.socket;
   const {
     messages,
     sendMessage,
@@ -50,7 +52,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
         joinedRef.current = false;
       }
     };
-  }, [chatId]);
+  }, [chatId, socket]);
 
   const currentMessages = messages?.[chatId] || [];
 

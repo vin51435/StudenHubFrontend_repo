@@ -1,5 +1,16 @@
 @use '@styles/scss.import.scss' as *;
 
+.ant-menu.ant-menu-root {
+  border: none !important;
+  .ant-menu-item {
+    &.ant-menu-item-selected {
+      .ant-menu-title-content {
+        // color: white !important;
+      }
+    }
+  }
+}
+
 .selected-chat {
   position: relative;
   background-color: $primary-light-color;

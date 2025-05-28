@@ -52,9 +52,7 @@ export const Profile: React.FC = () => {
     try {
       const response = await patch('USER_PICTURE', {
         BASE_URLS: 'user',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        bodyType: 'form-data',
         data: formData,
       });
 
@@ -95,7 +93,7 @@ export const Profile: React.FC = () => {
         <Col className="flex flex-col items-center">
           <ImageUpload
             multiple={false}
-            value={user?.profilePicture ?? undefined}
+            base64URLValue={user?.profilePicture! ?? undefined}
             onChange={(files) => {
               // if (!files.length) return;
               handleImageUpload(files[0].file);

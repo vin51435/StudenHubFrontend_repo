@@ -21,8 +21,10 @@ const ProtectedRoutes: React.FC = () => {
   useEffect(() => {
     dispatch(setLoading(true));
     Promise.all([verifyUserAuthenticity()]).finally(() => {
-      setTimeout(() => setCheckingAuth(false), 0);
-      dispatch(setLoading(false));
+      setTimeout(() => {
+        setCheckingAuth(false);
+        dispatch(setLoading(false));
+      }, 0);
     });
   }, []);
 

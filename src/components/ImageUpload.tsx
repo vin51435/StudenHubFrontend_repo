@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { GetProp, UploadProps, UploadFile, Upload, Image } from 'antd';
-import { UploadFileStatus } from 'antd/es/upload/interface';
-import React, { useState, useEffect } from 'react';
+import { UploadChangeParam, UploadFileStatus } from 'antd/es/upload/interface';
+import React, { useState, useEffect, useCallback } from 'react';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -13,38 +13,64 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-interface ImageUploadProps {
-  multiple?: boolean;
-  value?: string | string[]; // initial image(s)
-  onChange?: (files: { base64: string; file: File }[]) => void;
+interface ImageDetails {
+  name: string;
+  size?: number;
+  type?: string;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ multiple = false, value, onChange }) => {
+interface ImageUploadProps {
+  multiple?: boolean;
+  base64URLValue?: string | string[]; // initial image(s)
+  onChange?: (files: { base64: string; file: File }[]) => void;
+  imageDetails?: ImageDetails[];
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({
+  multiple = false,
+  base64URLValue,
+  onChange,
+  imageDetails,
+}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   useEffect(() => {
-    if (value) {
-      const initialFiles = (Array.isArray(value) ? value : [value]).map((src, index) => ({
-        uid: `-init-${index}`,
-        name: `image-${index}`,
-        status: 'done' as UploadFileStatus,
-        url: src,
-      }));
+    if (base64URLValue) {
+      const initialFiles: UploadFile[] = (
+        Array.isArray(base64URLValue) ? base64URLValue : [base64URLValue]
+      ).map((src, index) => {
+        const file: UploadFile = {
+          uid: `-init-${index}`,
+          name: `image-${index}`,
+          status: 'done' as UploadFileStatus,
+        };
+        if (!src.startsWith('https://')) {
+          file.thumbUrl = src;
+        } else {
+          file.url = src;
+        }
+        return file;
+      });
       setFileList(initialFiles);
     }
-  }, [value]);
+  }, [base64URLValue]);
 
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
+  const handlePreview = useCallback(
+    async (file: UploadFile) => {
+      if (!file.url && !file.preview) {
+        const base64 = await getBase64(file.originFileObj as FileType);
+        file.preview = base64;
+      }
+      setPreviewImage(file.url || (file.preview as string));
+      setPreviewOpen(true);
+    },
+    [base64URLValue]
+  );
 
-  const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
+  const handleChange: UploadProps['onChange'] = async (uploadChange: UploadChangeParam) => {
+    const newFileList = uploadChange.fileList;
     setFileList(newFileList);
 
     const result = await Promise.all(
@@ -61,16 +87,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ multiple = false, value, onCh
         };
       })
     );
-
     onChange?.(result);
   };
 
-  const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 0 }}>Upload</div>
-    </button>
-  );
+  const uploadButton = () => {
+    const count = fileList.length;
+    const details = imageDetails?.[count];
+    return (
+      <button style={{ border: 0, background: 'none' }} type="button">
+        <PlusOutlined />
+        <div style={{ marginTop: 0 }}>{`${details?.name || 'Upload'} `}</div>
+      </button>
+    );
+  };
 
   return (
     <>
@@ -80,7 +109,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ multiple = false, value, onCh
         listType="picture-card"
         fileList={fileList}
         onPreview={handlePreview}
-        onChange={handleChange}
+        onChange={(info) => {
+          handleChange(info);
+        }}
         beforeUpload={() => false} // prevents auto-upload
         multiple={multiple}
         pastable
@@ -88,10 +119,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ multiple = false, value, onCh
         {multiple
           ? fileList.length >= 8
             ? null
-            : uploadButton
+            : uploadButton()
           : fileList.length >= 1
           ? null
-          : uploadButton}
+          : uploadButton()}
       </Upload>
       {previewImage && (
         <Image

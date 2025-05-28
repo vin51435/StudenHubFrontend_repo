@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import store from '../redux/store';
 import { loginSuccess, setRedirectUrl } from '../redux/reducers/auth';
 import { BASE_URLS } from './apiEndpoints';
-import { BaseUrlType, IErrorResponse } from '../types';
+import { BaseUrlType, IErrorResponse, RequestBodyType } from '../types';
 import { ErrorCodes } from '@src/contants/errorCodes';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
@@ -95,19 +95,23 @@ export const attachInterceptors = (api: AxiosInstance, queries?: Array<Record<st
  */
 export const createApiInstance = (
   baseURLKeyOrUrl?: BaseUrlType,
-  headers: Record<string, string> = {},
+  bodyType: RequestBodyType = 'json',
   queries?: Array<Record<string, string>>
 ): AxiosInstance => {
   const selectedBaseURL = BASE_URLS[baseURLKeyOrUrl as keyof typeof BASE_URLS] || baseURLKeyOrUrl;
 
-  const defaultHeaders = {
+  const headers = {
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': '69420',
   };
 
+  if (bodyType === 'form-data') {
+    headers['Content-Type'] = 'multipart/form-data';
+  }
+
   const instance = axios.create({
     baseURL: selectedBaseURL,
-    headers: Object.keys(headers).length ? headers : defaultHeaders,
+    headers,
   });
 
   attachInterceptors(instance, queries);

@@ -46,14 +46,17 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
   const { newMessage: newMessageNotifications } = useSelector(
     (state: RootState) => state.notification.notifications
   );
-  const socket = useSocket()?.socket!;
   const dispatch = useDispatch();
+  const socketContext = useSocket();
+  const socket = socketContext?.socket;
 
   useEffect(() => {
-    if (!socket) return;
-    socket.on('receiveMessage', receiveMessage);
+    if (!socket || !socket.connected) return;
+
+    socket?.on('receiveMessage', receiveMessage);
+
     return () => {
-      socket.off('receiveMessage', receiveMessage);
+      socket?.off('receiveMessage', receiveMessage);
     };
   }, [socket]);
 
@@ -64,7 +67,7 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
     );
   }, [newMessageNotifications]);
 
-  const receiveMessage = useCallback((receiveMessageData: ChatMessage) => {
+  const receiveMessage = (receiveMessageData: ChatMessage) => {
     console.log('receiveMessage', receiveMessageData);
     const message = {
       ...receiveMessageData,
@@ -97,7 +100,7 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
         [chatId]: updatedMessages,
       };
     });
-  }, []);
+  };
 
   const sendMessage = useCallback(
     (content: string) => {
@@ -128,12 +131,26 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
     [socket, chatId, recipientId]
   );
 
-  async function loadChatFn() {
+  const loadChatFn = useCallback(async () => {
     setChatLoaded(true);
-    joinChat();
-    await fetchMessagesForChat();
-    setChatLoaded(false);
-  }
+    async function connectToChat() {
+      joinChat();
+      await fetchMessagesForChat();
+      setChatLoaded(false);
+    }
+
+    async function retryConnect() {
+      await connectToChat();
+      setTimeout(() => {
+        socket?.emit('check-room', chatId, (isInRoom: boolean) => {
+          console.log('In room?', isInRoom);
+          if (!isInRoom) retryConnect();
+        });
+      }, 500);
+    }
+
+    retryConnect();
+  }, [chatId, socket]);
 
   async function fetchMessagesForChat() {
     if (!chatId || !recipientId) return;
@@ -165,13 +182,13 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
   }
 
   function joinChat() {
-    if (socket?.connected) {
+    if (socket) {
       socket.emit('joinChat', chatId);
     }
   }
 
   function leaveChat() {
-    if (socket?.connected) {
+    if (socket) {
       socket.emit('leaveChat', chatId);
     }
   }
@@ -191,7 +208,7 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
       })
     );
 
-    if (socket?.connected) {
+    if (socket) {
       socket.emit('deleteNotification', chatMessageIds);
     }
   }

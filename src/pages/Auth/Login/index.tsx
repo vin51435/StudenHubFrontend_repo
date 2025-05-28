@@ -48,22 +48,9 @@ const Login: React.FC = () => {
           lg={16}
           className="right_container login_panel_image hidden md:block h-full"
           style={{
-            // background:
-            //   'radial-gradient(circle at top left, #003c7d, #0c67bd), radial-gradient(circle at top right, #0f71c6, transparent 70%), radial-gradient(circle at bottom left, #00a2ff, transparent 70%), radial-gradient(circle at bottom right, #b3e0ff, transparent 70%);',
-            // background: 'linear-gradient(to bottom right, #003c7d, #0c67bd)',
             display: 'flex',
           }}
-        >
-          {/* <Image
-            wrapperClassName="[&&]:m-auto"
-            src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginnarrow.png"
-            // src="https://studenhub-media.s3.ap-south-1.amazonaws.com/app/loginpanel.jpg"
-            preview={false}
-            className="object-cover object-left-top w-full overflow-clip "
-            alt="StudenHub"
-            loading="lazy"
-          /> */}
-        </Col>
+        ></Col>
       </Row>
     </div>
   );

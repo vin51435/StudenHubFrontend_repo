@@ -8,6 +8,7 @@
 @use '@styles/layout/_desktopWebsiteNavbar';
 @use '@styles/layout/_mobileWebsiteNavbar';
 @use '@styles/layout/_deskMenuBar';
+@use '@styles/Pages/_modal.scss';
 
 // Auth pages(login/signup) Styles
 @use '@styles/authPages/authPages.scss';

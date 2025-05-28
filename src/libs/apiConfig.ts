@@ -47,10 +47,10 @@ const handleError = (error: IErrorResponse) => {
 
 export const get = async <ResponseBody = any, T = IResponse<ResponseBody>>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOptions, 'BASE_URLS' | 'headers' | 'queue' | 'queries'> = {}
+  options: Pick<IMethodOptions, 'BASE_URLS' | 'bodyType' | 'queue' | 'queries'> = {}
 ): Promise<T> => {
-  const { BASE_URLS, headers = {}, queue = false, queries } = options;
-  const api = createApiInstance(BASE_URLS, headers, queries);
+  const { BASE_URLS, bodyType, queue = false, queries } = options;
+  const api = createApiInstance(BASE_URLS, bodyType, queries);
 
   if (queue) {
     return addToQueue(() =>
@@ -63,10 +63,10 @@ export const get = async <ResponseBody = any, T = IResponse<ResponseBody>>(
 
 export const post = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue' | 'queries'> = {}
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'bodyType' | 'queue' | 'queries'> = {}
 ): Promise<IResponse<ResponseBody>> => {
-  const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
-  const api = createApiInstance(BASE_URLS, headers);
+  const { data = {}, BASE_URLS, bodyType, queue = false } = options;
+  const api = createApiInstance(BASE_URLS, bodyType);
 
   if (queue) {
     return addToQueue(() =>
@@ -79,10 +79,10 @@ export const post = async <ResponseBody = any>(
 
 export const put = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'bodyType' | 'bodyType' | 'queue'> = {}
 ): Promise<IResponse<ResponseBody>> => {
-  const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
-  const api = createApiInstance(BASE_URLS, headers);
+  const { data = {}, BASE_URLS, bodyType, queue = false } = options;
+  const api = createApiInstance(BASE_URLS, bodyType);
 
   if (queue) {
     return addToQueue(() =>
@@ -95,10 +95,10 @@ export const put = async <ResponseBody = any>(
 
 export const patch = async <ResponseBody = any>(
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'bodyType' | 'queue' | 'bodyType'> = {}
 ): Promise<ResponseBody> => {
-  const { data = {}, BASE_URLS, headers = {}, queue = false } = options;
-  const api = createApiInstance(BASE_URLS, headers);
+  const { data = {}, BASE_URLS, bodyType, queue = false } = options;
+  const api = createApiInstance(BASE_URLS, bodyType);
 
   if (queue) {
     return addToQueue(() =>
@@ -111,10 +111,10 @@ export const patch = async <ResponseBody = any>(
 
 export const deleteResource = async (
   apiEndpoint: ApiEndpointKey,
-  options: Pick<IMethodOptions, 'BASE_URLS' | 'headers' | 'queue'> = {}
+  options: Pick<IMethodOptions, 'BASE_URLS' | 'bodyType' | 'queue'> = {}
 ) => {
-  const { BASE_URLS, headers = {}, queue = false } = options;
-  const api = createApiInstance(BASE_URLS, headers);
+  const { BASE_URLS, bodyType, queue = false } = options;
+  const api = createApiInstance(BASE_URLS, bodyType);
 
   if (queue) {
     return addToQueue(() =>

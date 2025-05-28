@@ -25,7 +25,7 @@ const Chats = () => {
   // 1. Load all chat participants
   useEffect(() => {
     (async () => {
-      await fetchInbox();
+      fetchInbox();
       setLoading({ ...loading, loadingInbox: false });
     })();
   }, [chatIds]);
