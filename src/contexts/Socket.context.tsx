@@ -69,7 +69,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       try {
-        const registration = await navigator.serviceWorker.register('/service-worker.js');
+        const registration = await navigator.serviceWorker.register('/service-worker.js', {
+          scope: '/',
+        });
 
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
