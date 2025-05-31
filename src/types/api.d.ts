@@ -68,6 +68,7 @@ export interface IPaginatedResponse<T = any> extends IBaseResponse {
   totalPages: number;
   currentPage: number;
   pageSize: number;
+  hasMore: boolean;
 }
 
 export interface IErrorResponse extends IBaseResponse {}

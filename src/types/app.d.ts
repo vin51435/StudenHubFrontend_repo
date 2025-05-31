@@ -37,3 +37,24 @@ export interface ICommunity {
   updatedAt: string;
   __v: number;
 }
+
+interface IPost {
+  title: string;
+  slug: string;
+  content?: string;
+  mediaUrls: string[];
+  tags: (string | ObjectId)[];
+  communityId: ObjectId;
+  authorId: ObjectId;
+  views: number;
+  upvotesCount: number;
+  downvotesCount: number;
+  commentsCount: number;
+  savesCount: number;
+  popularityScore: number;
+  popularityUpdatedAt?: Date;
+  isDeleted?: boolean;
+  isFlagged?: boolean;
+  isApproved?: boolean;
+  flagReason?: string;
+}

@@ -2,7 +2,7 @@ import { searchModel } from '@src/api/searchModel';
 import { get, patch, post } from '@src/libs/apiConfig';
 import { CENTER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IPaginationRequestQueries } from '@src/types';
-import { ICommunity } from '@src/types/app';
+import { ICommunity, IPost } from '@src/types/app';
 import { PostSortOption, TimeRangeOption } from '@src/types/contants';
 import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
@@ -38,7 +38,7 @@ class CommunityOp {
   static async fetchCommunityDetails(communitySlug?: string) {
     if (!communitySlug) {
       if (!this.communitySlug) {
-        console.error('missing communitySlug');
+        return null;
       }
       communitySlug = this.communitySlug!;
     }
@@ -60,7 +60,12 @@ class CommunityOp {
     this.fetchCommunityDetails(slug);
   }
 
-  static async getAllPosts(communityId: string, sort: PostSortOption, range: TimeRangeOption) {
+  static async getAllPosts(
+    communityId: string,
+    page: string,
+    sort?: PostSortOption,
+    range?: TimeRangeOption
+  ) {
     if (!communityId) {
       if (!this.communityId) {
         console.error('missing communityId');
@@ -68,10 +73,11 @@ class CommunityOp {
       communityId = this.communityId!;
     }
 
-    const res = await searchModel<ICommunity>('center', 'COMMUNITY', {
-      ids: communityId,
+    const res = await searchModel<IPost>('center', CENTER_ENDPOINTS.COMMUNITY_POSTS(communityId), {
+      page,
       sortField: sort,
       range,
+      pageSize: '10',
     });
     return res || [];
   }
@@ -93,14 +99,14 @@ class CommunityOp {
   }
 
   static async _followToggle(communityId?: string) {
-    console.log('communityId', communityId);
     if (!communityId) {
       if (!this.communityId) return null;
       communityId = this.communityId;
     }
-    void patch(CENTER_ENDPOINTS.COMMUNITY_FOLLOW_TOGGLE(communityId), {
+    const res = await patch(CENTER_ENDPOINTS.COMMUNITY_FOLLOW_TOGGLE(communityId), {
       BASE_URLS: 'center',
     });
+    return res;
   }
 
   static async createPost(data: FormData, communityId?: string) {
