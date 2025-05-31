@@ -113,7 +113,7 @@ const MainLayout: React.FC = () => {
           </div>
         </section>
         <Content
-          className=" sm:mx-auto max-w-9/12 h-full"
+          className=" sm:mx-auto max-w-[1120px] h-full"
           style={{
             // margin: '24px 16px 0',
             overflow: 'initial',
@@ -128,15 +128,6 @@ const MainLayout: React.FC = () => {
             }}
           >
             <Outlet />
-            {/* {[...Array(10)].map((_, i) => (
-              <p key={i}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent
-              libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum
-              imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper
-              porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti
-              sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-              </p>
-              ))} */}
           </div>
         </Content>
       </Layout>

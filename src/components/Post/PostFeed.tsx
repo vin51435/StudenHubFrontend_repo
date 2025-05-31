@@ -94,18 +94,18 @@ const CommunityFeed = ({ communityId }: { communityId: string }) => {
   };
 
   return (
-    <div className="h-[80vh] overflow-auto">
+    <div>
       <PostSortDropdown
         value={{ sort: state.sort, timeRange: state.range }}
         onChange={handleSortChange}
       />
       {state.loading ? (
-        <div className="h-full flex justify-center items-center">
+        <div className="h-[400px] flex justify-center items-center">
           <Spin size="large" />
         </div>
       ) : (
-        <List height={400} itemCount={state.posts.length} itemSize={250} width="100%">
-          {({ index, style }: { index: number; style: React.CSSProperties }) => (
+        <List height={800} itemCount={state.posts.length} itemSize={250} width="100%">
+          {({ index, style }) => (
             <div style={style}>
               <PostOverview post={state.posts[index]} />
             </div>

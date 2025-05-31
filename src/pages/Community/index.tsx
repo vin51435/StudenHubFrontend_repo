@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Avatar, Button, Card, Typography, Skeleton, Row, Col } from 'antd';
+import { Avatar, Button, Card, Typography, Skeleton, Row, Col, Divider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ICommunity } from '@src/types/app';
 import CommunityOp from '@src/api/communityOperations';
@@ -87,7 +87,7 @@ export default function CommunityOverview() {
   }
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full min-h-screen">
       {/* Banner */}
       <div className="w-full h-[160px] bg-gray-200 relative">
         {state?.data?.bannerUrl && (
@@ -100,11 +100,12 @@ export default function CommunityOverview() {
         <Avatar
           size={100}
           src={state?.data?.avatarUrl}
-          className="border-4 border-white absolute -top-0 left-0"
+          className="border-4  absolute -top-0 left-0"
+          style={{ border: 'white 4px solid' }}
         />
         <div className="w-full flex justify-between ml-3">
-          <Title level={3} className="!m-0">
-            {state?.data?.name}
+          <Title level={1} className="!m-0 font-extrabold">
+            r/{state?.data?.name}
           </Title>
           <div className="flex gap-2">
             <Button
@@ -118,13 +119,8 @@ export default function CommunityOverview() {
               disabled={state.joining}
               type={state?.data?.isFollowing ? 'default' : 'primary'}
               onClick={async () => {
-                setState((prev) => ({
-                  ...prev,
-                  joining: true,
-                }));
-
+                setState((prev) => ({ ...prev, joining: true }));
                 await CommunityOp._followToggle(state?.data?._id);
-
                 setState((prev) => ({
                   ...prev,
                   data: {
@@ -140,36 +136,31 @@ export default function CommunityOverview() {
           </div>
         </div>
       </div>
+      <Divider />
 
       {/* Main Layout */}
-      <Row className=" mt-6 max-w-7xl mx-auto w-full relative">
-        {/* Posts Area */}
-        <Col span={17} className="flex-1 relative">
-          {/* You can plug in posts logic here */}
-          {state.loading && !state?.data?._id ? (
-            <Text type="secondary">No posts yet.</Text>
-          ) : (
-            <CommunityFeed communityId={state?.data?._id} />
-            // <div>ded</div>
-          )}
-        </Col>
+      <div className="flex-1 w-full max-w-7xl mx-auto mt-6 px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+          {/* Post Feed */}
+          <CommunityFeed communityId={state?.data?._id} />
 
-        {/* Sidebar */}
-        <Col span={7} className="w-full">
-          <Card className="shadow-md text-start">
-            <Title level={5}>About {state?.data?.name}</Title>
-            <Paragraph className="text-sm">{state?.data?.description}</Paragraph>
-            <div className="flex justify-between items-center mt-4">
-              <div>
-                <Text strong>{state?.data?.followersCount || 0}</Text>
-                <Text type="secondary" className="block text-xs">
-                  Members
-                </Text>
+          {/* Sidebar */}
+          <div>
+            <Card className="shadow-md text-start sticky top-[90px]">
+              <Title level={5}>About {state?.data?.name}</Title>
+              <Paragraph className="text-sm">{state?.data?.description}</Paragraph>
+              <div className="flex justify-between items-center mt-4">
+                <div>
+                  <Text strong>{state?.data?.followersCount || 0}</Text>
+                  <Text type="secondary" className="block text-xs">
+                    Members
+                  </Text>
+                </div>
               </div>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
