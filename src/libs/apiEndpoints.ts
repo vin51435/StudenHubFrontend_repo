@@ -45,11 +45,19 @@ export const USER_ENDPOINTS = {
 
 export const CENTER_ENDPOINTS = {
   COMMUNITY: '/community',
+  COMMUNITY_BY_SLUG: (slug: string) => `/community/${slug}`,
+  COMMUNITY_BY_ID: (id: string) => `/community/${id}`,
+  COMMUNITY_POST: (id: string | number, postId?: string | number) =>
+    `/communitypost/${id}${postId ? `/${postId}` : ''}`,
+  COMMUNITY_POSTS: (id: string | number) => `/communitypost/${id}/posts`,
 
-  POSTS: '/posts',
+  COMMUNITY_FOLLOW_TOGGLE: (id: string | number) => `/community/${id}/follow/toggle`,
+  COMMUNITY_FOLLOWS: '/community/follows',
+
+  POSTS: '/communityposts',
   POST: (id: string | number) => `/posts/${id}`,
   POST_COMMENTS: (id: string | number) => `/posts/${id}/comments`,
-}
+};
 
 export const FORMAT_ENDPOINTS = {
   GET_STATES: '/allstates',
@@ -69,7 +77,7 @@ export const flatEndpointObjects = {
   ...AUTH_ENDPOINTS,
   ...USER_ENDPOINTS,
   ...FORMAT_ENDPOINTS,
-  ...CENTER_ENDPOINTS
+  ...CENTER_ENDPOINTS,
 } as const;
 
 const githubAuthBaseURL = BASE_URLS.githubAuth;

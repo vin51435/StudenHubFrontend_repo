@@ -1,6 +1,6 @@
 import { RouteConfig } from '@src/types/app';
 
-const ROUTES: RouteConfig = [
+const ROUTES = [
   {
     name: 'WEBSITE',
     path: '/',
@@ -49,6 +49,15 @@ const ROUTES: RouteConfig = [
       { name: 'PROFILE', title: 'Profile', path: '/profile' },
       { name: 'CHATS', path: '/chats' },
       { name: 'CREATE_COMMUNITY', path: '/create' },
+    ],
+  },
+  {
+    name: 'COMMUNITY',
+    path: '/community/:slug',
+    title: 'Community',
+    children: [
+      { name: 'POSTS', path: '/posts' },
+      { name: 'CREATE_POST', title: 'Create Post', path: 'create' },
     ],
   },
 ] as const;

@@ -3,8 +3,7 @@ import { BasicModalProps } from '@src/components/Modals';
 import { post } from '@src/libs/apiConfig';
 import { setZodErrorsToForm } from '@src/validation';
 import { communityCreateSchema } from '@src/validation/community.schema';
-import { Button, Form, Input, message, Switch } from 'antd';
-import AvatarContext from 'antd/es/avatar/AvatarContext';
+import { Button, Col, Form, Input, message, Row, Switch } from 'antd';
 import Modal from 'antd/es/modal/Modal';
 import React, { useState } from 'react';
 import { ZodError } from 'zod';
@@ -12,7 +11,6 @@ import { ZodError } from 'zod';
 const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModal }) => {
   const [load, setLoad] = useState(false);
   const [form] = Form.useForm();
-  const formData = new FormData();
 
   const onFinish = async () => {
     const values = form.getFieldsValue();
@@ -24,12 +22,15 @@ const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModa
 
       Object.keys(values).forEach((key) => {
         if (!values[key] || key === 'avatar') return;
+        if (!values[key] || key === 'banner') return;
         formData.append(key, values[key]);
       });
 
-      // ✅ Append actual file, not object
       if (values.avatar && values.avatar.length && values.avatar[0].file) {
         formData.append('avatar', values.avatar[0].file);
+      }
+      if (values.banner && values.banner.length && values.banner[0].file) {
+        formData.append('banner', values.banner[0].file);
       }
 
       const res = await post('COMMUNITY', {
@@ -79,12 +80,17 @@ const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModa
           <Input maxLength={50} />
         </Form.Item>
 
-        <Form.Item id="description" name="description" label="Description">
-          <Input.TextArea maxLength={200} showCount rows={4} />
+        <Form.Item name="description" label="Description">
+          <Input.TextArea maxLength={500} showCount rows={4} />
         </Form.Item>
-        <Form.Item name={'avatar'}>
-          <ImageUpload multiple={false} imageDetails={[{ name: 'Community Image' }]} />
-        </Form.Item>
+        <div className="flex gap-4">
+          <Form.Item name={'avatar'}>
+            <ImageUpload multiple={false} imageDetails={[{ name: 'Community Image' }]} />
+          </Form.Item>
+          <Form.Item name={'banner'}>
+            <ImageUpload multiple={false} imageDetails={[{ name: 'Banner' }]} />
+          </Form.Item>
+        </div>
 
         <Form.Item name="private" valuePropName="checked">
           <div className="flex  items-center">

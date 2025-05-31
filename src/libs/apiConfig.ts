@@ -46,7 +46,7 @@ const handleError = (error: IErrorResponse) => {
 // Public API methods
 
 export const get = async <ResponseBody = any, T = IResponse<ResponseBody>>(
-  apiEndpoint: ApiEndpointKey,
+  apiEndpoint: ApiEndpointKey | string,
   options: Pick<IMethodOptions, 'BASE_URLS' | 'bodyType' | 'queue' | 'queries'> = {}
 ): Promise<T> => {
   const { BASE_URLS, bodyType, queue = false, queries } = options;
@@ -62,7 +62,7 @@ export const get = async <ResponseBody = any, T = IResponse<ResponseBody>>(
 };
 
 export const post = async <ResponseBody = any>(
-  apiEndpoint: ApiEndpointKey,
+  apiEndpoint: ApiEndpointKey | string,
   options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'bodyType' | 'queue' | 'queries'> = {}
 ): Promise<IResponse<ResponseBody>> => {
   const { data = {}, BASE_URLS, bodyType, queue = false } = options;
@@ -78,7 +78,7 @@ export const post = async <ResponseBody = any>(
 };
 
 export const put = async <ResponseBody = any>(
-  apiEndpoint: ApiEndpointKey,
+  apiEndpoint: ApiEndpointKey | string,
   options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'bodyType' | 'bodyType' | 'queue'> = {}
 ): Promise<IResponse<ResponseBody>> => {
   const { data = {}, BASE_URLS, bodyType, queue = false } = options;
@@ -94,7 +94,7 @@ export const put = async <ResponseBody = any>(
 };
 
 export const patch = async <ResponseBody = any>(
-  apiEndpoint: ApiEndpointKey,
+  apiEndpoint: ApiEndpointKey | string,
   options: Pick<IMethodOptions, 'data' | 'BASE_URLS' | 'bodyType' | 'queue' | 'bodyType'> = {}
 ): Promise<ResponseBody> => {
   const { data = {}, BASE_URLS, bodyType, queue = false } = options;
@@ -110,7 +110,7 @@ export const patch = async <ResponseBody = any>(
 };
 
 export const deleteResource = async (
-  apiEndpoint: ApiEndpointKey,
+  apiEndpoint: ApiEndpointKey | string,
   options: Pick<IMethodOptions, 'BASE_URLS' | 'bodyType' | 'queue'> = {}
 ) => {
   const { BASE_URLS, bodyType, queue = false } = options;

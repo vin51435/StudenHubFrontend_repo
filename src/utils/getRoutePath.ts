@@ -1,13 +1,13 @@
 import ROUTES from '@src/routes/routes.config';
 import { RouteConfig, RouteNode } from '@src/types/app';
-import { generateNestedUnionTypeFromKey } from '@src/utils/common';
+import { ExtractKeyValues } from '@src/utils/common';
 
 type SearchableNode = RouteNode & { _parent?: SearchableNode };
 
 /**
  * Get the full route path by key, resolving from any level.
  */
-export function getRoutePath(key: string, config: RouteConfig = ROUTES): string {
+export function getRoutePath(key: string, config: RouteConfig | any = ROUTES): string {
   const node = searchByKey(config, key);
 
   if (!node) {
@@ -24,7 +24,7 @@ export function getRoutePath(key: string, config: RouteConfig = ROUTES): string 
  */
 export function getRouteDetails(
   search: { name?: string; path?: string },
-  config: RouteConfig = ROUTES
+  config: RouteConfig | any = ROUTES
 ) {
   const { name, path } = search;
 
@@ -37,7 +37,7 @@ export function getRouteDetails(
   return null;
 }
 
-const routesNameKeyType = generateNestedUnionTypeFromKey('name')
+type routesNameKeyType = ExtractKeyValues<typeof ROUTES, 'name'>;
 
 /**
  * Get the exact route path by key, resolving from any level.
@@ -46,14 +46,18 @@ const routesNameKeyType = generateNestedUnionTypeFromKey('name')
  * @param config the route configuration to search
  * @returns the exact route path, or '/route_not_found' if not found
  */
-export function getExactRoutePath(key: typeof routesNameKeyType | string, config: RouteConfig = ROUTES): string {
+export function getExactRoutePath(
+  key: routesNameKeyType | string,
+  config: RouteConfig | any = ROUTES
+): string {
+  config as unknown as RouteConfig;
   const node = searchByKey(config, key);
   if (!node?.path) {
     console.error(`Exact route not found for key: ${key}`);
     return '/route_not_found';
   }
 
-  return node.path.startsWith('/') ? node.path : '/' + node.path;
+  return node.path;
 }
 
 /**
@@ -64,7 +68,9 @@ function buildFullPath(node: SearchableNode): string {
   let current: SearchableNode | undefined = node;
 
   while (current) {
-    if (current.path) pathParts.unshift(current.path);
+    if (current.path) {
+      pathParts.unshift(current.path.startsWith('/') ? current.path : '/' + current.path);
+    }
     current = current._parent;
   }
 

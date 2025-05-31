@@ -13,29 +13,15 @@ import ROUTES from '@src/routes/routes.config';
  * const result = generateNestedUnionTypeFromKey('name', ROUTES);
  * // => `'WEBSITE' | 'AUTH' | 'LOGIN' | 'CALLBACK' | 'GOOGLE' | 'GITHUB'`
  */
-export function generateNestedUnionTypeFromKey<T extends Record<string, any>>(
-  key: string,
-  data: any = ROUTES
-): string {
-  const values = new Set<string>();
-
-  function recurse(items: T[]) {
-    for (const item of items) {
-      if (key in item && typeof item[key] === 'string') {
-        values.add(item[key]);
-      }
-      if (Array.isArray(item.children)) {
-        recurse(item.children);
-      }
-    }
-  }
-
-  recurse(data);
-
-  return Array.from(values)
-    .map((v) => `'${v}'`)
-    .join(' | ');
-}
+export type ExtractKeyValues<T, K extends string> = T extends readonly any[]
+  ? ExtractKeyValues<T[number], K>
+  : T extends object
+  ? K extends keyof T
+    ? T[K] | (T extends { children: any } ? ExtractKeyValues<T['children'], K> : never)
+    : T extends { children: any }
+    ? ExtractKeyValues<T['children'], K>
+    : never
+  : never;
 
 /**
  * Recursively searches through an array of nested objects to find an object
@@ -128,4 +114,33 @@ export const groupArrayOfObjects = <T extends Record<string, any>>(
     acc[group].push(item);
     return acc;
   }, {} as Record<string, T[]>);
+};
+
+/**
+ * Matches a route pattern against a given pathname, allowing for parameterized segments.
+ *
+ * @param route - The route pattern to match, which can include parameterized segments prefixed with ':'.
+ * @param pathname - The pathname to match against the route pattern.
+ * @returns The value of the matching parameterized segment if a match is found; otherwise, null.
+ *
+ * @example
+ * matchRoute('/user/:id', '/user/123') // returns '123'
+ * matchRoute('/user/:id', '/user') // returns null
+ * matchRoute('/user', '/user/123') // returns null
+ */
+export const matchRoute = (route: string, pathname: string) => {
+  const routeParts = route.split('/');
+  const pathnameParts = pathname.split('/');
+
+  if (routeParts.length !== pathnameParts.length) return null;
+
+  for (let i = 0; i < routeParts.length; i++) {
+    if (routeParts[i].startsWith(':')) {
+      return pathnameParts[i];
+    } else if (routeParts[i] !== pathnameParts[i]) {
+      return null;
+    }
+  }
+
+  return null;
 };

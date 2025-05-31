@@ -14,8 +14,6 @@ const AppRoutes = () => {
   useEffect(() => {
     if (routeLoaded) {
       dispatch(setLoading(false));
-    } else {
-      dispatch(setLoading(true));
     }
   }, [routeLoaded]);
 

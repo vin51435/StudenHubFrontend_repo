@@ -73,6 +73,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
           scope: '/',
         });
 
+        const existingSubscription = await registration.pushManager.getSubscription();
+        if (existingSubscription) {
+          await existingSubscription.unsubscribe();
+        }
+
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: WEBPUSH_PUBLIC_KEY,

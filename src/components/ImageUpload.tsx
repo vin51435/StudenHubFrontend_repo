@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { GetProp, UploadProps, UploadFile, Upload, Image } from 'antd';
+import { GetProp, UploadProps, UploadFile, Upload, Image, ImageProps, message } from 'antd';
 import { UploadChangeParam, UploadFileStatus } from 'antd/es/upload/interface';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -24,6 +24,9 @@ interface ImageUploadProps {
   base64URLValue?: string | string[]; // initial image(s)
   onChange?: (files: { base64: string; file: File }[]) => void;
   imageDetails?: ImageDetails[];
+  maxCount?: number;
+  uploadProps?: Omit<UploadProps, 'onChange'>;
+  imagePreviewProps?: Omit<ImageProps, 'onChange'>;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -31,10 +34,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   base64URLValue,
   onChange,
   imageDetails,
+  maxCount = 5,
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const fileListRef = useRef<UploadFile[]>([]);
+
+  useEffect(() => {
+    fileListRef.current = fileList;
+  }, [fileList]);
 
   useEffect(() => {
     if (base64URLValue) {
@@ -69,13 +78,18 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     [base64URLValue]
   );
 
-  const handleChange: UploadProps['onChange'] = async (uploadChange: UploadChangeParam) => {
-    const newFileList = uploadChange.fileList;
-    setFileList(newFileList);
+  const handleChange: UploadProps['onChange'] = async (uploadChange) => {
+    let newFiles = uploadChange.fileList.slice(0, maxCount); // enforce maxCount manually
 
+    if (newFiles.length > maxCount) {
+      message.warning(`You can only upload up to ${maxCount} image(s).`);
+      newFiles = newFiles.slice(0, maxCount);
+    }
+
+    setFileList(newFiles);
     const result = await Promise.all(
-      newFileList.map(async (file) => {
-        let base64: string | undefined = file.preview as string;
+      newFiles.map(async (file) => {
+        let base64 = file.preview as string;
         if (!base64 && file.originFileObj) {
           base64 = await getBase64(file.originFileObj as FileType);
           file.preview = base64;
@@ -101,28 +115,30 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     );
   };
 
+  const maxImageReach = () => {
+    message.warning(`You can only upload up to ${maxCount} image(s).`);
+  };
+
   return (
     <>
       <Upload
-        // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
         accept="image/jpeg,image/png,image/jpg"
         listType="picture-card"
         fileList={fileList}
         onPreview={handlePreview}
-        onChange={(info) => {
-          handleChange(info);
+        onChange={handleChange}
+        beforeUpload={(file, newFiles) => {
+          const total = fileListRef.current.length + newFiles.length;
+          if (total > maxCount) {
+            maxImageReach();
+            return Upload.LIST_IGNORE;
+          }
+          return false;
         }}
-        beforeUpload={() => false} // prevents auto-upload
         multiple={multiple}
         pastable
       >
-        {multiple
-          ? fileList.length >= 8
-            ? null
-            : uploadButton()
-          : fileList.length >= 1
-          ? null
-          : uploadButton()}
+        {fileList.length >= maxCount ? null : uploadButton()}
       </Upload>
       {previewImage && (
         <Image

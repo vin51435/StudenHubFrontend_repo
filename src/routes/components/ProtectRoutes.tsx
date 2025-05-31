@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '@src/redux/store';
@@ -19,11 +19,11 @@ const ProtectedRoutes: React.FC = () => {
   const logout = useLogout();
 
   useEffect(() => {
-    dispatch(setLoading(true));
+    // dispatch(setLoading(true));
     Promise.all([verifyUserAuthenticity()]).finally(() => {
       setTimeout(() => {
         setCheckingAuth(false);
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
       }, 0);
     });
   }, []);
@@ -57,10 +57,13 @@ const ProtectedRoutes: React.FC = () => {
     }
   };
 
+  useLayoutEffect(() => {
+    dispatch(setLoading(false));
+  }, []);
+
   if (checkingAuth || loading) return null;
 
   if (isAuthenticated) {
-    console.log('rendering outlet');
     return <Outlet />;
   }
 
