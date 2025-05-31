@@ -2,7 +2,8 @@
 @use '@styles/Pages/_landingPage';
 @use '@styles/Pages/_inbox';
 @use '@styles/common/loading';
-@use '@styles/pages/_chat.scss';
+@use '@styles/Pages/_chat.scss';
+@use '@styles/Pages/_post.scss';
 
 // Main Website common Styles
 @use '@styles/layout/_desktopWebsiteNavbar';

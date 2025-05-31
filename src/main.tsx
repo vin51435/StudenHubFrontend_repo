@@ -5,8 +5,8 @@ import { StrictMode } from 'react';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <>
-    {/* <StrictMode> */}
-    <App />
-    {/* </StrictMode> */}
+    <StrictMode>
+      <App />
+    </StrictMode>
   </>
 );

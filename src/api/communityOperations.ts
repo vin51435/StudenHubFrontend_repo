@@ -3,6 +3,7 @@ import { get, patch, post } from '@src/libs/apiConfig';
 import { CENTER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IPaginationRequestQueries } from '@src/types';
 import { ICommunity } from '@src/types/app';
+import { PostSortOption, TimeRangeOption } from '@src/types/contants';
 import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
 class CommunityOp {
@@ -59,7 +60,7 @@ class CommunityOp {
     this.fetchCommunityDetails(slug);
   }
 
-  static async getAllPosts(communityId?: string) {
+  static async getAllPosts(communityId: string, sort: PostSortOption, range: TimeRangeOption) {
     if (!communityId) {
       if (!this.communityId) {
         console.error('missing communityId');
@@ -67,7 +68,11 @@ class CommunityOp {
       communityId = this.communityId!;
     }
 
-    const res = await searchModel<ICommunity>('center', 'COMMUNITY', { ids: communityId });
+    const res = await searchModel<ICommunity>('center', 'COMMUNITY', {
+      ids: communityId,
+      sortField: sort,
+      range,
+    });
     return res || [];
   }
 

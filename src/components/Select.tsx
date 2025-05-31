@@ -145,7 +145,6 @@ const CustomSelect = ({
   };
 
   const handleSelectChange = (value: string) => {
-    console.log('handlechange ran');
     const fullDataa = data.find((d) => d._id === value);
     if (fullDataa) {
       handleChange(value, fullDataa);
@@ -153,6 +152,7 @@ const CustomSelect = ({
   };
 
   const formattedValue = useMemo(() => {
+    if (!selectValue || !data) return null;
     const id = typeof selectValue === 'string' ? selectValue : selectValue?.value;
     const item = data.find((d) => d._id === id);
     console.log('formated selectValue ran ', { selectValue, data, item });
@@ -174,11 +174,16 @@ const CustomSelect = ({
       onPopupScroll={handleScroll}
       onChange={handleSelectChange}
     >
-      {data.map((item) => (
-        <Option key={item._id} value={item._id} label={renderFn(item)}>
-          {renderFn(item)}
-        </Option>
-      ))}
+      {data &&
+        data.length > 0 &&
+        data.map((item) => {
+          if (!item || !item._id) return null;
+          return (
+            <Option key={item._id} value={item._id} label={renderFn(item)}>
+              {renderFn(item)}
+            </Option>
+          );
+        })}
     </Select>
   );
 };

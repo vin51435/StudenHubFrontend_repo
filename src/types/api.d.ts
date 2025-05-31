@@ -59,6 +59,7 @@ export interface IPaginationRequestQueries<T = any> extends ParsedQs {
   searchFields?: string[] | string;
   excludeIds?: string | string[]; // optional: to exclude some _id values
   ids?: string | string[];
+  [key: string]: any;
 }
 
 export interface IPaginatedResponse<T = any> extends IBaseResponse {

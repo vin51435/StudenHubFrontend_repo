@@ -9,11 +9,11 @@ import {
 async function _searchModel<T = any>(
   BaseUrlType: BaseUrlType,
   endPoint: ApiEndpointKey | string,
-  searchTerm: IPaginationRequestQueries
+  queries: IPaginationRequestQueries<T>
 ): Promise<IPaginatedResponse<T>> {
   const response = await get<{}, IPaginatedResponse<T>>(endPoint, {
     BASE_URLS: BaseUrlType,
-    queries: [searchTerm],
+    queries: [queries],
   });
   return response;
 }

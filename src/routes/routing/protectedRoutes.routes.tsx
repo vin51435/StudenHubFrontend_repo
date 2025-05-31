@@ -23,9 +23,20 @@ export const protectedRoutes: RouteObject[] = [
             ],
           },
           {
-            path: getExactRoutePath('COMMUNITY'),
+            path: getExactRoutePath('COMMUNITY'), // /community/:slug
             children: [
-              { path: '', element: <Community /> },
+              {
+                index: true,
+                element: <Community />, // Handles just `/community/:slug`
+              },
+              {
+                path: ':sort', // /community/:slug/:sort
+                element: <Community />,
+              },
+              {
+                path: ':sort/:range', // /community/:slug/:sort/:range
+                element: <Community />,
+              },
               { path: getExactRoutePath('CREATE_POST'), element: <CreatePost /> },
             ],
           },

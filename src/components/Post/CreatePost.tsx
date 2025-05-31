@@ -86,7 +86,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-sm max-w-2xl mx-auto">
+    <div className="p-4 bg-white rounded-xl shadow-sm max-w-2xl mx-auto create-post_container">
       <Title level={4} className="text-start">
         Create a Post
       </Title>
@@ -97,17 +97,19 @@ const CreatePost = () => {
           rules={[{ required: true, message: 'Please select a community' }]}
           wrapperCol={{ span: 10 }}
         >
-          <CustomSelect
-            type="FollwedCommunities"
-            selectValue={selectedCommunity?._id}
-            handleChange={(id, fulloption) => {
-              setSelectedCommunity(fulloption);
-              if (fulloption) {
-                navigate(getRoutePath('CREATE_POST').replace(':slug', fulloption?.slug));
-              }
-            }}
-            defaultData={[selectedCommunity]}
-          />
+          {selectedCommunity && (
+            <CustomSelect
+              type="FollwedCommunities"
+              selectValue={selectedCommunity?._id ?? null}
+              handleChange={(id, fulloption) => {
+                setSelectedCommunity(fulloption);
+                if (fulloption) {
+                  navigate(getRoutePath('CREATE_POST').replace(':slug', fulloption?.slug));
+                }
+              }}
+              defaultData={[selectedCommunity]}
+            />
+          )}
         </Form.Item>
 
         <Form.Item name="title" label="Title" rules={[{ required: true }]}>
@@ -123,7 +125,7 @@ const CreatePost = () => {
         </Form.Item>
 
         <Form.Item name="content">
-          <ReactQuill theme="snow" className="bg-white" style={{ height: '200px' }} />
+          <ReactQuill theme="snow" className="bg-white" />
         </Form.Item>
 
         <div className="flex justify-end gap-2">
