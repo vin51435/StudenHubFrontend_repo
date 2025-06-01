@@ -1,0 +1,52 @@
+@use '@styles/scss.import.scss' as *;
+
+.bg-white {
+  .dark & {
+    background-color: $primary-dark !important;
+  }
+}
+
+.ant-divider {
+  .dark & {
+    color: $secondary-white !important;
+    background-color: $secondary-white !important;
+    border-color: $secondary-white !important;
+  }
+}
+
+.layout_header {
+  background-color: $white !important;
+  .dark & {
+    border-bottom: 1px solid $secondary-white !important;
+    background-color: $secondary-dark !important;
+  }
+  .top-header_search {
+    .ant-select {
+      .dark & {
+        &::placeholder {
+          color: $secondary-white !important;
+        }
+      }
+      /* Dark mode fix for AutoComplete dropdown */
+      .ant-select-dropdown {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+      }
+
+      .ant-select-item-option {
+        color: #fff;
+      }
+
+      .ant-select-item-option-active {
+        background-color: #333 !important;
+      }
+    }
+  }
+}
+
+.sidebar_section {
+  .dark & {
+    border-right: 1px solid $secondary-white !important;
+    background-color: $secondary-dark !important;
+  }
+}

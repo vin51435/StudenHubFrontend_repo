@@ -1,3 +1,8 @@
+export enum VoteEnum {
+  upVote = 'upvote',
+  downVote = 'downvote',
+}
+
 export enum Gender {
   Male = 'Male',
   Female = 'Female',

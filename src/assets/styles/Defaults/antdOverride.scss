@@ -53,3 +53,40 @@
     }
   }
 }
+.ant-carousel {
+  .slick-prev,
+  .slick-next {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    width: 32px;
+    height: 32px;
+    z-index: 10;
+    border-radius: 9999px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slick-prev::after,
+  .slick-next::after {
+    color: white !important;
+    font-size: 20px;
+    top: 0px !important;
+    position: relative !important;
+  }
+
+  .slick-next::after {
+    translate: -35% 0% !important;
+  }
+
+  .carousel-dots-dark li button {
+    background: rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .carousel-dots-dark li.slick-active {
+    button {
+      background: rgba(0, 0, 0, 0.8) !important;
+    }
+    &::after {
+    }
+  }
+}

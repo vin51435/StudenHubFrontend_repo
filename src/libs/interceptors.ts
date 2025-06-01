@@ -49,10 +49,8 @@ export const attachInterceptors = (api: AxiosInstance, queries?: Array<Record<st
       // Append dynamic query params
       if (queries && queries.length > 0) {
         request.params = {
-          ...request.params, // Keep existing params
-          ...Object.fromEntries(
-            queries.map((query: { [key: string]: string }) => Object.entries(query).flat())
-          ),
+          ...request.params,
+          ...queries.reduce((acc, query) => ({ ...acc, ...query }), {}),
         };
       }
 

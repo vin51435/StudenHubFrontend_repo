@@ -48,8 +48,8 @@ export default function CommunityOverview() {
     const isTimeBased = (s: string) => ['Top', 'Controversial'].includes(s);
     const isValidRange = urlRange && TIME_RANGE_OPTIONS.includes(urlRange);
 
-    const resolvedSort: PostSortOption = isValidSort ? urlSort! : 'Hot';
-    const resolvedRange: TimeRangeOption = isValidRange ? urlRange! : 'today';
+    const resolvedSort: PostSortOption = isValidSort ? urlSort! : 'Top';
+    const resolvedRange: TimeRangeOption = isValidRange ? urlRange! : 'all';
 
     const needsRedirect =
       !isValidSort ||
@@ -87,28 +87,32 @@ export default function CommunityOverview() {
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen">
+    <div className="flex mt-1 flex-col w-full min-h-screen">
       {/* Banner */}
-      <div className="w-full h-[160px] bg-gray-200 relative">
+      <div className="w-full h-[160px] bg-gray-200 relative rounded-3xl">
         {state?.data?.bannerUrl && (
-          <img src={state?.data?.bannerUrl} alt="Banner" className="bg-repeat-x w-full h-full" />
+          <img
+            src={state?.data?.bannerUrl}
+            alt="Banner"
+            className="bg-repeat-x w-full h-full rounded-2xl"
+          />
         )}
       </div>
 
       {/* Header */}
-      <div className="relative flex items-end justify-start max-h-[56px] px-4">
+      <div className="community_header relative flex items-end justify-start max-h-[56px] px-4">
         <Avatar
           size={100}
           src={state?.data?.avatarUrl}
-          className="border-4  absolute -top-0 left-0"
-          style={{ border: 'white 4px solid' }}
+          className="border-4 border-white absolute -top-0 left-0"
         />
         <div className="w-full flex justify-between ml-3">
           <Title level={1} className="!m-0 font-extrabold">
             r/{state?.data?.name}
           </Title>
-          <div className="flex gap-2">
+          <div className="flex gap-4 my-auto">
             <Button
+              className="!bg-transparent mr-2"
               type="dashed"
               icon={<PlusOutlined />}
               onClick={() => navigate(getRoutePath('CREATE_POST').replace(':slug', slug!))}
@@ -116,6 +120,7 @@ export default function CommunityOverview() {
               Create Post
             </Button>
             <Button
+              className="border border-gray-50"
               disabled={state.joining}
               type={state?.data?.isFollowing ? 'default' : 'primary'}
               onClick={async () => {

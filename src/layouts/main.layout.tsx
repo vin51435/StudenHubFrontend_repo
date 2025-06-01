@@ -69,7 +69,7 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <Layout className="h-full">
+    <Layout className="h-full bg-transparent dark:bg-transparent">
       <Header
         style={{
           position: 'sticky',
@@ -79,51 +79,52 @@ const MainLayout: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           padding: 0,
-          background: colorBgContainer,
         }}
+        className="layout_header"
       >
         <div className="!ml-auto !mr-3 h-full w-full">
           <TopHeader />
         </div>
       </Header>
-      <Layout hasSider className="overflow-auto h-full sticky !bg-white">
-        <section style={siderStyle} className="relative">
-          <div className="flex bg-white relative h-full justify-between">
-            <Sider
-              style={siderStyle}
-              trigger={null}
-              collapsible
-              collapsed={collapsed}
-              collapsedWidth={0}
-            >
-              <Menu
-                mode="inline"
-                selectedKeys={selectedKey ? [selectedKey] : []}
-                onClick={handleMenuClick}
-                items={menuItems}
-              />
-            </Sider>
-            <Button
-              className="absolute t"
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
-              style={toggleButtonStyle}
+      <Layout hasSider className="overflow-auto h-full sticky bg-white">
+        <section
+          style={siderStyle}
+          className="sidebar_section flex relative h-full justify-between"
+        >
+          <Sider
+            style={siderStyle}
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            collapsedWidth={0}
+            className="!bg-transparent"
+          >
+            <Menu
+              className="!min-h-full !bg-transparent"
+              mode="inline"
+              selectedKeys={selectedKey ? [selectedKey] : []}
+              onClick={handleMenuClick}
+              items={menuItems}
             />
-          </div>
+          </Sider>
+          <Button
+            className="absolute t"
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={toggleButtonStyle}
+          />
         </section>
         <Content
-          className=" sm:mx-auto max-w-[1120px] h-full"
+          className="w-full h-full"
           style={{
-            // margin: '24px 16px 0',
             overflow: 'initial',
           }}
         >
           <div
-            className="h-full p-1"
+            className="!h-auto min-h-screen mx-auto mt-1 max-w-[1120px] w-[95%] p-1 bg-transparent"
             style={{
               textAlign: 'center',
-              background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
           >

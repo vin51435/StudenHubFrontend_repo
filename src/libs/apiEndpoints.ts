@@ -1,3 +1,5 @@
+import { VoteEnum } from '@src/types/enum';
+
 export const activeHost =
   import.meta.env.VITE_NODE_ENV === 'development'
     ? import.meta.env.VITE_DEV_BACKEND_DEV
@@ -54,6 +56,8 @@ export const CENTER_ENDPOINTS = {
   COMMUNITY_FOLLOW_TOGGLE: (id: string | number) => `/community/${id}/follow/toggle`,
   COMMUNITY_FOLLOWS: '/community/follows',
 
+  POST_VOTE: (postId: string | number, voteType: VoteEnum, communityId: string | number) =>
+    `/communitypost/${communityId}/${postId}/vote/${voteType}`,
   POSTS: '/communityposts',
   POST: (id: string | number) => `/posts/${id}`,
   POST_COMMENTS: (id: string | number) => `/posts/${id}/comments`,

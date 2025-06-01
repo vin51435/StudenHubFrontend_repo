@@ -39,16 +39,16 @@ export default function PostSortDropdown({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center !bg-transparent gap-2">
       <Dropdown menu={sortMenu} trigger={['click']}>
-        <Button className="capitalize">
+        <Button className="capitalize !bg-transparent">
           {value.sort} <DownOutlined />
         </Button>
       </Dropdown>
 
       {isTimeBased(value.sort) && (
         <Dropdown menu={timeMenu} trigger={['click']}>
-          <Button className="capitalize">
+          <Button className="capitalize !bg-transparent">
             {value.timeRange} <DownOutlined />
           </Button>
         </Dropdown>

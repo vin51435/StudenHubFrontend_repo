@@ -78,6 +78,7 @@ class CommunityOp {
       sortField: sort,
       range,
       pageSize: '10',
+      // selectFields: 'authorId',
     });
     return res || [];
   }

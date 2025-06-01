@@ -12,7 +12,7 @@ import { getExactRoutePath } from '@src/utils/getRoutePath';
 
 const TopHeader = () => {
   const [options, setOptions] = useState<{ value: string; label: React.ReactNode }[]>([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
   const [unreadCount] = useState(3); // Mock count
   const { slug } = useParams<{ slug: string }>();
   const { pathname } = useLocation();
@@ -81,8 +81,10 @@ const TopHeader = () => {
     <div className="flex items-center gap-6 ml-auto w-full h-full space-between align-center">
       <div className="text-2xl px-4 flex justify-center items-center my-3">StudenHub</div>
 
-      <div className="w-full flex items-center justify-center">
+      <div className="top-header_search w-full h-full flex items-center justify-center">
         <AutoComplete
+          className="rounded-2xl"
+          style={{ width: '80%', height: '70%' }}
           options={options}
           value={inputValue}
           onChange={(val) => {
@@ -92,13 +94,15 @@ const TopHeader = () => {
           onSearch={searchCommunity}
         >
           <Input
+            className="w-full !h-[90%]"
+            style={{ borderRadius: '999px', height: '100%', width: '100%' }}
             addonBefore={
               slug ? (
                 <Tag
                   closable
                   onClose={(e) => {
                     e.preventDefault();
-                    // navigate('/'); // Or wherever you want to reset
+                    // navigate('/');
                   }}
                 >
                   r/{slug}

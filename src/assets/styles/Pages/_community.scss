@@ -1,0 +1,12 @@
+@use '@styles/scss.import.scss' as *;
+
+.community_header {
+  .ant-avatar {
+    border-width: 4px;
+    border-color: $white;
+    border-style: solid;
+    .dark & {
+      border-color: $primary-dark;
+    }
+  }
+}

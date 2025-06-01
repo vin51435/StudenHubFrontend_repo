@@ -1,3 +1,5 @@
+import { VoteEnum } from '@src/types/enum';
+
 export type SelectState = {
   load: boolean;
   options: Record<string, DefaultOptionType[]>;
@@ -12,6 +14,55 @@ export interface RouteNode {
 }
 
 export type RouteConfig = RouteNode[];
+
+export interface IUser {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  email: string;
+  username: string;
+  profilePicture: string;
+  password: string;
+  passwordConfirm: string;
+  passwordChangedAt: Date;
+  passwordResetToken: string;
+  passwordResetExpires: Date;
+  manualSignup: boolean;
+  googleAccount: boolean;
+  githubAccount: boolean;
+  github_url: string;
+  linkedinAccount: boolean;
+  education: string;
+  interests: string[];
+  additionalInfo: {
+    userType: string;
+    gender: string;
+    institute: string;
+    currentCity: string;
+  };
+  bio: string;
+  blockedUsers: string[];
+  settings: {
+    notifications: boolean;
+    theme: string;
+  };
+  accountStatus: string;
+  role: string;
+  createdAt: Date;
+  onlineStatus: boolean;
+  lastSeen: Date;
+  contacts: string[];
+  chats: {
+    chatIds: string[];
+    groupChatIds: string[];
+  };
+  postsCount: number;
+  followingCommunitiesCount: number;
+  followingsCount: number;
+  followersCount: number;
+  savesCount: number;
+}
 
 export interface ICommunity {
   _id: string;
@@ -35,10 +86,10 @@ export interface ICommunity {
   invitedUsers: any[];
   createdAt: string;
   updatedAt: string;
-  __v: number;
 }
 
 interface IPost {
+  _id?: string;
   title: string;
   slug: string;
   content?: string;
@@ -46,6 +97,7 @@ interface IPost {
   tags: (string | ObjectId)[];
   communityId: ObjectId;
   authorId: ObjectId;
+  author?: IUser;
   views: number;
   upvotesCount: number;
   downvotesCount: number;
@@ -57,4 +109,9 @@ interface IPost {
   isFlagged?: boolean;
   isApproved?: boolean;
   flagReason?: string;
+  voteType?: VoteEnum | null;
+  netVotes?: number;
+
+  createdAt: Date;
+  updatedAt?: Date;
 }

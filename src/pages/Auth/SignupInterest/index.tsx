@@ -82,13 +82,20 @@ const SignupInterests: React.FC = () => {
   );
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center bg-white dark:bg-gray-900 px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-6xl flex flex-col items-center justify-center">
+    <div className="w-full min-h-screen flex justify-center items-center dark:bg-gray-900 px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-6xl flex flex-col items-center justify-center"
+      >
         <div className="w-full text-center md:text-left">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Pick your favorite Topics/Interests
           </h1>
-          <h6 className={`text-sm mt-1 ${error ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'}`}>
+          <h6
+            className={`text-sm mt-1 ${
+              error ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'
+            }`}
+          >
             Choose at least {REQUIRED_INTEREST_COUNT} – It'll help us personalize your feed.
           </h6>
         </div>
@@ -112,8 +119,9 @@ const SignupInterests: React.FC = () => {
             return (
               <div
                 key={index}
-                className={`image_grid_item relative rounded-lg overflow-hidden shadow-md cursor-pointer group transition-transform transform hover:scale-105 ${isSelected ? 'ring-4 ring-blue-500 interest_selected' : ''
-                  }`}
+                className={`image_grid_item relative rounded-lg overflow-hidden shadow-md cursor-pointer group transition-transform transform hover:scale-105 ${
+                  isSelected ? 'ring-4 ring-blue-500 interest_selected' : ''
+                }`}
                 style={{
                   backgroundImage: `url(${item.imageURL})`,
                   backgroundSize: 'cover',

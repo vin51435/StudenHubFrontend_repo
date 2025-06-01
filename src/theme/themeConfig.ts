@@ -11,7 +11,7 @@ export const lightTheme: ThemeConfig = {
 
 export const darkTheme: ThemeConfig = {
   token: {
-    colorPrimary: '#6366f1',
+    colorPrimary: '#0b1416',
     borderRadius: 8,
     colorBgContainer: '#1f1f1f',
     colorText: '#f9fafb',

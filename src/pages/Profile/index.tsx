@@ -88,7 +88,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto  bg-white dark:bg-gray-900">
+    <div className="mx-auto dark:bg-gray-900">
       <Row className="flex items-center space-x-6 mb-8">
         <Col className="flex flex-col items-center">
           <ImageUpload

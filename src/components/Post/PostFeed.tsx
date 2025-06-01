@@ -1,8 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { FixedSizeList as List } from 'react-window';
 import { useInView } from 'react-intersection-observer';
 import PostOverview from './PostOverview';
-import axios from 'axios';
 import { PostSortOption, TimeRangeOption } from '@src/types/contants';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostSortDropdown from '@src/components/PostSorting';
@@ -36,7 +34,7 @@ const CommunityFeed = ({ communityId }: { communityId: string }) => {
     page: '1',
     hasMore: true,
     sort: urlSort ?? 'Top',
-    range: urlRange ?? 'today',
+    range: urlRange ?? 'all',
     loading: true,
   });
   const { ref, inView } = useInView();
@@ -93,24 +91,31 @@ const CommunityFeed = ({ communityId }: { communityId: string }) => {
     }));
   };
 
+  const onPostUpdate = (post: IPost) => {
+    setState((prev) => ({
+      ...prev,
+      posts: prev.posts.map((p) => (p._id === post._id ? post : p)),
+    }));
+  };
+
   return (
-    <div>
-      <PostSortDropdown
-        value={{ sort: state.sort, timeRange: state.range }}
-        onChange={handleSortChange}
-      />
+    <div className="">
+      <div className="mb-4">
+        <PostSortDropdown
+          value={{ sort: state.sort, timeRange: state.range }}
+          onChange={handleSortChange}
+        />
+      </div>
       {state.loading ? (
         <div className="h-[400px] flex justify-center items-center">
           <Spin size="large" />
         </div>
       ) : (
-        <List height={800} itemCount={state.posts.length} itemSize={250} width="100%">
-          {({ index, style }) => (
-            <div style={style}>
-              <PostOverview post={state.posts[index]} />
-            </div>
-          )}
-        </List>
+        <div className="flex flex-col gap-4">
+          {state.posts.map((post, index) => (
+            <PostOverview key={index} post={post} onChangePost={onPostUpdate} />
+          ))}
+        </div>
       )}
       {state.hasMore && (
         <div ref={ref} className="h-10 flex justify-center items-center">

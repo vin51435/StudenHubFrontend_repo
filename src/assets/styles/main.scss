@@ -1,5 +1,7 @@
 // Main Styles
+@use '@styles/Pages/layout';
 @use '@styles/Pages/_landingPage';
+@use '@styles/Pages/_community';
 @use '@styles/Pages/_inbox';
 @use '@styles/common/loading';
 @use '@styles/Pages/_chat.scss';

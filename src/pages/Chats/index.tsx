@@ -53,7 +53,7 @@ const Chats = () => {
   };
 
   return (
-    <div className="flex h-[80vh] bg-white dark:bg-zinc-900 rounded-lg shadow-md">
+    <div className="flex h-[80vh] dark:bg-zinc-900 rounded-lg shadow-md">
       <InboxList
         chats={chatData}
         notifications={chatNotifications}

@@ -10,7 +10,7 @@ const ThemeToggle = () => {
       onChange={toggleTheme}
       checkedChildren="🌙"
       unCheckedChildren="☀️"
-      disabled
+      // disabled
     />
   );
 };

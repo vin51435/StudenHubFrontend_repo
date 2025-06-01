@@ -1,5 +1,30 @@
+@use '@styles/scss.import.scss' as *;
+
 .create-post_container {
   .ql-container {
     height: 200px;
+  }
+}
+
+.post-overview {
+  border: 1px solid $secondary-white !important;
+
+  &:hover {
+    border: 1px solid $primary-color !important;
+    background-color: $tertiary-dark !important;
+  }
+
+  .ant-image {
+    width: 100%;
+  }
+  &_title {
+    margin-bottom: 0px !important;
+  }
+
+  &_content {
+    p {
+      padding: 2px !important;
+      margin-bottom: 0px !important;
+    }
   }
 }

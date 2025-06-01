@@ -34,13 +34,13 @@ const CreatePost = () => {
 
   async function getCommunity() {
     const res = await CommunityOp.fetchCommunityDetails(slug);
-    if (!res.data || !res.data.isFollowing) {
+    if (!res?.data || !res?.data?.isFollowing) {
       message.error('You are not following this community');
       navigate(getRoutePath('APP'));
       return;
     }
 
-    setSelectedCommunity(res.data);
+    setSelectedCommunity(res?.data);
   }
 
   const handleFinish = async (values: any) => {
@@ -86,7 +86,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-sm max-w-2xl mx-auto create-post_container">
+    <div className="p-4 rounded-xl shadow-sm max-w-2xl mx-auto create-post_container">
       <Title level={4} className="text-start">
         Create a Post
       </Title>
@@ -125,7 +125,7 @@ const CreatePost = () => {
         </Form.Item>
 
         <Form.Item name="content">
-          <ReactQuill theme="snow" className="bg-white" />
+          <ReactQuill theme="snow" className="" />
         </Form.Item>
 
         <div className="flex justify-end gap-2">
