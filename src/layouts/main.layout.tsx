@@ -122,7 +122,7 @@ const MainLayout: React.FC = () => {
           }}
         >
           <div
-            className="!h-auto min-h-screen mx-auto mt-1 max-w-[1120px] w-[95%] p-1 bg-transparent"
+            className="!h-auto max-h-screen mx-auto mt-1 max-w-[1120px] w-[95%] p-1 bg-transparent"
             style={{
               textAlign: 'center',
               borderRadius: borderRadiusLG,

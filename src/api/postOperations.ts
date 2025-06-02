@@ -8,6 +8,13 @@ import { VoteEnum } from '@src/types/enum';
 import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
 class PostOp {
+  static async fetchPost(postId: string, communityId: string = 'dosntmatter') {
+    const res = await get<IPost>(CENTER_ENDPOINTS.POST(communityId, postId), {
+      BASE_URLS: 'center',
+    });
+    return res;
+  }
+
   static async _voteToggle(
     postId: string,
     voteType: VoteEnum = VoteEnum.upVote,

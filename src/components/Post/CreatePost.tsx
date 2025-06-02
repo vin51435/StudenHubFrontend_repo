@@ -72,6 +72,11 @@ const CreatePost = () => {
       const res = await CommunityOp.createPost(formData, selectedCommunity?._id);
 
       message.success('Post created successfully');
+
+      if (res?.data?._id) {
+        navigate(getRoutePath('POST').replace(':postSlug', res.data.slug));
+      }
+
       form.resetFields();
     } catch (err) {
       if (err instanceof ZodError) {

@@ -57,6 +57,7 @@ const ROUTES = [
     title: 'Community',
     children: [
       { name: 'COMMUNITY_POSTS', path: ':sort/:range' },
+      { name: 'POST', path: 'post/:postSlug' },
       { name: 'CREATE_POST', title: 'Create Post', path: 'create' },
     ],
   },

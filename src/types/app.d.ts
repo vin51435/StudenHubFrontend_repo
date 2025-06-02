@@ -95,9 +95,12 @@ interface IPost {
   content?: string;
   mediaUrls: string[];
   tags: (string | ObjectId)[];
-  communityId: ObjectId;
-  authorId: ObjectId;
+
+  communityId: ObjectId | ICommunity;
+  community?: ICommunity;
+  authorId: ObjectId | IUser;
   author?: IUser;
+
   views: number;
   upvotesCount: number;
   downvotesCount: number;

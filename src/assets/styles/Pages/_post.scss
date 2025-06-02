@@ -14,9 +14,6 @@
     background-color: $tertiary-dark !important;
   }
 
-  .ant-image {
-    width: 100%;
-  }
   &_title {
     margin-bottom: 0px !important;
   }
@@ -25,6 +22,16 @@
     p {
       padding: 2px !important;
       margin-bottom: 0px !important;
+    }
+  }
+}
+
+.post-detail_container {
+  .ant-carousel {
+    .slick-track {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
     }
   }
 }

@@ -3,92 +3,89 @@ import { useInView } from 'react-intersection-observer';
 import PostOverview from './PostOverview';
 import { PostSortOption, TimeRangeOption } from '@src/types/contants';
 import { useNavigate, useParams } from 'react-router-dom';
-import PostSortDropdown from '@src/components/PostSorting';
+import PostSortDropdown from '@src/components/Post/PostSorting';
 import CommunityOp from '@src/api/communityOperations';
-import { IPost } from '@src/types/app';
+import { ICommunity, IPost } from '@src/types/app';
 import { Spin } from 'antd';
 
 type Post = Parameters<typeof PostOverview>[0]['post'];
 
 const PAGE_SIZE = 10;
 
-const CommunityFeed = ({ communityId }: { communityId: string }) => {
+const CommunityFeed = ({ community }: { community: ICommunity }) => {
   const {
     slug,
-    sort: urlSort,
-    range: urlRange,
+    sort = 'Top',
+    range = 'all',
   } = useParams<{
     slug: string;
     sort?: PostSortOption;
     range?: TimeRangeOption;
   }>();
+
   const [state, setState] = useState<{
     posts: IPost[];
     page: string;
     hasMore: boolean;
-    sort: PostSortOption;
-    range: TimeRangeOption;
-    loading: boolean;
-  }>({
+  }>(() => ({
     posts: [],
     page: '1',
     hasMore: true,
-    sort: urlSort ?? 'Top',
-    range: urlRange ?? 'all',
-    loading: true,
-  });
+  }));
+
+  const [loading, setLoading] = useState(true);
   const { ref, inView } = useInView();
   const navigate = useNavigate();
   const fresh = useRef(true);
 
   const loadMorePosts = useCallback(
     async (page?: number) => {
-      if (!state.hasMore && !fresh.current) return;
-      setState((prev) => ({ ...prev, loading: true }));
-      console.log('sort & range', state.sort, state.range);
+      // if (!state.hasMore && !fresh.current) return;
 
-      const res = await CommunityOp.getAllPosts(communityId, state.page, state.sort, state.range);
+      console.log('Fetching with sort & range:', sort, range);
+
+      const res = await CommunityOp.getAllPosts(
+        community._id,
+        page?.toString() ?? state.page,
+        sort,
+        ['Top', 'Controversial'].includes(sort) ? range : undefined
+      );
+
       const newPosts: IPost[] = res.data;
       setState((prev) => ({
         ...prev,
         page: page?.toString() ?? '1',
         posts: newPosts,
         hasMore: res.hasMore,
-        loading: false,
       }));
+      setLoading(false);
+      fresh.current = false;
     },
-    [state.page, state.hasMore]
+    [community._id, sort, range, state.page, state.hasMore]
   );
 
+  // Reload when sort/range change
   useEffect(() => {
-    console.log('this ran');
-    loadMorePosts();
-    fresh.current = false;
-  }, [urlSort, urlRange]);
+    setLoading(true);
+    setState({ posts: [], page: '1', hasMore: true });
+    fresh.current = true;
+    loadMorePosts(1);
+  }, [sort, range]);
 
+  // Infinite scroll
   useEffect(() => {
-    if (inView && state.hasMore) loadMorePosts(Number(state.page) + 1);
+    if (inView && state.hasMore && !fresh.current) {
+      loadMorePosts(Number(state.page) + 1);
+    }
   }, [inView]);
 
   const handleSortChange = (newSort: PostSortOption, newRange?: TimeRangeOption) => {
-    let sort = newSort;
-    let range = 'today';
     const isTimeBased = ['Top', 'Controversial'].includes(newSort);
     if (isTimeBased) {
-      const validRange = newRange ?? 'today';
-      range = validRange;
-      navigate(`/community/${slug}/${newSort}/${validRange}`);
+      navigate(`/community/${slug}/${newSort}/${newRange ?? 'today'}`);
     } else {
-      range = 'today';
       navigate(`/community/${slug}/${newSort}`);
     }
-    fresh.current = true;
-    console.log('sort & range', sort, range);
-    setState((prev) => ({
-      ...prev,
-      sort,
-      range,
-    }));
   };
 
   const onPostUpdate = (post: IPost) => {
@@ -101,24 +98,30 @@ const CommunityFeed = ({ communityId }: { communityId: string }) => {
   return (
     <div className="">
       <div className="mb-4">
-        <PostSortDropdown
-          value={{ sort: state.sort, timeRange: state.range }}
-          onChange={handleSortChange}
-        />
+        <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} />
       </div>
-      {state.loading ? (
-        <div className="h-[400px] flex justify-center items-center">
+      {loading ? (
+        <div className="h-full flex justify-center items-center">
           <Spin size="large" />
         </div>
-      ) : (
+      ) : state.posts.length > 0 ? (
         <div className="flex flex-col gap-4">
           {state.posts.map((post, index) => (
-            <PostOverview key={index} post={post} onChangePost={onPostUpdate} />
+            <PostOverview
+              key={index}
+              post={post}
+              community={community}
+              onChangePost={onPostUpdate}
+            />
           ))}
+        </div>
+      ) : (
+        <div className="h-full flex justify-center items-center">
+          <span>No posts to display</span>
         </div>
       )}
       {state.hasMore && (
-        <div ref={ref} className="h-10 flex justify-center items-center">
+        <div ref={ref} className="h-full flex justify-center items-center">
           Loading more...
         </div>
       )}

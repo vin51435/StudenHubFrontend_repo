@@ -7,6 +7,7 @@ import Chats from '@src/pages/Chats';
 import AppLayout from '@src/layouts/Index';
 import Community from '@src/pages/Community';
 import CreatePost from '@src/components/Post/CreatePost';
+import PostDetailPage from '@src/components/Post/PostDetails';
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -25,6 +26,7 @@ export const protectedRoutes: RouteObject[] = [
           {
             path: getExactRoutePath('COMMUNITY'), // /community/:slug
             children: [
+              { path: getExactRoutePath('POST'), element: <PostDetailPage /> },
               {
                 index: true,
                 element: <Community />, // Handles just `/community/:slug`

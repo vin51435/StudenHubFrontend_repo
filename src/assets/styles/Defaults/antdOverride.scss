@@ -1,5 +1,21 @@
 @use '@styles/scss.import.scss' as *;
 
+.dark {
+  .ant-btn:hover {
+    color: $secondary-color !important;
+    border-color: $secondary-color !important;
+  }
+
+  .ant-dropdown-menu-custom {
+    background-color: #1f1f1f !important;
+    color: #f5f5f5 !important;
+  }
+
+  .ant-dropdown-menu-custom .ant-dropdown-menu-item:hover {
+    background-color: #333 !important;
+  }
+}
+
 .ant-form .ant-form-item {
   margin-bottom: 12px;
 }
@@ -54,6 +70,16 @@
   }
 }
 .ant-carousel {
+  .ant-image {
+    width: 100% !important;
+    height: 100% !important;
+    .ant-image-img {
+      object-fit: scale-down !important;
+      height: inherit;
+      width: inherit;
+    }
+  }
+
   .slick-prev,
   .slick-next {
     background-color: rgba(0, 0, 0, 0.5) !important;

@@ -56,10 +56,10 @@ export const CENTER_ENDPOINTS = {
   COMMUNITY_FOLLOW_TOGGLE: (id: string | number) => `/community/${id}/follow/toggle`,
   COMMUNITY_FOLLOWS: '/community/follows',
 
-  POST_VOTE: (postId: string | number, voteType: VoteEnum, communityId: string | number) =>
+  POST_VOTE: (postId: string, voteType: VoteEnum, communityId: string) =>
     `/communitypost/${communityId}/${postId}/vote/${voteType}`,
   POSTS: '/communityposts',
-  POST: (id: string | number) => `/posts/${id}`,
+  POST: (communityId: string, oostIdSlug: string) => `communitypost/${communityId}/${oostIdSlug}`,
   POST_COMMENTS: (id: string | number) => `/posts/${id}/comments`,
 };
 

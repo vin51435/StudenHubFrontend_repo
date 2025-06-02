@@ -5,7 +5,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ICommunity } from '@src/types/app';
 import CommunityOp from '@src/api/communityOperations';
 import { getRoutePath } from '@src/utils/getRoutePath';
-import PostSortDropdown from '@src/components/PostSorting';
 import {
   PostSortOption,
   TimeRangeOption,
@@ -13,6 +12,7 @@ import {
   TIME_RANGE_OPTIONS,
 } from '@src/types/contants';
 import CommunityFeed from '@src/components/Post/PostFeed';
+import Communitysidebar from '@src/components/Community/Community.sidebar';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -87,7 +87,7 @@ export default function CommunityOverview() {
   }
 
   return (
-    <div className="flex mt-1 flex-col w-full min-h-screen">
+    <div className="flex mt-1 flex-col w-full max-h-screen">
       {/* Banner */}
       <div className="w-full h-[160px] bg-gray-200 relative rounded-3xl">
         {state?.data?.bannerUrl && (
@@ -147,23 +147,10 @@ export default function CommunityOverview() {
       <div className="flex-1 w-full max-w-7xl mx-auto mt-6 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
           {/* Post Feed */}
-          <CommunityFeed communityId={state?.data?._id} />
+          <CommunityFeed community={state?.data} />
 
           {/* Sidebar */}
-          <div>
-            <Card className="shadow-md text-start sticky top-[90px]">
-              <Title level={5}>About {state?.data?.name}</Title>
-              <Paragraph className="text-sm">{state?.data?.description}</Paragraph>
-              <div className="flex justify-between items-center mt-4">
-                <div>
-                  <Text strong>{state?.data?.followersCount || 0}</Text>
-                  <Text type="secondary" className="block text-xs">
-                    Members
-                  </Text>
-                </div>
-              </div>
-            </Card>
-          </div>
+          <Communitysidebar community={state?.data} />
         </div>
       </div>
     </div>
