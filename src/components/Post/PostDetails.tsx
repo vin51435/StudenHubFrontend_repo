@@ -14,6 +14,8 @@ import { getRoutePath } from '@src/utils/getRoutePath';
 import { useLoader } from '@src/hooks/useLoader';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
 import VoteIcon from '@src/components/Vote.svg';
+import CommentInput from '@src/components/CommentInput';
+import PostComments from '@src/components/Post/PostComments';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -116,7 +118,7 @@ const PostDetailPage: React.FC = () => {
 
   return (
     <Row
-      gutter={[16, 16]}
+      gutter={[18, 18]}
       className="post-detail_container flex flex-col items-start h-full w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
     >
       <Col span={17} className="">
@@ -221,6 +223,7 @@ const PostDetailPage: React.FC = () => {
             <div>
               <Title level={5}>Comments</Title>
               <Text type="secondary">Comments will appear here.</Text>
+              <PostComments postId={post?._id!} />
             </div>
           </>
         )}

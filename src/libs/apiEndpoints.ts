@@ -12,7 +12,8 @@ export const BASE_URLS = {
   user: `${activeHost}/api/v1/user`,
   userFormats: `${activeHost}/api/v1/userformat`,
   center: `${activeHost}/api/v1/center`,
-} as const;
+  comments: `${activeHost}/api/v1/comments`,
+};
 
 export const AUTH_ENDPOINTS = {
   USER: '/',
@@ -60,21 +61,15 @@ export const CENTER_ENDPOINTS = {
     `/communitypost/${communityId}/${postId}/vote/${voteType}`,
   POSTS: '/communityposts',
   POST: (communityId: string, oostIdSlug: string) => `communitypost/${communityId}/${oostIdSlug}`,
-  POST_COMMENTS: (id: string | number) => `/posts/${id}/comments`,
+
+  POST_COMMENT: (id: string | number) => `/${id}`,
+  COMMENT_VOTE: (id: string, voteType: VoteEnum) => `/${id}/vote/${voteType}`,
 };
 
 export const FORMAT_ENDPOINTS = {
   GET_STATES: '/allstates',
   GET_CITIES: '/allcities',
   GET_INTERESTS: '/userinterests',
-} as const;
-
-export const POST_ENDPOINTS = {
-  ALL: '/posts',
-  SINGLE: (id: string | number) => `/posts/${id}`,
-  CREATE: '/posts',
-  UPDATE: (id: string | number) => `/posts/${id}`,
-  DELETE: (id: string | number) => `/posts/${id}`,
 } as const;
 
 export const flatEndpointObjects = {

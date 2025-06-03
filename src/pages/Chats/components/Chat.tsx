@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import { Bubble, Sender } from '@ant-design/x';
 import { Avatar, Flex } from 'antd';
-import { User } from '@src/types';
 import { ChatMessage, useSocketChat } from '@src/hooks/useSocketChat';
 import DefaultAvatar from '/profile-default.svg';
 import { useSocket } from '@src/contexts/Socket.context';
+import { IUser } from '@src/types/app';
 
 const roles = {
   remote: {
@@ -22,9 +22,9 @@ const roles = {
 
 interface ChatProps {
   chatId: string;
-  userB: User | null;
+  userB: IUser | null;
   height?: number;
-  userA: User;
+  userA: IUser;
 }
 
 const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {

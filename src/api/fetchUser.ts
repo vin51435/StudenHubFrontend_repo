@@ -1,8 +1,8 @@
 import { get } from '@src/libs/apiConfig';
-import { UserInfoResponse } from '@src/types';
+import { IUser } from '@src/types/app';
 
-const fetchUserInfo = async (): Promise<UserInfoResponse> => {
-  const response: UserInfoResponse = await get('USER', {
+const fetchUserInfo = async (): Promise<IUser> => {
+  const response: IUser = await get('USER', {
     BASE_URLS: 'user',
   });
   return response;

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ChatMessage } from '@src/hooks/useSocketChat';
 
-export type NotificationType = 'newChat' | 'newMessage';
+export type NotificationType = 'newChat' | 'newMessage' | string;
 
 interface Notification {
   _id: string;

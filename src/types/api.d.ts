@@ -71,4 +71,19 @@ export interface IPaginatedResponse<T = any> extends IBaseResponse {
   hasMore: boolean;
 }
 
+export interface CommentPagination<T = any> {
+  data: T[];
+  hasMore: boolean;
+  rootId: string;
+  page: number;
+  totalRootComments?: number;
+  depth?: number;
+  limit?: number;
+  skip?: number;
+  childLimit?: number;
+  childSkip?: number;
+}
+
+export interface CommentPaginatedResponse<T = any> extends CommentPagination<T>, IBaseResponse {}
+
 export interface IErrorResponse extends IBaseResponse {}

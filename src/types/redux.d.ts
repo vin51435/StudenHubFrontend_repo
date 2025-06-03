@@ -1,14 +1,14 @@
-import { User } from './users';
+import { IUser } from '@src/types/app';
 
 interface AuthState {
   isAuthenticated: boolean;
   redirectUrl: string | null;
-  user: User | null;
+  user: IUser | null;
   token: string | null;
 }
 
 interface LoginPayload {
-  user: User;
+  user: IUser;
   token?: string;
   redirectUrl?: string | null | undefined;
 }

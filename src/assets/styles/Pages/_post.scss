@@ -33,5 +33,17 @@
       justify-content: center !important;
       align-items: center !important;
     }
+
+    .ant-image .ant-image-img {
+      object-fit: contain !important;
+    }
+  }
+
+  .comment_input {
+    .ql-editor {
+      &::placeholder {
+        color: $secondary-white !important;
+      }
+    }
   }
 }

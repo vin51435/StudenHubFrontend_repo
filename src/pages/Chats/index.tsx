@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux/store';
-import { User } from '@src/types';
 import { post } from '@src/libs/apiConfig';
 import InboxList from './components/Inbox';
 import Chat from './components/Chat';
 import { useSocketChat } from '@src/hooks/useSocketChat';
+import { IUser } from '@src/types/app';
 
 export type ChatDataType = {
   chatId: string | null;
-  participantData: User | null;
+  participantData: IUser | null;
 };
 
 const Chats = () => {
@@ -32,7 +32,7 @@ const Chats = () => {
 
   async function fetchInbox() {
     if (chatIds.length > 0) {
-      const res = await post<{ chats: { chatId: string; secondParticipant: User }[] }>(
+      const res = await post<{ chats: { chatId: string; secondParticipant: IUser }[] }>(
         'GET_INBOX_PARTICIPANTS',
         {
           BASE_URLS: 'user',

@@ -45,10 +45,43 @@ export function searchArrayNestedObjByKey<T extends Record<string, any>>(
       return item;
     }
     if (childrenKey && item?.[childrenKey]) {
-      const found = searchArrayNestedObjByKey(item?.[childrenKey], key, value, childrenKey);
+      const found = searchArrayNestedObjByKey(item[childrenKey], key, value, childrenKey);
       if (found) return found as T;
     }
   }
+  return undefined;
+}
+
+export function updateNestedArrayById<T extends Record<string, any>>(
+  items: T[],
+  key: string,
+  keyValue: string,
+  updater: (item: T) => T,
+  childrenKey: string = 'children'
+): T[] | null {
+  let found = false;
+
+  const updated = items.map((item) => {
+    if (item[key] === keyValue) {
+      found = true;
+      return updater({ ...item });
+    } else if (item[childrenKey]) {
+      const updatedChildren = updateNestedArrayById(
+        item[childrenKey],
+        key,
+        keyValue,
+        updater,
+        childrenKey
+      );
+      if (updatedChildren !== null) {
+        found = true;
+        return { ...item, [childrenKey]: updatedChildren };
+      }
+    }
+    return item;
+  });
+
+  return found ? updated : null;
 }
 
 export const flattenMenuItems = <T extends Record<string, any>>(
