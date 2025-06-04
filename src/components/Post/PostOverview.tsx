@@ -7,6 +7,7 @@ import { VoteEnum } from '@src/types/enum';
 import PostOp from '@src/api/postOperations';
 import { useNavigate } from 'react-router-dom';
 import { getRoutePath } from '@src/utils/getRoutePath';
+import { Link } from 'react-router-dom';
 
 const { Paragraph } = Typography;
 
@@ -71,18 +72,17 @@ const PostOverview: FC<{
     onChangePost?.(updatedPost);
   };
 
-  const PostDetail = () => {
-    navigate(getRoutePath('POST').replace(':slug', community.slug).replace(':postSlug', post.slug));
-  };
-
   return (
-    <Card
-      classNames={{
-        body: '!px-6 !py-3',
-      }}
-      className="post-overview rounded-2xl !bg-transparent w-full shadow-sm hover:shadow-md transition-all mb-4  max-w-2xl"
+    <Link
+      to={getRoutePath('POST').replace(':slug', community.slug).replace(':postSlug', post.slug)}
+      className="block cursor-pointer"
     >
-      <div onClick={PostDetail} className="cursor-pointer">
+      <Card
+        classNames={{
+          body: '!px-4 !py-3',
+        }}
+        className="post-overview rounded-2xl !bg-transparent w-full shadow-sm hover:shadow-md transition-all mb-4  max-w-2xl"
+      >
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -90,10 +90,8 @@ const PostOverview: FC<{
             <span className="text-xs text-gray-500">{post?.author?.fullName}</span>
           </div>
         </div>
-
         {/* Title */}
         <h2 className="post-overview_title text-start text-lg font-semibold ">{post.title}</h2>
-
         {/* Tags */}
         {/* <div className="my-2 flex flex-wrap gap-2">
         {post.tags.map((tag) => (
@@ -102,7 +100,6 @@ const PostOverview: FC<{
           </Tag>
           ))}
           </div> */}
-
         {/* Content Preview */}
         <Paragraph
           className="post-overview_content text-sm text-start text-gray-700 !mb-0"
@@ -110,73 +107,73 @@ const PostOverview: FC<{
         >
           <div dangerouslySetInnerHTML={{ __html: post.content as string }} />
         </Paragraph>
-      </div>
-
-      {/* Carousel for Media */}
-      <Carousel
-        arrows
-        infinite={false}
-        className="w-full rounded-lg"
-        dots={{ className: 'carousel-dots-dark' }}
-      >
-        {post.mediaUrls.map((url, index) => (
-          <div
-            key={index}
-            className="relative w-full"
+        {/* Carousel for Media */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <Carousel
+            arrows
+            infinite={false}
+            className="w-full rounded-lg"
+            dots={{ className: 'carousel-dots-dark' }}
+          >
+            {post.mediaUrls.map((url, index) => (
+              <div
+                key={index}
+                className="relative w-full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <div className="w-full h-64 overflow-hidden">
+                  <Image
+                    src={url}
+                    alt={`Media ${index + 1}`}
+                    preview={false}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            ))}
+          </Carousel>
+        </div>
+        {/* Post Stats */}
+        <div className="flex items-center gap-4 text-sm text-gray-500 mt-2">
+          <span
+            className="flex items-center gap-1"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
             }}
           >
-            <div className="w-full h-64 overflow-hidden">
-              <Image
-                src={url}
-                alt={`Media ${index + 1}`}
-                preview={false}
-                className="w-full h-full object-cover"
+            <span className="flex items-center gap-1 text-sm">
+              <VoteIcon
+                dir="up"
+                onClick={() => handleVote(1)}
+                className={`cursor-pointer text-gray-400 ${
+                  post.voteType === VoteEnum.upVote && 'text-orange-700'
+                }`}
               />
-            </div>
+              {post.netVotes ?? post.upvotesCount - post.downvotesCount}
+              <VoteIcon
+                dir="down"
+                onClick={() => handleVote(-1)}
+                className={`cursor-pointer ml-2 text-gray-400 ${
+                  post.voteType === VoteEnum.downVote && 'text-purple-500'
+                }`}
+              />
+            </span>
+          </span>
+          <div className="cursor-pointer w-full text-start">
+            <span className="items-center gap-1 inline-block">
+              <MessageOutlined /> {post.commentsCount}
+            </span>
+            <span className="inline-block ml-3 items-center gap-1">
+              <EyeOutlined /> {post.views}
+            </span>
           </div>
-        ))}
-      </Carousel>
-
-      {/* Post Stats */}
-      <div className="flex items-center gap-4 text-sm text-gray-500 mt-2">
-        <span
-          className="flex items-center gap-1"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
-          <span className="flex items-center gap-1 text-sm">
-            <VoteIcon
-              dir="up"
-              onClick={() => handleVote(1)}
-              className={`cursor-pointer text-gray-400 ${
-                post.voteType === VoteEnum.upVote && 'text-orange-700'
-              }`}
-            />
-            {post.netVotes ?? post.upvotesCount - post.downvotesCount}
-            <VoteIcon
-              dir="down"
-              onClick={() => handleVote(-1)}
-              className={`cursor-pointer ml-2 text-gray-400 ${
-                post.voteType === VoteEnum.downVote && 'text-purple-500'
-              }`}
-            />
-          </span>
-        </span>
-        <div onClick={PostDetail} className="cursor-pointer w-full text-start">
-          <span className="items-center gap-1 inline-block">
-            <MessageOutlined /> {post.commentsCount}
-          </span>
-          <span className="inline-block ml-3 items-center gap-1">
-            <EyeOutlined /> {post.views}
-          </span>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 };
 

@@ -209,9 +209,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   updateComment,
   deleteComment,
 }) => {
-  const [commentMeta, setCommentMeta] = useState<{ id: string; page: number; hasMore: boolean }[]>([
-    { id: comments[0]._id, page: 1, hasMore: true },
-  ]);
   const [activeComment, setActiveComment] = useState<string>('');
   const [editActive, setEditActive] = useState<boolean>(false);
   const { user } = useSelector((state: RootState) => state.auth);

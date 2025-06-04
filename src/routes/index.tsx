@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { authRoutes } from '@src/routes/routing/authRoutes.routes';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '@src/redux/reducers/uiSlice';
+import ScrollRestoration from '@src/components/ScrollRestoration';
 
 const AppRoutes = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const AppRoutes = () => {
 
 const RouterWrapper = () => (
   <BrowserRouter>
+    <ScrollRestoration />
     <AppRoutes />
   </BrowserRouter>
 );

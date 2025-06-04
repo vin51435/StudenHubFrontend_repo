@@ -7,10 +7,10 @@ import PostSortDropdown from '@src/components/Post/PostSorting';
 import CommunityOp from '@src/api/communityOperations';
 import { ICommunity, IPost } from '@src/types/app';
 import { Spin } from 'antd';
-
-type Post = Parameters<typeof PostOverview>[0]['post'];
-
-const PAGE_SIZE = 10;
+import { useAppDispatch, useAppSelector } from '@src/redux/hook';
+import { fetchInitialPosts, fetchMorePosts } from '@src/redux/reducers/cache/post.thunks';
+import { getExactRoutePath } from '@src/utils/getRoutePath';
+import { updatePost } from '@src/redux/reducers/cache/post.slice';
 
 const CommunityFeed = ({ community }: { community: ICommunity }) => {
   const {
@@ -22,77 +22,41 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
     sort?: PostSortOption;
     range?: TimeRangeOption;
   }>();
-
-  const [state, setState] = useState<{
-    posts: IPost[];
-    page: string;
-    hasMore: boolean;
-  }>(() => ({
-    posts: [],
-    page: '1',
-    hasMore: true,
-  }));
-
-  const [loading, setLoading] = useState(true);
   const { ref, inView } = useInView();
   const navigate = useNavigate();
   const fresh = useRef(true);
+  const dispatch = useAppDispatch();
+  const { hasMore, page, posts, loading } = useAppSelector((state) => state.postCache);
 
-  const loadMorePosts = useCallback(
-    async (page?: number) => {
-      // if (!state.hasMore && !fresh.current) return;
-
-      console.log('Fetching with sort & range:', sort, range);
-
-      const res = await CommunityOp.getAllPosts(
-        community._id,
-        page?.toString() ?? state.page,
-        sort,
-        ['Top', 'Controversial'].includes(sort) ? range : undefined
-      );
-
-      const newPosts: IPost[] = res.data;
-      setState((prev) => ({
-        ...prev,
-        page: page?.toString() ?? '1',
-        posts: newPosts,
-        hasMore: res.hasMore,
-      }));
-      setLoading(false);
-      fresh.current = false;
-    },
-    [community._id, sort, range, state.page, state.hasMore]
-  );
-
-  // Reload when sort/range change
   useEffect(() => {
-    setLoading(true);
-    setState({ posts: [], page: '1', hasMore: true });
-    fresh.current = true;
-    loadMorePosts(1);
-  }, [sort, range]);
+    if (!slug || posts.length || !fresh.current) return;
+    if (posts[0]?.communityId === community._id) return;
+    dispatch(fetchInitialPosts({ communityId: community._id, sort, range }));
+    fresh.current = false;
+  }, [slug, sort, range]);
 
   // Infinite scroll
   useEffect(() => {
-    if (inView && state.hasMore && !fresh.current) {
-      loadMorePosts(Number(state.page) + 1);
+    if (inView && hasMore && !fresh.current) {
+      dispatch(fetchMorePosts({ communityId: community._id, page: page + 1, sort, range }));
     }
   }, [inView]);
 
   const handleSortChange = (newSort: PostSortOption, newRange?: TimeRangeOption) => {
     const isTimeBased = ['Top', 'Controversial'].includes(newSort);
     if (isTimeBased) {
-      navigate(`/community/${slug}/${newSort}/${newRange ?? 'today'}`);
+      navigate(
+        `${getExactRoutePath('COMMUNITY').replace(':slug', slug!)}/${newSort}/${
+          newRange ?? 'today'
+        }`
+      );
     } else {
-      navigate(`/community/${slug}/${newSort}`);
+      navigate(`${getExactRoutePath('COMMUNITY').replace(':slug', slug!)}/${newSort}`);
     }
   };
 
   const onPostUpdate = (post: IPost) => {
-    setState((prev) => ({
-      ...prev,
-      posts: prev.posts.map((p) => (p._id === post._id ? post : p)),
-    }));
+    dispatch(updatePost(post));
   };
 
   return (
@@ -104,9 +68,9 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
         <div className="h-full flex justify-center items-center">
           <Spin size="large" />
         </div>
-      ) : state.posts.length > 0 ? (
+      ) : posts.length > 0 ? (
         <div className="flex flex-col gap-4">
-          {state.posts.map((post, index) => (
+          {posts.map((post, index) => (
             <PostOverview
               key={index}
               post={post}
@@ -120,7 +84,7 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
           <span>No posts to display</span>
         </div>
       )}
-      {state.hasMore && (
+      {hasMore && (
         <div ref={ref} className="h-full flex justify-center items-center">
           Loading more...
         </div>

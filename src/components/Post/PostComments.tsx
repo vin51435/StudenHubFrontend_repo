@@ -63,9 +63,10 @@ const PostComments = ({ postId }: { postId: string }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex items-center mb-3">
         <Typography.Text>Sort by:</Typography.Text>
         <Select
+          className="!ml-2 !w-fit"
           defaultValue={sort}
           style={{ width: 120 }}
           onChange={(value) => {

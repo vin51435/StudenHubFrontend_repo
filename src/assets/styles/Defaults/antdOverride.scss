@@ -6,13 +6,80 @@
     border-color: $secondary-color !important;
   }
 
-  .ant-dropdown-menu-custom {
-    background-color: #1f1f1f !important;
-    color: #f5f5f5 !important;
+  // Antd Select
+  .ant-select.ant-select-outlined {
+    // You might not need to target the outer container if the child styles are sufficient,
+    // but you could adjust border, box-shadow, etc. here if needed.
+
+    .ant-select-selector {
+      // Already has a dark background and light text from the observation,
+      // but you can override if needed or if the base styles change.
+      background-color: $primary-dark !important; // Example dark background
+      color: #f9fafb; // Example light text color
+
+      // Adjust the border color for dark mode
+      border-color: #4a4a4a; // Example darker border color
+
+      &:hover {
+        border-color: #6b6b6b; // Example hover border color
+      }
+      &:focus,
+      &.ant-select-focused {
+        border-color: #8c8c8c; // Example focused border color
+        box-shadow: 0 0 0 2px rgba(140, 140, 140, 0.2); // Example focus shadow
+      }
+    }
+
+    .ant-select-arrow {
+      // Adjust the color of the arrow icon if it's not visible
+      color: #f9fafb; // Example light arrow color
+    }
+
+    // Add styles for dropdown menu if needed
+    &.ant-select-open .ant-select-dropdown {
+      background-color: transparent; // Example dark dropdown background
+      color: #f9fafb; // Example dark dropdown text color
+
+      .ant-select-item {
+        color: #f9fafb !important;
+        &:hover {
+          background-color: #2d2d2d; // Example hover background
+        }
+        &.ant-select-item-selected {
+          background-color: #3a3a3a; // Example selected background
+        }
+      }
+    }
+    &.ant-select-single.ant-select-open .ant-select-selection-item {
+      color: #f9fafb !important;
+    }
+  }
+  .ant-select-dropdown {
+    background-color: $primary-dark !important; /* Example dark background color */
+    color: #f9fafb; /* Example light text color for options */
+    border: 1px solid #4a4a4a; /* Example dark border */
   }
 
-  .ant-dropdown-menu-custom .ant-dropdown-menu-item:hover {
-    background-color: #333 !important;
+  /* Target individual select option items */
+  .ant-select-item {
+    color: #f9fafb; /* Ensure text color is light */
+
+    /* Style for hover state */
+    &:hover {
+      background-color: #2d2d2d; /* Example darker background on hover */
+    }
+
+    /* Style for selected item */
+    &.ant-select-item-selected {
+      background-color: #3a3a3a; /* Example background for the selected option */
+      font-weight: bold; /* Optional: make selected text bold */
+      color: #f9fafb; /* Ensure selected text color is light */
+    }
+
+    /* Style for active/focused item (e.g., navigated with keyboard) */
+    &.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+      background-color: #2d2d2d; /* Match hover background for consistency */
+    }
   }
 }
 

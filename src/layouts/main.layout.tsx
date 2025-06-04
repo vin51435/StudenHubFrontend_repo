@@ -69,7 +69,10 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <Layout className="h-full bg-transparent dark:bg-transparent">
+    <Layout
+      id="Main-layout"
+      className="layout-main_container h-full bg-transparent dark:bg-transparent"
+    >
       <Header
         style={{
           position: 'sticky',
@@ -115,12 +118,7 @@ const MainLayout: React.FC = () => {
             style={toggleButtonStyle}
           />
         </section>
-        <Content
-          className="w-full h-full"
-          style={{
-            overflow: 'initial',
-          }}
-        >
+        <Content data-scroll-id="content" className="w-full h-full custom-scrollbar">
           <div
             className="!h-auto max-h-screen mx-auto mt-1 max-w-[1120px] w-[95%] p-1 bg-transparent"
             style={{

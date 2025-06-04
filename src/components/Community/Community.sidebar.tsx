@@ -27,9 +27,12 @@ const Communitysidebar = ({
   const navigate = useNavigate();
 
   return (
-    <Card className="community-sidebar h-fit !shadow-md text-start sticky !bg-transparent">
+    <Card className="community-sidebar !hidden md:!block h-fit !shadow-md text-start sticky !bg-transparent">
       <Title className="flex justify-between items-center w-full" level={5}>
-        <span onClick={() => navigate(getRoutePath('COMMUNITY').replace(':slug', community?.slug))}>
+        <span
+          className="cursor-pointer"
+          onClick={() => navigate(getRoutePath('COMMUNITY').replace(':slug', community?.slug))}
+        >
           r/{community?.name}
         </span>
         {allDetails && (

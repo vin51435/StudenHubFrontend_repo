@@ -4,7 +4,7 @@ import { Avatar, Button, Card, Typography, Skeleton, Row, Col, Divider } from 'a
 import { PlusOutlined } from '@ant-design/icons';
 import { ICommunity } from '@src/types/app';
 import CommunityOp from '@src/api/communityOperations';
-import { getRoutePath } from '@src/utils/getRoutePath';
+import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
 import {
   PostSortOption,
   TimeRangeOption,
@@ -13,8 +13,10 @@ import {
 } from '@src/types/contants';
 import CommunityFeed from '@src/components/Post/PostFeed';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
+import { useAppDispatch, useAppSelector } from '@src/redux/hook';
+import { fetchCommunity, updateCommunity } from '@src/redux/reducers/cache/community.slice';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title } = Typography;
 
 export default function CommunityOverview() {
   const navigate = useNavigate();
@@ -27,18 +29,23 @@ export default function CommunityOverview() {
     sort?: PostSortOption;
     range?: TimeRangeOption;
   }>();
+  const dispatch = useAppDispatch();
+  const communityCache = useAppSelector((state) => state.communityCache.cache);
+  const loading = useAppSelector((state) => state.communityCache.loading);
+  const community = slug ? communityCache[slug] : null;
 
-  const [state, setState] = useState<{
-    data: ICommunity | null;
-    loading: boolean;
-    joining: boolean;
-  }>({
-    data: null,
-    loading: true,
-    joining: false,
-  });
+  const [joinLoading, setJoinLoading] = useState(false);
 
   useEffect(() => {
+    handleNavigation();
+  }, [slug, urlSort, urlRange]);
+
+  useEffect(() => {
+    if (!slug || community) return;
+    dispatch(fetchCommunity(slug));
+  }, [slug]);
+
+  const handleNavigation = () => {
     if (!slug) {
       navigate(getRoutePath('HOME'));
       return;
@@ -57,42 +64,37 @@ export default function CommunityOverview() {
       (!isTimeBased(resolvedSort) && urlRange);
 
     if (needsRedirect) {
-      const path = `/community/${slug}/${resolvedSort}${
+      const path = `${getExactRoutePath('COMMUNITY').replace(':slug', slug)}/${resolvedSort}${
         isTimeBased(resolvedSort) ? `/${resolvedRange}` : ''
       }`;
       navigate(path, { replace: true });
       return;
     }
-  }, [slug, urlSort, urlRange, navigate]);
+  };
 
-  useEffect(() => {
-    if (!slug) return;
-    setState({
-      data: null,
-      loading: true,
-      joining: false,
-    });
-    (async () => {
-      const res = await CommunityOp.fetchCommunityDetails(slug);
-      setState({
-        data: res?.data ?? null,
-        loading: false,
-        joining: false,
-      });
-    })();
-  }, [slug]);
-
-  if (!state?.data?._id || state.loading) {
+  if (!community?._id || loading) {
     return <Skeleton active paragraph={{ rows: 6 }} />;
   }
+
+  const handleFollowToggle = async () => {
+    setJoinLoading(true);
+    await CommunityOp._followToggle(community._id);
+    dispatch(
+      updateCommunity({
+        slug,
+        updates: { isFollowing: !community.isFollowing },
+      })
+    );
+    setJoinLoading(false);
+  };
 
   return (
     <div className="flex mt-1 flex-col w-full max-h-screen">
       {/* Banner */}
       <div className="w-full h-[160px] bg-gray-200 relative rounded-3xl">
-        {state?.data?.bannerUrl && (
+        {community.bannerUrl && (
           <img
-            src={state?.data?.bannerUrl}
+            src={community.bannerUrl}
             alt="Banner"
             className="bg-repeat-x w-full h-full rounded-2xl"
           />
@@ -100,17 +102,17 @@ export default function CommunityOverview() {
       </div>
 
       {/* Header */}
-      <div className="community_header relative flex items-end justify-start max-h-[56px] px-4">
+      <div className="community_header relative flex items-end justify-start max-h-[56px] !w-full px-4">
         <Avatar
           size={100}
-          src={state?.data?.avatarUrl}
-          className="border-4 border-white absolute -top-0 left-0"
+          src={community.avatarUrl}
+          className="border-4 border-white absolute -top-0 left-0 !h-24 !w-24"
         />
-        <div className="w-full flex justify-between ml-3">
+        <div className="flex justify-between ml-3 flex-1">
           <Title level={1} className="!m-0 font-extrabold">
-            r/{state?.data?.name}
+            r/{community.name}
           </Title>
-          <div className="flex gap-4 my-auto">
+          <div className="flex gap-4 ml-auto items-center">
             <Button
               className="!bg-transparent mr-2"
               type="dashed"
@@ -121,22 +123,11 @@ export default function CommunityOverview() {
             </Button>
             <Button
               className="border border-gray-50"
-              disabled={state.joining}
-              type={state?.data?.isFollowing ? 'default' : 'primary'}
-              onClick={async () => {
-                setState((prev) => ({ ...prev, joining: true }));
-                await CommunityOp._followToggle(state?.data?._id);
-                setState((prev) => ({
-                  ...prev,
-                  data: {
-                    ...prev.data,
-                    isFollowing: !prev.data?.isFollowing,
-                  } as ICommunity,
-                  joining: false,
-                }));
-              }}
+              disabled={joinLoading}
+              type={community.isFollowing ? 'default' : 'primary'}
+              onClick={handleFollowToggle}
             >
-              {state?.data?.isFollowing ? 'Joined' : 'Join'}
+              {community.isFollowing ? 'Joined' : 'Join'}
             </Button>
           </div>
         </div>
@@ -144,15 +135,17 @@ export default function CommunityOverview() {
       <Divider />
 
       {/* Main Layout */}
-      <div className="flex-1 w-full max-w-7xl mx-auto mt-6 px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+      <Row className="w-full max-w-7xl mx-auto mt-6 px-4 " gutter={[18, 18]}>
+        <Col span={24} md={17} className="">
           {/* Post Feed */}
-          <CommunityFeed community={state?.data} />
+          <CommunityFeed community={community} />
+        </Col>
 
+        <Col span={0} md={7}>
           {/* Sidebar */}
-          <Communitysidebar community={state?.data} />
-        </div>
-      </div>
+          <Communitysidebar community={community} />
+        </Col>
+      </Row>
     </div>
   );
 }

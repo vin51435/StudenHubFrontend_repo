@@ -79,7 +79,12 @@ const TopHeader = () => {
 
   return (
     <div className="flex items-center gap-6 ml-auto w-full h-full space-between align-center">
-      <div className="text-2xl px-4 flex justify-center items-center my-3">StudenHub</div>
+      <div
+        className="text-2xl px-4 flex justify-center items-center my-3 cursor-pointer"
+        onClick={() => navigate(getExactRoutePath('APP'))}
+      >
+        StudenHub
+      </div>
 
       <div className="top-header_search w-full h-full flex items-center justify-center">
         <AutoComplete

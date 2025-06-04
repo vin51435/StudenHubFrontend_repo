@@ -121,7 +121,7 @@ const PostDetailPage: React.FC = () => {
       gutter={[18, 18]}
       className="post-detail_container flex flex-col items-start h-full w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
     >
-      <Col span={17} className="">
+      <Col span={24} md={17} className="">
         {!load && !post ? (
           <div className="text-center">
             <h1 className="text-2xl font-bold">Post not found</h1>
@@ -134,14 +134,8 @@ const PostDetailPage: React.FC = () => {
                 shape="circle"
                 icon={<ArrowLeftOutlined />}
                 onClick={() => {
-                  // if (location.state && location.state.from) {
-                  //   const from = location.state.from;
-                  //   if (from.startsWith('mydomain.com')) {
-                  //     navigate(-1);
-                  // } else {
-                  navigate(getRoutePath('COMMUNITY').replace(':slug', communitySlug));
-                  // }
-                  // }
+                  // navigate(getRoutePath('COMMUNITY').replace(':slug', communitySlug));
+                  navigate(-1);
                 }}
               />
               <div>
@@ -222,13 +216,12 @@ const PostDetailPage: React.FC = () => {
             {/* Comments Section */}
             <div>
               <Title level={5}>Comments</Title>
-              <Text type="secondary">Comments will appear here.</Text>
               <PostComments postId={post?._id!} />
             </div>
           </>
         )}
       </Col>
-      <Col span={7} className="">
+      <Col span={0} md={7} className="">
         <Communitysidebar
           community={post?.community as ICommunity}
           allDetails
