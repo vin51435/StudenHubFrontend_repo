@@ -39,7 +39,7 @@ export const USER_ENDPOINTS = {
   NOTIFICATION_SUBSCRIBE: '/subscribe',
   GET_INBOX_PARTICIPANTS: '/getSecondParticipants',
   USERS_BY_ID: '/usersbyid',
-  CHAT_ID: '/chatid',
+  CHAT_ID: (id?: string) => `/chatid${id ? `/${id}` : ''}`,
   GET_MESSAGES_BY_CHAT_ID: '/messages',
   CHATS: '/chats',
 

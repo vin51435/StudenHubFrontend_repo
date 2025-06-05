@@ -20,7 +20,7 @@ const InboxList = memo(({ chats, selectedChat, onSelect, notifications, loading 
   return (
     <>
       {chats && chats.length > 0 ? (
-        <div className="w-4/12 overflow-y-auto overflow-x-hidden ">
+        <div className="inbox-individual-chat w-4/12 overflow-y-auto overflow-x-hidden ">
           {chats.map((chat) => (
             <div
               key={chat.chatId}

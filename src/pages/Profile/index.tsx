@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Form, Input, message, Select, Row, Col } from 'antd';
+import { Avatar, Button, Form, Input, message, Select, Row, Col, Card } from 'antd';
 import { RootState } from '@src/redux/store';
 import { useSelector } from 'react-redux';
 import ImageUpload from '@src/components/ImageUpload';
@@ -88,11 +88,12 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto dark:bg-gray-900">
+    <Card className="mx-auto dark:bg-gray-900">
       <Row className="flex items-center space-x-6 mb-8">
         <Col className="flex flex-col items-center">
           <ImageUpload
             multiple={false}
+            maxCount={1}
             base64URLValue={user?.profilePicture! ?? undefined}
             onChange={(files) => {
               // if (!files.length) return;
@@ -162,6 +163,6 @@ export const Profile: React.FC = () => {
           )}
         </div>
       </Form>
-    </div>
+    </Card>
   );
 };

@@ -1,10 +1,9 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import PostOverview from '../Post/PostOverview';
 import { PostSortOption, TimeRangeOption } from '@src/types/contants';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostSortDropdown from '@src/components/Post/PostSorting';
-import CommunityOp from '@src/api/communityOperations';
 import { ICommunity, IPost } from '@src/types/app';
 import { Spin } from 'antd';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';

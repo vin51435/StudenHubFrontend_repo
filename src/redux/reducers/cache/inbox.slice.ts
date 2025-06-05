@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { post } from '@src/libs/apiConfig';
+import { deleteResource, post } from '@src/libs/apiConfig';
+import { USER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IUser } from '@src/types/app';
 
 export interface InboxState {
@@ -23,6 +24,13 @@ export const fetchInbox = createAsyncThunk('inbox/chats', async (chatIds: string
   return res;
 });
 
+export const deleteChat = createAsyncThunk('inbox/deleteChat', async (chatId: string) => {
+  const res = await deleteResource(USER_ENDPOINTS.CHAT_ID(chatId), {
+    BASE_URLS: 'user',
+  });
+  return chatId;
+});
+
 const inboxSlice = createSlice({
   name: 'inbox',
   initialState,
@@ -42,6 +50,9 @@ const inboxSlice = createSlice({
       })
       .addCase(fetchInbox.rejected, (state) => {
         state.chatsLoading = false;
+      })
+      .addCase(deleteChat.fulfilled, (state, action) => {
+        state.chats = state.chats.filter((chat) => chat.chatId !== action.payload);
       });
   },
 });

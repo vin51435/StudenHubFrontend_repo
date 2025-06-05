@@ -152,31 +152,46 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
     retryConnect();
   }, [chatId, socket]);
 
-  async function fetchMessagesForChat() {
+  async function fetchMessagesForChat(oldestMessageDate?: string) {
     if (!chatId || !recipientId) return;
-    if (messages?.[chatId]) return;
+    if (messages?.[chatId] && !oldestMessageDate) return;
+
+    const data: any = { chatId };
+    if (oldestMessageDate) data.oldestMessageDate = oldestMessageDate;
+
     const res = await post<{ chatId: string; messages: ResponseMessages[] }>(
       'GET_MESSAGES_BY_CHAT_ID',
       {
         BASE_URLS: 'user',
-        data: { chatId, oldesMessageDat: null },
+        data,
         queries: [{ sortOrder: 'asc' }],
       }
     );
     if (res?.data?.chatId) {
       setMessages((prev) => {
-        const messages = res?.data?.messages
-          ?.map((msg) => {
-            return {
-              ...msg,
-              role: msg.senderId === userId ? 'local' : ('remote' as MessageAgency),
-              recipientId: msg.senderId === userId ? recipientId : userId,
-              timestamp: msg.createdAt,
-            } as ChatMessage;
-          })
-          .sort((a, b) => new Date(a!.timestamp).getTime() - new Date(b!.timestamp).getTime()); // ascending
+        const newMessages = res?.data?.messages?.map((msg) => ({
+          ...msg,
+          role: msg.senderId === userId ? 'local' : ('remote' as MessageAgency),
+          recipientId: msg.senderId === userId ? recipientId : userId,
+          timestamp: msg.createdAt,
+        })) as ChatMessage[];
 
-        return { ...prev, [res.data!.chatId]: messages } as Record<string, ChatMessage[]>;
+        const existingMessages = prev[res.data!.chatId] ?? [];
+
+        // Merge and deduplicate (by _id or localId if _id is missing), then sort by timestamp
+        const mergedMessages = [...newMessages, ...existingMessages].filter((msg, index, self) => {
+          const id = msg._id ?? msg.localId;
+          return self.findIndex((m) => (m._id ?? m.localId) === id) === index;
+        });
+
+        mergedMessages.sort(
+          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        );
+
+        return {
+          ...prev,
+          [res.data!.chatId]: mergedMessages,
+        } as Record<string, ChatMessage[]>;
       });
     }
   }
@@ -220,6 +235,7 @@ export function useSocketChat(chatId?: string, recipientId?: string) {
     leaveChat,
     receiveMessage,
     markChatMessageNotificationsAsRead,
+    fetchMessagesForChat,
     messages,
     chatLoaded,
     chatNotifications,
