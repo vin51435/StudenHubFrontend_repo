@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Avatar, Button, Card, Typography, Skeleton, Row, Col, Divider } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Avatar, Button, Typography, Skeleton, Row, Col, Divider } from 'antd';
+import { FaPlus } from 'react-icons/fa6';
 import CommunityOp from '@src/api/communityOperations';
 import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
 import {
@@ -115,7 +115,7 @@ export default function CommunityOverview() {
             <Button
               className="!bg-transparent mr-2"
               type="dashed"
-              icon={<PlusOutlined />}
+              icon={<FaPlus />}
               onClick={() => navigate(getRoutePath('CREATE_POST').replace(':slug', slug!))}
             >
               Create Post

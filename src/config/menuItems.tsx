@@ -1,14 +1,11 @@
-import {
-  HomeOutlined,
-  TeamOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  MailOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { LuTrendingUp, LuActivity } from 'react-icons/lu';
+import { IoHomeOutline } from 'react-icons/io5';
+import { PiChats } from 'react-icons/pi';
+import { TbUsersGroup } from 'react-icons/tb';
+import { FaPlus } from 'react-icons/fa6';
+
 import { ModalType } from '@src/contexts/Model.context';
 import { RootState } from '@src/redux/store';
-import { groupArrayOfObjects } from '@src/utils/common';
 import { getExactRoutePath } from '@src/utils/getRoutePath';
 import { Badge, MenuProps, ModalProps } from 'antd';
 import { useSelector } from 'react-redux';
@@ -32,12 +29,18 @@ export const getSidebarMenuItems = (
     {
       key: '1',
       label: 'Home',
-      icon: <HomeOutlined />,
+      icon: <IoHomeOutline />,
+      path: '/home',
+    },
+    {
+      key: 'popular',
+      label: 'Popular',
+      icon: <LuTrendingUp />,
       path: '/home',
     },
     {
       key: '2',
-      icon: <TeamOutlined />,
+      icon: <PiChats />,
       label: (
         <Badge
           className={`menu-label_badge`}
@@ -53,20 +56,20 @@ export const getSidebarMenuItems = (
     },
     {
       key: '3',
-      icon: <BarChartOutlined />,
+      icon: <LuActivity />,
       label: 'Activities',
       path: '/activities',
     },
     {
       key: 'sub1',
       label: 'Communities',
-      icon: <MailOutlined />,
+      icon: <TbUsersGroup />,
       type: 'submenu',
       className: 'community-submenu',
       children: [
         {
           key: 'g1',
-          icon: <PlusOutlined />,
+          icon: <FaPlus />,
           label: 'Create a Community',
           type: 'item',
           onClick: () => openModal('createCommunity', { open: true }),

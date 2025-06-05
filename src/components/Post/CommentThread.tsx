@@ -1,18 +1,12 @@
+import { MdEdit, MdOutlineReply, MdDelete } from 'react-icons/md';
+import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
 import React, { useState } from 'react';
-import { Button, Space, Tooltip } from 'antd';
-import {
-  MessageOutlined,
-  DownOutlined,
-  UpOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { Button, Space } from 'antd';
 import { ICommentData } from '@src/types/post.types';
 import CommentInput from '@src/components/CommentInput';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux/store';
 import VoteIcon from '@src/components/Vote.svg';
-import { post } from '@src/libs/apiConfig';
 import { VoteEnum } from '@src/types/enum';
 import { IUser } from '@src/types/app';
 import PostOp from '@src/api/postOperations';
@@ -137,7 +131,7 @@ const Comment: React.FC<CommentProps> = ({
                       type="text"
                       size="small"
                       className="dark:text-white"
-                      icon={<EditOutlined />}
+                      icon={<MdEdit />}
                       onClick={() => {
                         setActiveComment(comment._id);
                         setEditActive?.(true);
@@ -149,7 +143,7 @@ const Comment: React.FC<CommentProps> = ({
                       type="text"
                       size="small"
                       className="dark:text-white"
-                      icon={<DeleteOutlined />}
+                      icon={<MdDelete />}
                       onClick={() => deleteComment?.(comment)}
                     />
                   )}
@@ -160,11 +154,11 @@ const Comment: React.FC<CommentProps> = ({
                       }
                       className="hover:underline"
                     >
-                      <MessageOutlined /> Reply
+                      <MdOutlineReply /> Reply
                     </button>
                     {comment.childrenCount > 0 && (
                       <button onClick={() => toggleCommentCollapse()} className="hover:underline">
-                        {comment.isCollapsed ? <DownOutlined /> : <UpOutlined />}{' '}
+                        {comment.isCollapsed ? <IoIosArrowDown /> : <IoIosArrowBack />}{' '}
                         {comment.isCollapsed ? 'Expand' : 'Collapse'} {comment.childrenCount}{' '}
                         replies
                       </button>

@@ -1,6 +1,8 @@
+import { IoIosClose } from 'react-icons/io';
+import { IoMdSend } from 'react-icons/io';
+
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import { CommentOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import PostOp from '@src/api/postOperations';
@@ -96,7 +98,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
           />
           <div className="flex justify-end gap-2 mt-2">
             <Button
-              icon={<CloseOutlined />}
+              icon={<IoIosClose />}
               onClick={handleCancel}
               className="border-none text-gray-600 hover:text-gray-900"
             >
@@ -104,7 +106,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
             </Button>
             <Button
               type="primary"
-              icon={<CommentOutlined />}
+              icon={<IoMdSend />}
               onClick={handleSubmit}
               disabled={!value.trim()}
             >

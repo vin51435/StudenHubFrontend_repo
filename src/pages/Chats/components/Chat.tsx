@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { MdDelete } from 'react-icons/md';
+import { FaUser } from 'react-icons/fa6';
 import { Bubble, Sender } from '@ant-design/x';
 import { Avatar, Button, Flex, Popconfirm } from 'antd';
 import { ChatMessage, useSocketChat } from '@src/hooks/useSocketChat';
@@ -13,11 +14,11 @@ import useScrollTopDetection from '@src/hooks/useScrollTopDetection';
 const roles = {
   remote: {
     placement: 'start' as const,
-    avatar: { icon: <UserOutlined />, style: { background: '#fde3cf' } },
+    avatar: { icon: <FaUser />, style: { background: '#fde3cf' } },
   },
   local: {
     placement: 'end' as const,
-    avatar: { icon: <UserOutlined />, style: { background: '#87d068' } },
+    avatar: { icon: <FaUser />, style: { background: '#87d068' } },
   },
 };
 
@@ -85,7 +86,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
           cancelText="No"
           placement="bottom"
         >
-          <Button type="text" icon={<DeleteOutlined />} />
+          <Button type="text" icon={<MdDelete />} />
         </Popconfirm>
       </div>
 

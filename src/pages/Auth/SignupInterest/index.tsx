@@ -1,4 +1,4 @@
-import { SearchOutlined } from '@ant-design/icons';
+import { FaSearch } from 'react-icons/fa';
 import { useNotification } from '@src/contexts/NotificationContext';
 import { get, put } from '@src/libs/apiConfig';
 import { IPaginatedResponse } from '@src/types';
@@ -102,7 +102,7 @@ const SignupInterests: React.FC = () => {
 
         <div className=" w-full mt-6 max-w-md">
           <div className="relative">
-            <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
             <Input
               className="pl-10"
               size="large"

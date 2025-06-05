@@ -1,6 +1,6 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { FaPlus } from 'react-icons/fa6';
 import { GetProp, UploadProps, UploadFile, Upload, Image, ImageProps, message } from 'antd';
-import { UploadChangeParam, UploadFileStatus } from 'antd/es/upload/interface';
+import { UploadFileStatus } from 'antd/es/upload/interface';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -109,7 +109,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     const details = imageDetails?.[count];
     return (
       <button style={{ border: 0, background: 'none' }} type="button">
-        <PlusOutlined />
+        <FaPlus />
         <div style={{ marginTop: 0 }}>{`${details?.name || 'Upload'} `}</div>
       </button>
     );

@@ -1,8 +1,8 @@
+import { RiMenuUnfold3Fill, RiMenuUnfold4Fill } from 'react-icons/ri';
 import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, MenuProps, theme } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { getSidebarMenuItems } from '@src/config/menuItems';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import TopHeader from '@src/layouts/components/TopHeader';
 import { getRouteDetails } from '@src/utils/getRoutePath';
 import { searchArrayNestedObjByKey } from '@src/utils/common';
@@ -92,7 +92,7 @@ const MainLayout: React.FC = () => {
       <Layout hasSider className="overflow-auto h-full sticky bg-white">
         <section
           style={siderStyle}
-          className="sidebar_section flex relative h-full justify-between"
+          className="sidebar_section flex relative h-full justify-between gap-2"
         >
           <Sider
             style={siderStyle}
@@ -111,9 +111,9 @@ const MainLayout: React.FC = () => {
             />
           </Sider>
           <Button
-            className="absolute t"
+            className="absolute"
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            icon={collapsed ? <RiMenuUnfold3Fill size={20} /> : <RiMenuUnfold4Fill size={20} />}
             onClick={() => setCollapsed(!collapsed)}
             style={toggleButtonStyle}
           />

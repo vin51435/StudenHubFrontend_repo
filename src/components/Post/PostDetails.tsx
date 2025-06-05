@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Carousel, Divider, Typography, Avatar, Row, Col, Image } from 'antd';
-import {
-  ArrowLeftOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  MessageOutlined,
-} from '@ant-design/icons';
+import { Button, Carousel, Divider, Typography, Row, Col, Image } from 'antd';
+import { IoIosArrowBack } from 'react-icons/io';
+import { LuMessageSquareText } from 'react-icons/lu';
 import { ICommunity, IPost } from '@src/types/app';
 import { VoteEnum } from '@src/types/enum';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PostOp from '@src/api/postOperations';
-import { getRoutePath } from '@src/utils/getRoutePath';
 import { useLoader } from '@src/hooks/useLoader';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
 import VoteIcon from '@src/components/Vote.svg';
-import CommentInput from '@src/components/CommentInput';
 import PostComments from '@src/components/Post/PostComments';
 
 const { Title, Paragraph, Text } = Typography;
@@ -25,7 +19,6 @@ const PostDetailPage: React.FC = () => {
 
   const { slug: communitySlug, postSlug } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const { startPageLoad, stopPageLoad } = useLoader();
 
   useEffect(() => {
@@ -132,7 +125,7 @@ const PostDetailPage: React.FC = () => {
             <div className="flex items-center gap-3 mb-2">
               <Button
                 shape="circle"
-                icon={<ArrowLeftOutlined />}
+                icon={<IoIosArrowBack />}
                 onClick={() => {
                   // navigate(getRoutePath('COMMUNITY').replace(':slug', communitySlug));
                   navigate(-1);
@@ -206,7 +199,7 @@ const PostDetailPage: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <MessageOutlined />
+                <LuMessageSquareText />
                 <span>{post?.commentsCount} Comments</span>
               </div>
             </div>

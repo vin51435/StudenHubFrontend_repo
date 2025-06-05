@@ -1,5 +1,5 @@
-import { Dropdown, Menu, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Button } from 'antd';
+import { IoIosArrowDown } from 'react-icons/io';
 import {
   PostSortOption,
   TimeRangeOption,
@@ -48,14 +48,14 @@ export default function PostSortDropdown({
     <div className="post-sorting_container flex items-center !bg-transparent gap-2">
       <Dropdown menu={sortMenu} overlayClassName="dark-dropdown" trigger={['click']}>
         <Button className="capitalize !bg-transparent">
-          {value.sort} <DownOutlined />
+          {value.sort} <IoIosArrowDown />
         </Button>
       </Dropdown>
 
       {isTimeBased(value.sort) && (
         <Dropdown menu={timeMenu} overlayClassName="dark-dropdown" trigger={['click']}>
           <Button className="capitalize !bg-transparent">
-            {value.timeRange} <DownOutlined />
+            {value.timeRange} <IoIosArrowDown />
           </Button>
         </Dropdown>
       )}

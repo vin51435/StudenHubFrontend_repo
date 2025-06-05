@@ -1,11 +1,12 @@
+import { LuMessageSquareText } from 'react-icons/lu';
+import { IoMdEye } from 'react-icons/io';
+import { FaRegUser } from 'react-icons/fa';
 import { FC } from 'react';
 import { Card, Typography, Avatar, Carousel, Image } from 'antd';
-import { MessageOutlined, EyeOutlined, UserOutlined } from '@ant-design/icons';
 import { ICommunity, IPost } from '@src/types/app';
 import VoteIcon from '@src/components/Vote.svg';
 import { VoteEnum } from '@src/types/enum';
 import PostOp from '@src/api/postOperations';
-import { useNavigate } from 'react-router-dom';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { Link } from 'react-router-dom';
 
@@ -16,8 +17,6 @@ const PostOverview: FC<{
   community: ICommunity;
   onChangePost?: (post: IPost) => void;
 }> = ({ post, community, onChangePost }) => {
-  const navigate = useNavigate();
-
   if (!post || !post._id) {
     return null;
   }
@@ -86,7 +85,7 @@ const PostOverview: FC<{
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Avatar size="small" icon={<UserOutlined />} />
+            <Avatar size="small" icon={<FaRegUser />} />
             <span className="text-xs text-gray-500">{post?.author?.fullName}</span>
           </div>
         </div>
@@ -137,8 +136,8 @@ const PostOverview: FC<{
           </Carousel>
         </div>
         {/* Post Stats */}
-        <div className="flex items-center gap-4 text-sm text-gray-500 mt-2">
-          <span
+        <div className="flex items-center gap-5 text-sm text-gray-500 mt-2">
+          <div
             className="flex items-center gap-1"
             onClick={(e) => {
               e.preventDefault();
@@ -162,14 +161,18 @@ const PostOverview: FC<{
                 }`}
               />
             </span>
-          </span>
-          <div className="cursor-pointer w-full text-start">
-            <span className="items-center gap-1 inline-block">
-              <MessageOutlined /> {post.commentsCount}
+          </div>
+          <div className="items-center gap-1  flex">
+            <span className="inline-block text-center my-auto h-full ">
+              <LuMessageSquareText />
             </span>
-            <span className="inline-block ml-3 items-center gap-1">
-              <EyeOutlined /> {post.views}
+            <span className="inline-block text-center my-auto h-full ">{post.commentsCount}</span>
+          </div>
+          <div className=" ml-3 items-center gap-1 flex">
+            <span className="inline-block text-center my-auto h-full ">
+              <IoMdEye />
             </span>
+            <span className="inline-block text-center my-auto h-full ">{post.views}</span>
           </div>
         </div>
       </Card>

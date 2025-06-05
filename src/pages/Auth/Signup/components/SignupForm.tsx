@@ -1,9 +1,8 @@
-import { LeftOutlined } from '@ant-design/icons';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 import appConfig from '@src/config/appConfig';
 import { ErrorCodes } from '@src/contants/errorCodes';
 import { useNotification } from '@src/contexts/NotificationContext';
 import { post } from '@src/libs/apiConfig';
-import { loginSuccess } from '@src/redux/reducers/auth';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import {
   SignupFormSchema,
@@ -285,7 +284,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setShowLoginService }: SignupFo
         >
           <Button
             type="text"
-            icon={<LeftOutlined />}
+            icon={<IoMdArrowRoundBack />}
             onClick={() => setStep(1)}
             className="!m-0 !p-0 !flex !ml-auto -top-3 relative text-sm"
           >
