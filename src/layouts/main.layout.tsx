@@ -118,9 +118,9 @@ const MainLayout: React.FC = () => {
             style={toggleButtonStyle}
           />
         </section>
-        <Content data-scroll-id="content" className="w-full h-full custom-scrollbar">
+        <Content data-scroll-id="content" className="w-full h-full pt-2 custom-scrollbar">
           <div
-            className="!h-auto max-h-screen mx-auto mt-1 max-w-[1120px] w-[95%] p-1 bg-transparent"
+            className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1120px] w-[95%] py-1 bg-transparent"
             style={{
               textAlign: 'center',
               borderRadius: borderRadiusLG,

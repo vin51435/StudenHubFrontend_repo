@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
-import PostOverview from './PostOverview';
+import PostOverview from '../Post/PostOverview';
 import { PostSortOption, TimeRangeOption } from '@src/types/contants';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostSortDropdown from '@src/components/Post/PostSorting';

@@ -4,6 +4,7 @@ import notificationReducer from './reducers/notifications';
 import uiReducer from '@src/redux/reducers/uiSlice';
 import communityReducer from '@src/redux/reducers/cache/community.slice';
 import postReducer from '@src/redux/reducers/cache/post.slice';
+import inboxReducer from '@src/redux/reducers/cache/inbox.slice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     ui: uiReducer,
     communityCache: communityReducer,
     postCache: postReducer,
+    chatInboxCache: inboxReducer,
   },
   devTools: import.meta.env.VITE_NODE_ENV !== 'production',
 });

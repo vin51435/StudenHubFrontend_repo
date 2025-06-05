@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, Button, Card, Typography, Skeleton, Row, Col, Divider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { ICommunity } from '@src/types/app';
 import CommunityOp from '@src/api/communityOperations';
 import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
 import {
@@ -11,7 +10,7 @@ import {
   POST_SORT_OPTIONS,
   TIME_RANGE_OPTIONS,
 } from '@src/types/contants';
-import CommunityFeed from '@src/components/Post/PostFeed';
+import CommunityFeed from '@src/components/Community/CommunityFeed';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { fetchCommunity, updateCommunity } from '@src/redux/reducers/cache/community.slice';

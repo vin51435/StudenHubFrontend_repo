@@ -1,64 +1,39 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux/store';
-import { post } from '@src/libs/apiConfig';
 import InboxList from './components/Inbox';
 import Chat from './components/Chat';
 import { useSocketChat } from '@src/hooks/useSocketChat';
-import { IUser } from '@src/types/app';
-
-export type ChatDataType = {
-  chatId: string | null;
-  participantData: IUser | null;
-};
+import { useAppDispatch, useAppSelector } from '@src/redux/hook';
+import { fetchInbox, InboxState } from '@src/redux/reducers/cache/inbox.slice';
 
 const Chats = () => {
-  const [chatData, setChatData] = useState<ChatDataType[] | null>(null);
-  const [selectedChat, setSelectedChat] = useState<ChatDataType | null>(null);
-  const [loading, setLoading] = useState({ loadingInbox: true, loadingChat: false });
-
-  const { user: currentUser } = useSelector((state: RootState) => state.auth);
-  const chatIds = currentUser?.chats?.chatIds || [];
-
+  const chatData = useAppSelector((state) => state.chatInboxCache);
+  const { user: currentUser } = useAppSelector((state) => state.auth);
   const { chatNotifications } = useSocketChat();
+  const dispatch = useAppDispatch();
+
+  const [selectedChat, setSelectedChat] = useState<InboxState | null>(null);
+
+  const chatIds = currentUser?.chats?.chatIds || [];
 
   // 1. Load all chat participants
   useEffect(() => {
-    (async () => {
-      fetchInbox();
-      setLoading({ ...loading, loadingInbox: false });
-    })();
+    // would be better to match cached chatIds to new chatIds
+    if (!chatIds || chatData.chats.length === chatIds.length) return;
+    dispatch(fetchInbox(chatIds));
   }, [chatIds]);
 
-  async function fetchInbox() {
-    if (chatIds.length > 0) {
-      const res = await post<{ chats: { chatId: string; secondParticipant: IUser }[] }>(
-        'GET_INBOX_PARTICIPANTS',
-        {
-          BASE_URLS: 'user',
-          data: { chatIds },
-        }
-      );
-      const chatData =
-        res.data?.chats?.map((chat: any) => ({
-          chatId: chat.chatId,
-          participantData: chat.secondParticipant,
-        })) ?? [];
-      setChatData(chatData as ChatDataType[] | null);
-    }
-  }
-
-  const handleUserSelect = (chat: ChatDataType) => {
+  const handleUserSelect = (chat: InboxState) => {
     setSelectedChat(chat ?? null);
   };
 
   return (
-    <div className="flex h-[80vh] dark:bg-zinc-900 rounded-lg shadow-md">
+    <div className="flex !min-h-full !max-h-full pb-2 dark:bg-zinc-900 rounded-lg shadow-md">
       <InboxList
-        chats={chatData}
+        chats={chatData.chats}
         notifications={chatNotifications}
         selectedChat={selectedChat}
         onSelect={handleUserSelect}
+        loading={chatData.chatsLoading}
       />
       <div className="flex-1 border border-gray-200 rounded-r-lg">
         {selectedChat?.chatId ? (

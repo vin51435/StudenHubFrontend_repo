@@ -119,7 +119,7 @@ const PostDetailPage: React.FC = () => {
   return (
     <Row
       gutter={[18, 18]}
-      className="post-detail_container flex flex-col items-start h-full w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
+      className="post-detail_container flex flex-col items-start h-auto w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
     >
       <Col span={24} md={17} className="">
         {!load && !post ? (
