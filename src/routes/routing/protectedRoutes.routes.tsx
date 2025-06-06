@@ -8,6 +8,7 @@ import AppLayout from '@src/layouts/Index';
 import Community from '@src/pages/Community';
 import CreatePost from '@src/components/Post/CreatePost';
 import PostDetailPage from '@src/components/Post/PostDetails';
+import Popular from '@src/pages/Popular/Popular';
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -23,6 +24,7 @@ export const protectedRoutes: RouteObject[] = [
               { path: 'settings', element: <div>Settings</div> },
             ],
           },
+          { path: getRoutePath('POPULAR'), element: <Popular /> },
           {
             path: getExactRoutePath('COMMUNITY'), // /community/:slug
             children: [

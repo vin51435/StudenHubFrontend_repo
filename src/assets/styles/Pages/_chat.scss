@@ -1,14 +1,20 @@
 @use '@styles/scss.import.scss' as *;
 
-.ant-menu.ant-menu-root {
-  border: none !important;
+.dark {
   .ant-menu-item {
     &.ant-menu-item-selected {
       .ant-menu-title-content {
-        // color: white !important;
+        color: $primary-light-color !important;
+      }
+      .ant-menu-item-icon {
+        color: $primary-light-color !important;
       }
     }
   }
+}
+
+.ant-menu.ant-menu-root {
+  border: none !important;
 }
 
 .selected-chat {

@@ -3,6 +3,7 @@ import { fetchInitialPosts } from '@src/redux/reducers/cache/post.thunks';
 import { IPost } from '@src/types/app';
 
 interface PostState {
+  communityId: string;
   posts: IPost[];
   page: number;
   hasMore: boolean;
@@ -10,6 +11,7 @@ interface PostState {
 }
 
 const initialState: PostState = {
+  communityId: '',
   posts: [],
   page: 1,
   hasMore: true,
@@ -20,6 +22,9 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    setCommunityId(state, action: PayloadAction<string>) {
+      state.communityId = action.payload;
+    },
     setPosts(state, action: PayloadAction<IPost[]>) {
       state.posts = action.payload;
       state.page = 1;
@@ -60,7 +65,8 @@ const postSlice = createSlice({
   },
 });
 
-export const { setPosts, appendPosts, updatePost, clearPosts, setPostsLoading } = postSlice.actions;
+export const { setCommunityId, setPosts, appendPosts, updatePost, clearPosts, setPostsLoading } =
+  postSlice.actions;
 
 const postReducer = postSlice.reducer;
 export default postReducer;

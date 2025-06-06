@@ -28,14 +28,13 @@ const toggleButtonStyle: React.CSSProperties = {
 
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [routeDetails, setRouteDetails] = useState({});
   const [selectedKey, setSelectedKey] = useState<string | null>();
 
   const { openModal } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { borderRadiusLG },
   } = theme.useToken();
 
   const menuItems = getSidebarMenuItems(collapsed, openModal);
@@ -45,7 +44,6 @@ const MainLayout: React.FC = () => {
 
     const routeDetails = getRouteDetails({ path: location.pathname });
     document.title = `StudenHub ${routeDetails?.title ? `| ${routeDetails?.title}` : ''}`;
-    setRouteDetails(routeDetails ?? {});
   }, [location]);
 
   function setSelectedMenu() {
@@ -92,7 +90,7 @@ const MainLayout: React.FC = () => {
       <Layout hasSider className="overflow-auto h-full sticky bg-white">
         <section
           style={siderStyle}
-          className="sidebar_section flex relative h-full justify-between gap-2"
+          className="sidebar_section pl-2 pt-2 flex relative h-full justify-between gap-2"
         >
           <Sider
             style={siderStyle}
@@ -104,6 +102,7 @@ const MainLayout: React.FC = () => {
           >
             <Menu
               className="!min-h-full !bg-transparent"
+              rootClassName="sidebar_menu"
               mode="inline"
               selectedKeys={selectedKey ? [selectedKey] : []}
               onClick={handleMenuClick}

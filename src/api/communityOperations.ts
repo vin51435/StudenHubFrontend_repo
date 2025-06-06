@@ -64,7 +64,8 @@ class CommunityOp {
     communityId: string,
     page: string,
     sort?: PostSortOption,
-    range?: TimeRangeOption
+    range?: TimeRangeOption,
+    searchValue?: string
   ) {
     if (!communityId) {
       if (!this.communityId) {
@@ -78,7 +79,7 @@ class CommunityOp {
       sortField: sort,
       range,
       pageSize: '10',
-      // selectFields: 'authorId',
+      searchValue,
     });
     return res || [];
   }
@@ -124,8 +125,9 @@ class CommunityOp {
   }
 
   // Debounced version
-  static search = debounceAsync(CommunityOp._search.bind(CommunityOp), 400);
-  static followToggle = debounceAsync(CommunityOp._followToggle.bind(CommunityOp), 400);
+  static search = debounceAsync(this._search.bind(this), 400);
+  static followToggle = debounceAsync(this._followToggle.bind(this), 400);
+  static debounceGetAllPosts = debounceAsync(this.getAllPosts.bind(this), 400);
 }
 
 export default CommunityOp;

@@ -1,6 +1,6 @@
 import { GoBellFill } from 'react-icons/go';
 import { FaUser, FaUserEdit } from 'react-icons/fa';
-import { IoLogOutSharp } from 'react-icons/io5';
+import { IoLogOutSharp, IoChatbubbleEllipsesOutline } from 'react-icons/io5';
 import { AutoComplete, Avatar, Badge, Dropdown, Input, Tag, Tooltip } from 'antd';
 import { useThemeMode } from '@src/theme/ThemeProvider';
 import { useEffect, useState } from 'react';
@@ -9,21 +9,29 @@ import ThemeToggle from '@src/components/themeToggle';
 import { useLogout } from '@src/hooks/useLogout';
 import CommunityOp from '@src/api/communityOperations';
 import { matchRoute } from '@src/utils/common';
-import { getExactRoutePath } from '@src/utils/getRoutePath';
+import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
+import { useAppDispatch, useAppSelector } from '@src/redux/hook';
+import { fetchInitialPosts } from '@src/redux/reducers/cache/post.thunks';
 
 const TopHeader = () => {
   const [options, setOptions] = useState<{ value: string; label: React.ReactNode }[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
-  const [unreadCount] = useState(3); // Mock count
+  const { newMessage: newMessageNotifications } = useAppSelector(
+    (state) => state.notification.notifications
+  );
   const { slug } = useParams<{ slug: string }>();
+  const communityCache = useAppSelector((state) => state.communityCache.cache);
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const { themeMode } = useThemeMode();
   const logout = useLogout();
 
   useEffect(() => {
     if (slug) {
+      setInputValue('');
       const matchSlug = matchRoute(getExactRoutePath('COMMUNITY'), pathname);
       if (matchSlug === slug) {
         CommunityOp.setCommunitySlug(slug);
@@ -31,18 +39,19 @@ const TopHeader = () => {
     }
   }, [slug]);
 
-  async function searchCommunity(value: string) {
+  async function searchCommunity(value: string, searchInCommunity?: string) {
+    setLoading(true);
     setInputValue(value);
     const res = await CommunityOp.search(value);
     if (!res) return;
     const results = res?.data;
-    console.log('results', results);
+
     setOptions(
       results.map((c) => ({
         value: c.name,
         label: (
           <Link
-            to={`/community/${c.slug}`}
+            to={getRoutePath('COMMUNITY').replace(':slug', c.slug)}
             onClick={() => setInputValue('')}
             style={{ display: 'flex', alignItems: 'center' }}
           >
@@ -52,7 +61,21 @@ const TopHeader = () => {
         ),
       }))
     );
+
+    setLoading(false);
   }
+
+  const searchInsideCommunity = (val: string) => {
+    if (!slug) return;
+    dispatch(
+      fetchInitialPosts({
+        communityId: communityCache[slug]._id,
+        sort: 'Top',
+        range: 'all',
+        searchValue: val,
+      })
+    );
+  };
 
   const menuItems = [
     {
@@ -78,6 +101,8 @@ const TopHeader = () => {
     },
   ];
 
+  const unreadCount = newMessageNotifications.filter((n) => !n.isRead).length;
+
   return (
     <div className="flex items-center gap-6 ml-auto w-full h-full space-between align-center">
       <div
@@ -89,18 +114,31 @@ const TopHeader = () => {
 
       <div className="top-header_search w-full h-full flex items-center justify-center">
         <AutoComplete
-          className="rounded-2xl"
+          className="rounded-2xl flex items-center justify-center"
           style={{ width: '80%', height: '70%' }}
           options={options}
           value={inputValue}
           onChange={(val) => {
             setInputValue(val);
-            searchCommunity(val);
+            if (!slug) {
+              // Search Community
+              searchCommunity(val);
+              return;
+            }
           }}
-          onSearch={searchCommunity}
+          onSearch={(val) => {
+            // Search Community
+            if (!slug) {
+              searchCommunity(val);
+              return;
+            }
+            console.log('ths runm');
+            // Search in Community
+            searchInsideCommunity(val);
+          }}
         >
           <Input
-            className="w-full !h-[90%]"
+            className="w-full !h-[90%] flex items-center"
             style={{ borderRadius: '999px', height: '100%', width: '100%' }}
             addonBefore={
               slug ? (
@@ -123,6 +161,20 @@ const TopHeader = () => {
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Chat */}
+        <Tooltip title={'Chat'}>
+          <Link className="!text-inherit flex" to={getExactRoutePath('CHATS')}>
+            <Badge
+              className={`menu-label_badge my-auto`}
+              count={unreadCount}
+              color="red"
+              size="small"
+            >
+              <IoChatbubbleEllipsesOutline size={24} />
+            </Badge>
+          </Link>
+        </Tooltip>
+
         {/* Theme Switch */}
         <Tooltip title={themeMode === 'dark' ? 'Switch to Light' : 'Switch to Dark'}>
           <div className="flex">
@@ -134,7 +186,7 @@ const TopHeader = () => {
         <Tooltip title="Notifications">
           <div className="flex">
             <Badge count={unreadCount} size="small">
-              <GoBellFill className="text-lg cursor-pointer" />
+              <GoBellFill size={24} className="cursor-pointer" />
             </Badge>
           </div>
         </Tooltip>
@@ -142,7 +194,7 @@ const TopHeader = () => {
         {/* User Avatar */}
         <Dropdown menu={{ items: menuItems }} trigger={['click']}>
           <div className="flex">
-            <Avatar size="small" className="cursor-pointer" icon={<FaUser />} />
+            <Avatar size={24} className="cursor-pointer" icon={<FaUser />} />
           </div>
         </Dropdown>
       </div>

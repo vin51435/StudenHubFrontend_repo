@@ -1,15 +1,27 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import CommunityOp from '@src/api/communityOperations';
-import { setPosts, appendPosts, setPostsLoading } from '@src/redux/reducers/cache/post.slice';
+import {
+  setPosts,
+  appendPosts,
+  setPostsLoading,
+  setCommunityId,
+} from '@src/redux/reducers/cache/post.slice';
 
 export const fetchInitialPosts = createAsyncThunk(
   'posts/fetchInitial',
   async (
-    { communityId, sort, range }: { communityId: string; sort: string; range?: string },
+    {
+      communityId,
+      sort,
+      range,
+      searchValue,
+    }: { communityId: string; sort: string; range?: string; searchValue?: string },
     { dispatch }
   ) => {
     dispatch(setPostsLoading(true));
-    const res = await CommunityOp.getAllPosts(communityId, '1', sort, range);
+    dispatch(setCommunityId(communityId));
+    const callFnc = searchValue ? CommunityOp.debounceGetAllPosts : CommunityOp.getAllPosts;
+    const res = await callFnc(communityId, '1', sort, range, searchValue);
     dispatch(setPosts(res.data));
     dispatch(setPostsLoading(false));
     return res.data;

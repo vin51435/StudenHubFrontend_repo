@@ -45,8 +45,18 @@
 }
 
 .sidebar_section {
-  .dark & {
+  .ant-menu-item-divider {
+    border-color: $secondary-dark !important;
+  }
+}
+
+.dark {
+  .sidebar_section {
     border-right: 1px solid $secondary-white !important;
     background-color: $secondary-dark !important;
+
+    .ant-menu-item-divider {
+      border-color: $secondary-white !important;
+    }
   }
 }

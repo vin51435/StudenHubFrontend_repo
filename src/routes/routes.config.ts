@@ -51,6 +51,7 @@ const ROUTES = [
       { name: 'CREATE_COMMUNITY', path: '/create' },
     ],
   },
+  { name: 'POPULAR', path: '/popular', title: 'Popular' },
   {
     name: 'COMMUNITY',
     path: '/community/:slug',
