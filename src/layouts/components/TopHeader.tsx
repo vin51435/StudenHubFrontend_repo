@@ -1,9 +1,9 @@
 import { GoBellFill } from 'react-icons/go';
 import { FaUser, FaUserEdit } from 'react-icons/fa';
-import { IoLogOutSharp, IoChatbubbleEllipsesOutline } from 'react-icons/io5';
+import { IoLogOutSharp, IoChatbubbleEllipsesOutline, IoClose } from 'react-icons/io5';
 import { AutoComplete, Avatar, Badge, Dropdown, Input, Tag, Tooltip } from 'antd';
 import { useThemeMode } from '@src/theme/ThemeProvider';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ThemeToggle from '@src/components/themeToggle';
 import { useLogout } from '@src/hooks/useLogout';
@@ -12,11 +12,14 @@ import { matchRoute } from '@src/utils/common';
 import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { fetchInitialPosts } from '@src/redux/reducers/cache/post.thunks';
+import { appendRecentSearch, clearRecentSearches } from '@src/redux/reducers/cache/recents.slice';
 
 const TopHeader = () => {
   const [options, setOptions] = useState<{ value: string; label: React.ReactNode }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
+
+  const recentSearches = useAppSelector((state) => state.recentStore.searches);
   const { newMessage: newMessageNotifications } = useAppSelector(
     (state) => state.notification.notifications
   );
@@ -31,6 +34,8 @@ const TopHeader = () => {
 
   useEffect(() => {
     if (slug) {
+      console.log('slug', slug);
+      dispatch(appendRecentSearch({ string: slug, id: `${Date.now()}`, type: 'community' }));
       setInputValue('');
       const matchSlug = matchRoute(getExactRoutePath('COMMUNITY'), pathname);
       if (matchSlug === slug) {
@@ -77,6 +82,34 @@ const TopHeader = () => {
     );
   };
 
+  const recentSearchOptions = useMemo(
+    () =>
+      recentSearches.map((s) => ({
+        value: s.string,
+        label: (
+          <div className="flex justify-between items-center px-2">
+            <span
+              onClick={() => {
+                setInputValue(s.string);
+                searchInsideCommunity(s.string);
+              }}
+              className="cursor-pointer truncate"
+            >
+              {s.string}
+            </span>
+            <IoClose
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(clearRecentSearches(s.string));
+              }}
+              className="ml-2 text-gray-400 hover:text-red-500 cursor-pointer text-xs"
+            />
+          </div>
+        ),
+      })),
+    [recentSearches]
+  );
+
   const menuItems = [
     {
       key: '1',
@@ -116,7 +149,7 @@ const TopHeader = () => {
         <AutoComplete
           className="rounded-2xl flex items-center justify-center"
           style={{ width: '80%', height: '70%' }}
-          options={options}
+          options={options.length && inputValue ? options : recentSearchOptions}
           value={inputValue}
           onChange={(val) => {
             setInputValue(val);
@@ -132,7 +165,6 @@ const TopHeader = () => {
               searchCommunity(val);
               return;
             }
-            console.log('ths runm');
             // Search in Community
             searchInsideCommunity(val);
           }}

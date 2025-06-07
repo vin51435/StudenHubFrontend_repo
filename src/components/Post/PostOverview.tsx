@@ -3,18 +3,19 @@ import { IoMdEye } from 'react-icons/io';
 import { FaRegUser } from 'react-icons/fa';
 import { FC } from 'react';
 import { Card, Typography, Avatar, Carousel, Image } from 'antd';
-import { ICommunity, IPost } from '@src/types/app';
+import { ICommunity, IPost, IUser } from '@src/types/app';
 import VoteIcon from '@src/components/Vote.svg';
 import { VoteEnum } from '@src/types/enum';
 import PostOp from '@src/api/postOperations';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { Link } from 'react-router-dom';
+import { timeAgo } from '@src/utils/common';
 
 const { Paragraph } = Typography;
 
 const PostOverview: FC<{
   post: IPost;
-  community: ICommunity;
+  community?: ICommunity;
   onChangePost?: (post: IPost) => void;
 }> = ({ post, community, onChangePost }) => {
   if (!post || !post._id) {
@@ -73,20 +74,39 @@ const PostOverview: FC<{
 
   return (
     <Link
-      to={getRoutePath('POST').replace(':slug', community.slug).replace(':postSlug', post.slug)}
-      className="block cursor-pointer"
+      to={getRoutePath('POST')
+        .replace(':slug', (post.communityId as ICommunity)?.slug ?? community?.slug)
+        .replace(':postSlug', post.slug)}
+      className="block cursor-pointer w-full"
     >
       <Card
         classNames={{
           body: '!px-4 !py-3',
         }}
-        className="post-overview rounded-2xl !bg-transparent w-full shadow-sm hover:shadow-md transition-all mb-4  max-w-2xl"
+        className="post-overview rounded-2xl !bg-transparent w-full shadow-sm hover:shadow-md transition-all mb-4 h-auto"
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Avatar size="small" icon={<FaRegUser />} />
-            <span className="text-xs text-gray-500">{post?.author?.fullName}</span>
+            <Avatar
+              size="small"
+              src={
+                community?._id ? (post?.authorId as IUser)?.profilePicture : community?.avatarUrl
+              }
+              icon={<FaRegUser />}
+            />
+            <span className="text-xs ">
+              {community?._id ? (
+                <>
+                  <span className="mr-1">u/{(post?.authorId as IUser)?.fullName}</span>
+                </>
+              ) : (
+                <>
+                  <span className="mr-1">r/{(post.communityId as ICommunity)?.slug}</span>
+                </>
+              )}
+            </span>
+            <span className="ml-2">{timeAgo(post.createdAt)}</span>
           </div>
         </div>
         {/* Title */}

@@ -31,6 +31,27 @@ $border-color: #747775;
 
 $tooltip-fs: 0.855rem;
 
+:root {
+  --primary-color: #{$primary-color};
+  --secondary-color: #{$secondary-color};
+  --secondary-white: #{$secondary-white};
+  --primary-color1: #{$primary-color1};
+  --secondary-color1: #{$secondary-color1};
+  --tertiary-color: #{$tertiary-color};
+  --primary-light-color: #{$primary-light-color};
+  --secondary-light-color: #{$secondary-light-color};
+  --primary-light-transparent: #{$primary-light-transparent};
+  --danger: #{$danger};
+  --info: #{$info};
+  --light-danger: #{$light-danger};
+  --success: #{$success};
+  --gray: #{$gray};
+  --disabled-color: #{$disabled-color};
+  --border-color: #{$border-color};
+  --border-radius: #{$border-radius};
+  --border-radius-rounded: #{$border-radius-rounded};
+}
+
 $breakpoints: (
   'xsmall': 400px,
   'small': 576px,

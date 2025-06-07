@@ -2,16 +2,17 @@ const SETTINGS_KEY = 'settings';
 
 interface Settings {
   mode: 'light' | 'dark';
-  // add more preferences here as needed
+  menuCollapsed: boolean;
 }
 
 const defaultSettings: Settings = {
   mode: 'light',
+  menuCollapsed: false,
 };
 
 export interface LocalStorageUtil {
-  set(key: string, value: string): void;
-  get(key: string): string | null;
+  set<T = any>(key: string, value: T): void;
+  get<T = any>(key: string): T | null;
   remove(key: string): void;
   getSettings(): Settings;
   setSettings(settings: Partial<Settings>): void;
@@ -21,42 +22,45 @@ export interface LocalStorageUtil {
 }
 
 export const localStorageUtil: LocalStorageUtil = {
-  set(key: string, value: string) {
-    localStorage.setItem(key, value);
+  set<T>(key: string, value: T): void {
+    const data = typeof value === 'string' ? value : JSON.stringify(value);
+    localStorage.setItem(key, data);
   },
 
-  get(key: string): string | null {
-    return localStorage.getItem(key);
+  get<T = any>(key: string): T | null {
+    const item = localStorage.getItem(key);
+    if (item === null) return null;
+
+    try {
+      return JSON.parse(item) as T;
+    } catch {
+      return item as unknown as T;
+    }
   },
 
-  remove(key: string) {
+  remove(key: string): void {
     localStorage.removeItem(key);
   },
 
   getSettings(): Settings {
-    try {
-      const stored = localStorage.getItem(SETTINGS_KEY);
-      return stored ? JSON.parse(stored) : defaultSettings;
-    } catch {
-      return defaultSettings;
-    }
+    return localStorageUtil.get(SETTINGS_KEY) ?? defaultSettings;
   },
 
-  setSettings(settings: Partial<Settings>) {
+  setSettings(settings: Partial<Settings>): void {
     const current = localStorageUtil.getSettings();
     const updated = { ...current, ...settings };
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+    localStorageUtil.set(SETTINGS_KEY, updated);
   },
 
-  clearSettings() {
-    localStorage.removeItem(SETTINGS_KEY);
+  clearSettings(): void {
+    localStorageUtil.remove(SETTINGS_KEY); // fixed this
   },
 
   getMode(): Settings['mode'] {
     return localStorageUtil.getSettings().mode;
   },
 
-  setMode(mode: Settings['mode']) {
+  setMode(mode: Settings['mode']): void {
     localStorageUtil.setSettings({ mode });
   },
 };

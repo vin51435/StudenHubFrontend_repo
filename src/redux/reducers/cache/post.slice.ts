@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchInitialPosts } from '@src/redux/reducers/cache/post.thunks';
+import { fetchInitialPosts, fetchMorePosts } from '@src/redux/reducers/cache/post.thunks';
 import { IPost } from '@src/types/app';
 
 interface PostState {

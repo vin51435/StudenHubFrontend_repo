@@ -7,6 +7,8 @@ import TopHeader from '@src/layouts/components/TopHeader';
 import { getRouteDetails } from '@src/utils/getRoutePath';
 import { searchArrayNestedObjByKey } from '@src/utils/common';
 import { useModal } from '@src/contexts/Model.context';
+import { localStorageUtil } from '@src/utils/localStorageUtil';
+const { getSettings, setSettings } = localStorageUtil;
 
 const { Header, Content, Sider } = Layout;
 
@@ -27,7 +29,7 @@ const toggleButtonStyle: React.CSSProperties = {
 };
 
 const MainLayout: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(getSettings().menuCollapsed);
   const [selectedKey, setSelectedKey] = useState<string | null>();
 
   const { openModal } = useModal();
@@ -113,13 +115,16 @@ const MainLayout: React.FC = () => {
             className="absolute"
             type="text"
             icon={collapsed ? <RiMenuUnfold3Fill size={20} /> : <RiMenuUnfold4Fill size={20} />}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => {
+              setCollapsed(!collapsed);
+              setSettings({ menuCollapsed: !collapsed });
+            }}
             style={toggleButtonStyle}
           />
         </section>
         <Content data-scroll-id="content" className="w-full h-full pt-2 custom-scrollbar">
           <div
-            className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1120px] w-[95%] py-1 bg-transparent"
+            className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1150px] w-[95%] py-1 bg-transparent"
             style={{
               textAlign: 'center',
               borderRadius: borderRadiusLG,

@@ -47,3 +47,9 @@
     }
   }
 }
+
+.recent-posts_sidebar .ant-card-body {
+  .ant-divider:last-child {
+    display: none;
+  }
+}

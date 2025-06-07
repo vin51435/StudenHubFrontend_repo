@@ -1,22 +1,23 @@
-import { useLogout } from '@src/hooks/useLogout';
-import { get } from '@src/libs/apiConfig';
-import { Button } from 'antd';
-import { useEffect } from 'react';
+import RecentPostsSidebar from '@src/components/Post/RecentPostsSidebar';
+import HomeFeed from '@src/pages/Home/components/content';
+import { Row, Col } from 'antd';
 
-export default function Home() {
-
-  useEffect(() => {
-    FetchFeed();
-  }, [])
-
-  async function FetchFeed() {
-    const res = await get('FEED', { BASE_URLS: 'user' });
-    console.log('feed: ', res.data);
-  }
-
+const Home = () => {
   return (
-    <div>
-      HOme
-    </div>
+    <Row className="w-full max-w-7xl mx-auto mt-6 px-4 " gutter={[18, 18]}>
+      <Col span={24} md={17} className="">
+        {/* Post Feed */}
+        <HomeFeed />
+      </Col>
+
+      <Col span={0} md={7}>
+        {/* Sidebar */}
+        <div className="hidden md:block">
+          <RecentPostsSidebar />
+        </div>
+      </Col>
+    </Row>
   );
-}
+};
+
+export default Home;

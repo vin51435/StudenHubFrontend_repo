@@ -59,7 +59,7 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
   };
 
   return (
-    <div className="">
+    <section>
       <div className="mb-4">
         <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} />
       </div>
@@ -88,7 +88,7 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
           Loading more...
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

@@ -5,6 +5,8 @@ import uiReducer from '@src/redux/reducers/uiSlice';
 import communityReducer from '@src/redux/reducers/cache/community.slice';
 import postReducer from '@src/redux/reducers/cache/post.slice';
 import inboxReducer from '@src/redux/reducers/cache/inbox.slice';
+import homeReducer from '@src/redux/reducers/cache/home.slice';
+import recentReducer from '@src/redux/reducers/cache/recents.slice';
 
 const store = configureStore({
   reducer: {
@@ -14,6 +16,8 @@ const store = configureStore({
     communityCache: communityReducer,
     postCache: postReducer,
     chatInboxCache: inboxReducer,
+    homeCache: homeReducer,
+    recentStore: recentReducer,
   },
   devTools: import.meta.env.VITE_NODE_ENV !== 'production',
 });

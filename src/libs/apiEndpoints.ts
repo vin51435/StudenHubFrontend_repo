@@ -43,7 +43,7 @@ export const USER_ENDPOINTS = {
   GET_MESSAGES_BY_CHAT_ID: '/messages',
   CHATS: '/chats',
 
-  FEED: '/feed',
+  FEED: '/home/feed',
 } as const;
 
 export const CENTER_ENDPOINTS = {

@@ -17,12 +17,10 @@ interface CookieOptions {
 export const setCookie = (
   name: string,
   value: string | null,
-  options: CookieOptions = {},
+  options: CookieOptions = {}
 ): void => {
   const isSecure = import.meta.env.VITE_NODE_ENV !== 'development';
-  let cookieString = `${name}=${value ?? ''}; path=/;${
-    isSecure ? ' Secure;' : ''
-  } SameSite=Strict`;
+  let cookieString = `${name}=${value ?? ''}; path=/;${isSecure ? ' Secure;' : ''} SameSite=Strict`;
 
   if (options.delete) {
     cookieString += '; expires=Thu, 01 Jan 1970 00:00:00 GMT';
@@ -55,4 +53,3 @@ export const getCookie = (name: string): string | null => {
 
   return null;
 };
-

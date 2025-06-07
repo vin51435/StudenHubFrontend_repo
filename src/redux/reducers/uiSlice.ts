@@ -7,6 +7,7 @@ interface UIState {
 const initialState: UIState = {
   loading: true,
 };
+``;
 
 const uiSlice = createSlice({
   name: 'ui',

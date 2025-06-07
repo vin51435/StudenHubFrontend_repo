@@ -1,4 +1,39 @@
-import ROUTES from '@src/routes/routes.config';
+/**
+ * Takes a Date object and returns a string representing the time elapsed since then.
+ * Examples: '2 days ago', '1 hour ago', 'just now'
+ * @param {Date} date - the date to calculate time elapsed from
+ * @returns {string} a string representing the time elapsed
+ */
+export function timeAgo(input: string | Date): string {
+  if (!input) return '';
+  const date = typeof input === 'string' ? new Date(input) : input;
+  const now = new Date();
+  console.log('date', date);
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 0) {
+    return 'in the future';
+  }
+
+  const intervals = [
+    { unit: 'year', seconds: 31536000 },
+    { unit: 'month', seconds: 2628000 },
+    { unit: 'week', seconds: 604800 },
+    { unit: 'day', seconds: 86400 },
+    { unit: 'hour', seconds: 3600 },
+    { unit: 'minute', seconds: 60 },
+    { unit: 'second', seconds: 1 },
+  ];
+
+  for (const interval of intervals) {
+    const count = Math.floor(diffInSeconds / interval.seconds);
+    if (count > 0) {
+      return `${count} ${interval.unit}${count > 1 ? 's' : ''} ago`;
+    }
+  }
+
+  return 'just now';
+}
 
 /**
  * Recursively extracts all unique values for a specified key (e.g., 'name' or 'path')

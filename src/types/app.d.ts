@@ -25,9 +25,9 @@ export interface IUser {
   profilePicture: string;
   password: string;
   passwordConfirm: string;
-  passwordChangedAt: Date;
+  passwordChangedAt: string;
   passwordResetToken: string;
-  passwordResetExpires: Date;
+  passwordResetExpires: string;
   manualSignup: boolean;
   googleAccount: boolean;
   githubAccount: boolean;
@@ -49,9 +49,9 @@ export interface IUser {
   };
   accountStatus: string;
   role: string;
-  createdAt: Date;
+  createdAt: string;
   onlineStatus: boolean;
-  lastSeen: Date;
+  lastSeen: string;
   contacts: string[];
   chats: {
     chatIds: string[];
@@ -94,11 +94,11 @@ interface IPost {
   slug: string;
   content?: string;
   mediaUrls: string[];
-  tags: (string | ObjectId)[];
+  tags: string[];
 
-  communityId: ObjectId | ICommunity;
-  community?: ICommunity;
-  authorId: ObjectId | IUser;
+  communityId: string | Partial<ICommunity>;
+  community?: Partial<ICommunity>;
+  authorId: string | IUser;
   author?: IUser;
 
   views: number;
@@ -107,7 +107,7 @@ interface IPost {
   commentsCount: number;
   savesCount: number;
   popularityScore: number;
-  popularityUpdatedAt?: Date;
+  popularityUpdatedAt?: string;
   isDeleted?: boolean;
   isFlagged?: boolean;
   isApproved?: boolean;
@@ -115,6 +115,6 @@ interface IPost {
   voteType?: VoteEnum | null;
   netVotes?: number;
 
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string;
+  updatedAt?: string;
 }

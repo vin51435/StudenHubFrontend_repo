@@ -10,6 +10,9 @@ import { useLoader } from '@src/hooks/useLoader';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
 import VoteIcon from '@src/components/Vote.svg';
 import PostComments from '@src/components/Post/PostComments';
+import { useAppDispatch } from '@src/redux/hook';
+import { appendRecentPost } from '@src/redux/reducers/cache/recents.slice';
+import { pick } from 'lodash';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -17,6 +20,7 @@ const PostDetailPage: React.FC = () => {
   const [post, setPost] = useState<IPost | null>(null);
   const [load, setLoad] = useState(true);
 
+  const dispatch = useAppDispatch();
   const { slug: communitySlug, postSlug } = useParams();
   const navigate = useNavigate();
   const { startPageLoad, stopPageLoad } = useLoader();
@@ -35,6 +39,7 @@ const PostDetailPage: React.FC = () => {
   }, [communitySlug, postSlug]);
 
   useEffect(() => {
+    saveToRecentPosts();
     if (!load && post) {
       // Wait for DOM and media to settle before scrolling
       const timeout = setTimeout(() => {
@@ -44,6 +49,12 @@ const PostDetailPage: React.FC = () => {
       return () => clearTimeout(timeout);
     }
   }, [load, post]);
+
+  function saveToRecentPosts() {
+    if (post) {
+      dispatch(appendRecentPost(post));
+    }
+  }
 
   if (!communitySlug || !postSlug || load || !post) {
     return null;
@@ -112,7 +123,7 @@ const PostDetailPage: React.FC = () => {
   return (
     <Row
       gutter={[18, 18]}
-      className="post-detail_container flex flex-col items-start h-auto w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
+      className="post-detail_container flex flex-col items-start h-auto min-h-full w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
     >
       <Col span={24} md={17} className="">
         {!load && !post ? (
