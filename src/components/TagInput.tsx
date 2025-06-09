@@ -40,7 +40,7 @@ const TagInput: React.FC<TagInputProps> = ({
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '4px 0' }}>
       {value.map((tag) => (
-        <Tag className="!h-fit" key={tag} closable onClose={() => handleRemove(tag)}>
+        <Tag className="!h-full" key={tag} closable onClose={() => handleRemove(tag)}>
           {tag}
         </Tag>
       ))}

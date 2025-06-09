@@ -30,11 +30,11 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
-  multiple = false,
   base64URLValue,
   onChange,
   imageDetails,
-  maxCount = 5,
+  multiple = false,
+  maxCount = 1,
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -108,7 +108,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     const count = fileList.length;
     const details = imageDetails?.[count];
     return (
-      <button style={{ border: 0, background: 'none' }} type="button">
+      <button
+        className="flex flex-col items-center justify-center"
+        style={{ border: 0, background: 'none' }}
+        type="button"
+      >
         <FaPlus />
         <div style={{ marginTop: 0 }}>{`${details?.name || 'Upload'} `}</div>
       </button>
@@ -138,7 +142,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         multiple={multiple}
         pastable
       >
-        {fileList.length >= maxCount ? null : uploadButton()}
+        {(!multiple && fileList.length >= 1) || fileList.length >= maxCount ? null : uploadButton()}
       </Upload>
       {previewImage && (
         <Image

@@ -31,7 +31,7 @@ export default function CommunityOverview() {
   const dispatch = useAppDispatch();
   const communityCache = useAppSelector((state) => state.communityCache.cache);
   const loading = useAppSelector((state) => state.communityCache.loading);
-  const community = slug ? communityCache[slug] : null;
+  const community = communityCache ?? null;
 
   const [joinLoading, setJoinLoading] = useState(false);
 
@@ -40,7 +40,7 @@ export default function CommunityOverview() {
   }, [slug, urlSort, urlRange]);
 
   useEffect(() => {
-    if (!slug || community) return;
+    if (!slug || (community && community.slug === slug)) return;
     dispatch(fetchCommunity(slug));
   }, [slug]);
 
@@ -78,19 +78,16 @@ export default function CommunityOverview() {
   const handleFollowToggle = async () => {
     setJoinLoading(true);
     await CommunityOp._followToggle(community._id);
-    dispatch(
-      updateCommunity({
-        slug,
-        updates: { isFollowing: !community.isFollowing },
-      })
-    );
-    setJoinLoading(false);
+    dispatch(updateCommunity({ isFollowing: !community.isFollowing }));
+    setTimeout(() => {
+      setJoinLoading(false);
+    }, 1000);
   };
 
   return (
     <div className="flex mt-1 flex-col w-full max-h-screen">
       {/* Banner */}
-      <div className="w-full h-[160px] bg-gray-200 relative rounded-3xl">
+      <div className="w-full h-[160px] bg-transparent relative rounded-3xl">
         {community.bannerUrl && (
           <img
             src={community.bannerUrl}
@@ -105,7 +102,7 @@ export default function CommunityOverview() {
         <Avatar
           size={100}
           src={community.avatarUrl}
-          className="border-4 border-white absolute -top-0 left-0 !h-24 !w-24"
+          className="border-4 border-[--var(white)] absolute -top-0 left-0 !h-24 !w-24"
         />
         <div className="flex justify-between ml-3 flex-1">
           <Title level={1} className="!m-0 font-extrabold">
@@ -115,6 +112,7 @@ export default function CommunityOverview() {
             <Button
               className="!bg-transparent mr-2"
               type="dashed"
+              disabled={joinLoading || !community.isFollowing}
               icon={<FaPlus />}
               onClick={() => navigate(getRoutePath('CREATE_POST').replace(':slug', slug!))}
             >

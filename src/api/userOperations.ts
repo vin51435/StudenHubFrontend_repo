@@ -14,8 +14,8 @@ class UserOp {
     },
   };
 
-  static async fetchFollowedCommunity() {
-    const res = await searchModel<ICommunity>('center', 'COMMUNITY_FOLLOWS', {});
+  static async fetchFollowedCommunity(id: string | undefined = undefined) {
+    const res = await searchModel<ICommunity>('center', CENTER_ENDPOINTS.COMMUNITY_FOLLOWS(id), {});
 
     UserOp.followedCommunity = res.data ?? null;
     return res;

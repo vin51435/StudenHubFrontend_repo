@@ -41,10 +41,15 @@ const postSlice = createSlice({
         state.posts[index] = action.payload;
       }
     },
-    clearPosts(state) {
-      state.posts = [];
-      state.page = 1;
-      state.hasMore = true;
+    clearPosts(state, action: PayloadAction<string | undefined>) {
+      if (action?.payload) {
+        const updatedPosts = state.posts.filter((p) => p._id !== action.payload);
+        state.posts = updatedPosts;
+      } else {
+        state.posts = [];
+        state.page = 1;
+        state.hasMore = true;
+      }
     },
     setPostsLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;

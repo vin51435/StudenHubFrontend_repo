@@ -8,7 +8,7 @@ import VoteIcon from '@src/components/Vote.svg';
 import { VoteEnum } from '@src/types/enum';
 import PostOp from '@src/api/postOperations';
 import { getRoutePath } from '@src/utils/getRoutePath';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { timeAgo } from '@src/utils/common';
 
 const { Paragraph } = Typography;
@@ -16,8 +16,10 @@ const { Paragraph } = Typography;
 const PostOverview: FC<{
   post: IPost;
   community?: ICommunity;
-  onChangePost?: (post: IPost) => void;
+  onChangePost: (post: IPost) => void;
 }> = ({ post, community, onChangePost }) => {
+  const navigate = useNavigate();
+
   if (!post || !post._id) {
     return null;
   }
@@ -88,25 +90,47 @@ const PostOverview: FC<{
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Avatar
-              size="small"
-              src={
-                community?._id ? (post?.authorId as IUser)?.profilePicture : community?.avatarUrl
-              }
-              icon={<FaRegUser />}
-            />
-            <span className="text-xs ">
-              {community?._id ? (
-                <>
-                  <span className="mr-1">u/{(post?.authorId as IUser)?.fullName}</span>
-                </>
-              ) : (
-                <>
-                  <span className="mr-1">r/{(post.communityId as ICommunity)?.slug}</span>
-                </>
-              )}
+            <span
+              className="cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (community?._id) {
+                  // Posts are inside community, user will be shown
+                  // navigate(g)
+                } else {
+                  // Posts are not inside community, communioty name will be shown
+                  navigate(
+                    getRoutePath('COMMUNITY').replace(
+                      ':slug',
+                      (post.communityId as ICommunity)?.slug
+                    )
+                  );
+                }
+              }}
+            >
+              <Avatar
+                size="small"
+                src={
+                  community?._id
+                    ? (post?.authorId as IUser)?.profilePicture
+                    : (post.communityId as ICommunity)?.avatarUrl
+                }
+                icon={<FaRegUser />}
+              />
+              <span className="text-xs ml-1">
+                {community?._id ? (
+                  <>
+                    <span className="mr-1">u/{(post?.authorId as IUser)?.fullName}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="mr-1">r/{(post.communityId as ICommunity)?.slug}</span>
+                  </>
+                )}
+              </span>
             </span>
-            <span className="ml-2">{timeAgo(post.createdAt)}</span>
+            <span className="ml-2 text-xs text-gray-400">{timeAgo(post.createdAt)}</span>
           </div>
         </div>
         {/* Title */}
@@ -164,11 +188,11 @@ const PostOverview: FC<{
               e.stopPropagation();
             }}
           >
-            <span className="flex items-center gap-1 text-sm">
+            <span className="flex items-center gap-1 text-sm text-gray-400">
               <VoteIcon
                 dir="up"
                 onClick={() => handleVote(1)}
-                className={`cursor-pointer text-gray-400 ${
+                className={`cursor-pointer  ${
                   post.voteType === VoteEnum.upVote && 'text-orange-700'
                 }`}
               />
@@ -176,7 +200,7 @@ const PostOverview: FC<{
               <VoteIcon
                 dir="down"
                 onClick={() => handleVote(-1)}
-                className={`cursor-pointer ml-2 text-gray-400 ${
+                className={`cursor-pointer ml-2 ${
                   post.voteType === VoteEnum.downVote && 'text-purple-500'
                 }`}
               />

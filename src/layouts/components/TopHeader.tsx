@@ -17,8 +17,10 @@ import { appendRecentSearch, clearRecentSearches } from '@src/redux/reducers/cac
 const TopHeader = () => {
   const [options, setOptions] = useState<{ value: string; label: React.ReactNode }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [enableSearch, setEnableSearch] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
 
+  const user = useAppSelector((state) => state.auth.user);
   const recentSearches = useAppSelector((state) => state.recentStore.searches);
   const { newMessage: newMessageNotifications } = useAppSelector(
     (state) => state.notification.notifications
@@ -34,13 +36,22 @@ const TopHeader = () => {
 
   useEffect(() => {
     if (slug) {
-      console.log('slug', slug);
-      dispatch(appendRecentSearch({ string: slug, id: `${Date.now()}`, type: 'community' }));
       setInputValue('');
+      dispatch(appendRecentSearch({ string: slug, id: `${Date.now()}`, type: 'community' }));
       const matchSlug = matchRoute(getExactRoutePath('COMMUNITY'), pathname);
       if (matchSlug === slug) {
         CommunityOp.setCommunitySlug(slug);
       }
+    }
+
+    if (
+      pathname === getRoutePath('APP') ||
+      pathname === getRoutePath('POPULAR') ||
+      pathname === getRoutePath('COMMUNITY')
+    ) {
+      setEnableSearch(true);
+    } else {
+      setEnableSearch(false);
     }
   }, [slug]);
 
@@ -71,10 +82,10 @@ const TopHeader = () => {
   }
 
   const searchInsideCommunity = (val: string) => {
-    if (!slug) return;
+    if (!slug || !communityCache) return;
     dispatch(
       fetchInitialPosts({
-        communityId: communityCache[slug]._id,
+        communityId: communityCache._id,
         sort: 'Top',
         range: 'all',
         searchValue: val,
@@ -139,7 +150,7 @@ const TopHeader = () => {
   return (
     <div className="flex items-center gap-6 ml-auto w-full h-full space-between align-center">
       <div
-        className="text-2xl px-4 flex justify-center items-center my-3 cursor-pointer"
+        className="text-2xl !px-4 flex justify-center items-center my-3 cursor-pointer"
         onClick={() => navigate(getExactRoutePath('APP'))}
       >
         StudenHub
@@ -151,6 +162,7 @@ const TopHeader = () => {
           style={{ width: '80%', height: '70%' }}
           options={options.length && inputValue ? options : recentSearchOptions}
           value={inputValue}
+          disabled={!enableSearch}
           onChange={(val) => {
             setInputValue(val);
             if (!slug) {
@@ -172,13 +184,21 @@ const TopHeader = () => {
           <Input
             className="w-full !h-[90%] flex items-center"
             style={{ borderRadius: '999px', height: '100%', width: '100%' }}
+            disabled={!enableSearch}
             addonBefore={
               slug ? (
                 <Tag
                   closable
-                  onClose={(e) => {
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     e.preventDefault();
-                    // navigate('/');
+                    navigate(getRoutePath('COMMUNITY').replace(':slug', slug));
+                  }}
+                  onClose={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    navigate(getRoutePath('APP'));
                   }}
                 >
                   r/{slug}
@@ -186,7 +206,7 @@ const TopHeader = () => {
               ) : null
             }
             allowClear
-            placeholder={slug ? `Search in ${slug}` : 'Search Communities'}
+            placeholder={enableSearch ? (slug ? `Search in ${slug}` : 'Search Communities') : ''}
             value={inputValue}
           />
         </AutoComplete>
@@ -226,7 +246,12 @@ const TopHeader = () => {
         {/* User Avatar */}
         <Dropdown menu={{ items: menuItems }} trigger={['click']}>
           <div className="flex">
-            <Avatar size={24} className="cursor-pointer" icon={<FaUser />} />
+            <Avatar
+              size={24}
+              className="cursor-pointer"
+              icon={<FaUser />}
+              src={user?.profilePicture}
+            />
           </div>
         </Dropdown>
       </div>

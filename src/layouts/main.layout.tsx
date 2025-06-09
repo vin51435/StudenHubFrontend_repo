@@ -71,7 +71,7 @@ const MainLayout: React.FC = () => {
   return (
     <Layout
       id="Main-layout"
-      className="layout-main_container h-full bg-transparent dark:bg-transparent"
+      className="layout-main_container  h-full bg-transparent dark:bg-transparent"
     >
       <Header
         style={{
@@ -89,10 +89,10 @@ const MainLayout: React.FC = () => {
           <TopHeader />
         </div>
       </Header>
-      <Layout hasSider className="overflow-auto h-full sticky bg-white">
+      <Layout hasSider className="overflow-auto h-full sticky bg-white ">
         <section
           style={siderStyle}
-          className="sidebar_section pl-2 pt-2 flex relative h-full justify-between gap-2"
+          className="sidebar_section pl-2 pt-2 flex relative h-full justify-between gap-2 "
         >
           <Sider
             style={siderStyle}
@@ -100,7 +100,7 @@ const MainLayout: React.FC = () => {
             collapsible
             collapsed={collapsed}
             collapsedWidth={0}
-            className="!bg-transparent"
+            className="!bg-transparent !pl-2 !pt-2 "
           >
             <Menu
               className="!min-h-full !bg-transparent"
@@ -122,9 +122,12 @@ const MainLayout: React.FC = () => {
             style={toggleButtonStyle}
           />
         </section>
-        <Content data-scroll-id="content" className="w-full h-full pt-2 custom-scrollbar">
+        <Content
+          data-scroll-id="content"
+          className="layout-content_container w-full h-full pt-2 custom-scrollbar"
+        >
           <div
-            className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1150px] w-[95%] py-1 bg-transparent"
+            className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1150px] w-[95%] py-1 bg-transparent "
             style={{
               textAlign: 'center',
               borderRadius: borderRadiusLG,

@@ -75,9 +75,6 @@ const CustomSelect = ({
   handleChange,
   ...props
 }: CustomSelectProps) => {
-  console.log('handleselect ran', selectValue);
-  console.log('default data', defaultData);
-
   const [data, setData] = useState<BaseData[]>(defaultData);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);

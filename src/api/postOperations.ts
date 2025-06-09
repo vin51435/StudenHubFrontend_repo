@@ -28,6 +28,13 @@ class PostOp {
     return res;
   }
 
+  static async deletePost(postId: string, communityId: string = 'dontmatter') {
+    const res = await deleteResource(CENTER_ENDPOINTS.POST(communityId, postId), {
+      BASE_URLS: 'center',
+    });
+    return res;
+  }
+
   static async postComment(postId: string, data: IPostCommentDTO) {
     const res = await post(CENTER_ENDPOINTS.POST_COMMENT(postId), {
       BASE_URLS: 'comments',

@@ -25,11 +25,10 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
   const navigate = useNavigate();
   const fresh = useRef(true);
   const dispatch = useAppDispatch();
-  const { hasMore, page, posts, loading } = useAppSelector((state) => state.postCache);
+  const { hasMore, page, posts, loading, communityId } = useAppSelector((state) => state.postCache);
 
   useEffect(() => {
-    if (!slug || posts.length || !fresh.current) return;
-    if (posts[0]?.communityId === community._id) return;
+    if (communityId === community._id) return;
     dispatch(fetchInitialPosts({ communityId: community._id, sort, range }));
     fresh.current = false;
   }, [slug, sort, range]);
@@ -63,7 +62,7 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
       <div className="mb-4">
         <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} />
       </div>
-      {loading ? (
+      {loading || !(communityId === community._id) ? (
         <div className="h-full flex justify-center items-center">
           <Spin size="large" />
         </div>

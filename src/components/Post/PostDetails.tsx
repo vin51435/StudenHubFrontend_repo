@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Carousel, Divider, Typography, Row, Col, Image } from 'antd';
+import { Button, Carousel, Divider, Typography, Row, Col, Image, Popconfirm } from 'antd';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuMessageSquareText } from 'react-icons/lu';
-import { ICommunity, IPost } from '@src/types/app';
+import { ICommunity, IPost, IUser } from '@src/types/app';
 import { VoteEnum } from '@src/types/enum';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostOp from '@src/api/postOperations';
@@ -10,15 +10,19 @@ import { useLoader } from '@src/hooks/useLoader';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
 import VoteIcon from '@src/components/Vote.svg';
 import PostComments from '@src/components/Post/PostComments';
-import { useAppDispatch } from '@src/redux/hook';
+import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { appendRecentPost } from '@src/redux/reducers/cache/recents.slice';
-import { pick } from 'lodash';
+import { timeAgo } from '@src/utils/common';
+import { MdDelete, MdEdit } from 'react-icons/md';
+import { getRoutePath } from '@src/utils/getRoutePath';
+import { clearPosts } from '@src/redux/reducers/cache/post.slice';
 
 const { Title, Paragraph, Text } = Typography;
 
 const PostDetailPage: React.FC = () => {
   const [post, setPost] = useState<IPost | null>(null);
   const [load, setLoad] = useState(true);
+  const user = useAppSelector((state) => state.auth.user);
 
   const dispatch = useAppDispatch();
   const { slug: communitySlug, postSlug } = useParams();
@@ -110,6 +114,12 @@ const PostDetailPage: React.FC = () => {
     setPost(updatedPost);
   };
 
+  const deletePost = async () => {
+    await PostOp.deletePost(post._id!, communitySlug);
+    dispatch(clearPosts(post._id));
+    navigate(getRoutePath('APP'));
+  };
+
   const handleCommunityUpdate = (community: ICommunity) => {
     setPost(
       (prev) =>
@@ -133,23 +143,50 @@ const PostDetailPage: React.FC = () => {
         ) : (
           <>
             {/* Header: Back, Community + Author */}
-            <div className="flex items-center gap-3 mb-2">
-              <Button
-                shape="circle"
-                icon={<IoIosArrowBack />}
-                onClick={() => {
-                  // navigate(getRoutePath('COMMUNITY').replace(':slug', communitySlug));
-                  navigate(-1);
-                }}
-              />
-              <div>
-                <Text className="text-gray-500 text-sm">
-                  <span className="font-medium">u/{post?.author?.username ?? '[Deleted]'}</span>
-                </Text>
-                <div className="text-xs text-gray-400">
-                  {new Date(post?.createdAt!).toLocaleString()}
+            <div className="flex justify-between">
+              <div className="flex items-center gap-3 mb-2">
+                <Button
+                  shape="circle"
+                  icon={<IoIosArrowBack />}
+                  onClick={() => {
+                    // navigate(getRoutePath('COMMUNITY').replace(':slug', communitySlug));
+                    navigate(-1);
+                  }}
+                />
+                <div>
+                  <Text className="text-gray-500 text-sm">
+                    <span className="font-medium">
+                      u/{(post?.authorId as IUser)?.username ?? '[Deleted]'}
+                    </span>
+                  </Text>
+                  <div className="text-xs text-gray-400">
+                    {/* {new Date(post?.createdAt!).toLocaleString()} */}
+                    {timeAgo(post?.createdAt!)}
+                  </div>
                 </div>
               </div>
+              {user?._id === (post?.authorId as IUser)?._id && (
+                <div className="flex gap-2">
+                  <Popconfirm
+                    title="Are you sure to delete this post?"
+                    onConfirm={deletePost}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      className="!border-0 !text-2xl !text-red-500"
+                      shape="circle"
+                      icon={<MdDelete className="text-red-500" />}
+                    />
+                  </Popconfirm>
+                  <Button
+                    className="!border-0 !text-2xl !text-blue-500"
+                    shape="circle"
+                    icon={<MdEdit className="text-blue-500" />}
+                    onClick={() => navigate(`/edit/${post?._id}`)}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Title */}
@@ -227,7 +264,7 @@ const PostDetailPage: React.FC = () => {
       </Col>
       <Col span={0} md={7} className="">
         <Communitysidebar
-          community={post?.community as ICommunity}
+          community={post?.communityId as ICommunity}
           allDetails
           onCommunityChange={handleCommunityUpdate}
         />

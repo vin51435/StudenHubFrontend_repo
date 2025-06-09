@@ -55,7 +55,7 @@ export const CENTER_ENDPOINTS = {
   COMMUNITY_POSTS: (id: string | number) => `/communitypost/${id}/posts`,
 
   COMMUNITY_FOLLOW_TOGGLE: (id: string | number) => `/community/${id}/follow/toggle`,
-  COMMUNITY_FOLLOWS: '/community/follows',
+  COMMUNITY_FOLLOWS: (id?: string) => `/community/follows${id ? `/${id}` : ''}`,
 
   POST_VOTE: (postId: string, voteType: VoteEnum, communityId: string) =>
     `/communitypost/${communityId}/${postId}/vote/${voteType}`,

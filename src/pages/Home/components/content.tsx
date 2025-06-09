@@ -1,6 +1,8 @@
 import PostOverview from '@src/components/Post/PostOverview';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
+import { updateHomePosts } from '@src/redux/reducers/cache/home.slice';
 import { fetchHomeFeed } from '@src/redux/reducers/cache/home.thunks';
+import { IPost } from '@src/types/app';
 import Spin from 'antd/es/spin';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -12,8 +14,12 @@ export default function HomeFeed() {
 
   useEffect(() => {
     if (homeFeed.posts.length) return;
-    dispatch(fetchHomeFeed({ page: 1, sort: 'Top' }));
+    dispatch(fetchHomeFeed({ page: 1, sort: 'Top', fresh: true }));
   }, []);
+
+  const updatePost = (post: IPost) => {
+    dispatch(updateHomePosts(post));
+  };
 
   return (
     <section className="">
@@ -27,11 +33,7 @@ export default function HomeFeed() {
       ) : homeFeed.posts.length > 0 ? (
         <div className="flex flex-col gap-4">
           {homeFeed.posts.map((post, index) => (
-            <PostOverview
-              key={index}
-              post={post}
-              // onChangePost={onPostUpdate}
-            />
+            <PostOverview key={index} post={post} onChangePost={updatePost} />
           ))}
         </div>
       ) : (

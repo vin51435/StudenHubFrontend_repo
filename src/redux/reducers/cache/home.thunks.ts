@@ -10,13 +10,18 @@ export const fetchHomeFeed = createAsyncThunk(
     {
       page,
       sort,
+      fresh,
     }: {
       page: number;
       sort: string;
+      fresh?: boolean;
     },
     { dispatch }
   ) => {
-    const res = await get<{}, IPaginatedResponse<IPost>>('FEED', { BASE_URLS: 'user' });
+    const res = await get<{}, IPaginatedResponse<IPost>>('FEED', {
+      BASE_URLS: 'user',
+      queries: [{ fresh }],
+    });
     const data = { ...res, type: 'feed' };
     return data;
   }

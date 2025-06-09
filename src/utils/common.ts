@@ -8,7 +8,6 @@ export function timeAgo(input: string | Date): string {
   if (!input) return '';
   const date = typeof input === 'string' ? new Date(input) : input;
   const now = new Date();
-  console.log('date', date);
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   if (diffInSeconds < 0) {

@@ -1,55 +1,58 @@
 @use '@styles/scss.import.scss' as *;
 
-.dark {
-  .ant-menu-item {
-    &.ant-menu-item-selected {
-      .ant-menu-title-content {
-        color: $primary-light-color !important;
-      }
-      .ant-menu-item-icon {
-        color: $primary-light-color !important;
+.dark .layout-main_container {
+  .chat-inbox_container {
+    .ant-menu-item {
+      &.ant-menu-item-selected {
+        .ant-menu-title-content {
+          color: $primary-light-color !important;
+        }
+        .ant-menu-item-icon {
+          color: $primary-light-color !important;
+        }
       }
     }
   }
 }
+.chat-inbox_container {
+  .ant-menu.ant-menu-root {
+    border: none !important;
+  }
 
-.ant-menu.ant-menu-root {
-  border: none !important;
-}
+  .selected-chat {
+    position: relative;
+    background-color: $primary-light-color;
 
-.selected-chat {
-  position: relative;
-  background-color: $primary-light-color;
+    &:hover {
+      background-color: $secondary-light-color;
+      &::after {
+        border-color: transparent transparent transparent $secondary-light-color;
+      }
+    }
 
-  &:hover {
-    background-color: $secondary-light-color;
     &::after {
-      border-color: transparent transparent transparent $secondary-light-color;
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translate(100%, -50%);
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 15px;
+      border-color: transparent transparent transparent $primary-light-color;
     }
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(100%, -50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 10px 0 10px 15px;
-    border-color: transparent transparent transparent $primary-light-color;
+  .inbox-individual-chat {
+    img {
+      object-fit: contain;
+    }
   }
-}
 
-.inbox-individual-chat {
-  img {
-    object-fit: contain;
-  }
-}
-
-.chat_container {
-  img {
-    object-fit: contain;
+  .chat_container {
+    img {
+      object-fit: contain;
+    }
   }
 }

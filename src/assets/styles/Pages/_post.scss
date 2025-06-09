@@ -53,3 +53,15 @@
     display: none;
   }
 }
+
+.ant-tag {
+  padding: inherit;
+  padding-left: 10px;
+  padding-right: 6px;
+  .ant-tag-close-icon {
+    margin-left: 5px !important;
+    &:hover {
+      color: $primary-color !important;
+    }
+  }
+}

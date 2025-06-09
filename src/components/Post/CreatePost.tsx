@@ -1,24 +1,35 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { Form, Input, Select, Button, Typography, message } from 'antd';
+import { useEffect, useRef, useState } from 'react';
+import { Form, Input, Select, Button, Typography, message, Card } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ImageUpload from '@src/components/ImageUpload';
 import CustomSelect from '@src/components/Select';
 import { ICommunity } from '@src/types/app';
 import CommunityOp from '@src/api/communityOperations';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getRoutePath } from '@src/utils/getRoutePath';
-import { useDispatch } from 'react-redux';
-import { setLoading } from '@src/redux/reducers/uiSlice';
 import TagInput from '@src/components/TagInput';
-import { CENTER_ENDPOINTS } from '@src/libs/apiEndpoints';
-import { get } from '@src/libs/apiConfig';
 import { createPostSchema } from '@src/validation/postSchema';
 import { setZodErrorsToForm } from '@src/validation';
 import { ZodError } from 'zod';
 
 const { Title } = Typography;
-const { Option } = Select;
+
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['blockquote', 'code-block'],
+    [{ align: [] }],
+    ['link'],
+    // ['link', 'image'],
+    ['clean'], // remove formatting button
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
 
 const CreatePost = () => {
   const [selectedCommunity, setSelectedCommunity] = useState<ICommunity | null>(null);
@@ -52,6 +63,7 @@ const CreatePost = () => {
       setLoad(true);
       createPostSchema.parse(values);
 
+      console.log(values);
       Object.entries(values).forEach(([key, value]) => {
         if (key === 'files' && Array.isArray(value)) {
           value.forEach((file: File) => {
@@ -91,11 +103,11 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="p-4 rounded-xl shadow-sm max-w-2xl mx-auto create-post_container">
+    <Card className="p-4 rounded-xl max-w-3xl !mx-auto create-post_container dark:!bg-[var(--primary-dark)]">
       <Title level={4} className="text-start">
         Create a Post
       </Title>
-      <Form form={form} name="createPost" layout="vertical" onFinish={handleFinish}>
+      <Form form={form} disabled={load} name="createPost" layout="vertical" onFinish={handleFinish}>
         <Form.Item
           // name="community"
           label="Post in"
@@ -126,11 +138,11 @@ const CreatePost = () => {
         </Form.Item>
 
         <Form.Item name="files" label="Upload Image">
-          <ImageUpload multiple={true} />
+          <ImageUpload multiple={true} maxCount={5} />
         </Form.Item>
 
         <Form.Item name="content">
-          <ReactQuill theme="snow" className="" />
+          <ReactQuill theme="snow" className="" modules={quillModules} />
         </Form.Item>
 
         <div className="flex justify-end gap-2">
@@ -140,7 +152,7 @@ const CreatePost = () => {
           </Button>
         </div>
       </Form>
-    </div>
+    </Card>
   );
 };
 

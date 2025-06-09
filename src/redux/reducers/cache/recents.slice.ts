@@ -17,7 +17,6 @@ export type RecentPostsState = Pick<
   | 'mediaUrls'
   | 'netVotes'
   | 'commentsCount'
-  | 'community'
   | 'communityId'
   | 'createdAt'
 >;

@@ -1,5 +1,15 @@
 @use '@styles/scss.import.scss' as *;
 
+.dark {
+  .header_style {
+  }
+
+  .left_container {
+    color: $white;
+    background-color: $primary-dark !important;
+  }
+}
+
 // ?Auth (login/signup) page css
 .auth-page_main {
   // height: 100vh;
@@ -99,7 +109,7 @@
             outline: none;
           }
 
-          &+span {
+          & + span {
             display: block;
             color: $danger;
             font-size: 0.8rem;
@@ -124,12 +134,12 @@
             margin-bottom: 0.8rem;
             font-size: 0.8rem;
 
-            &>svg {
+            & > svg {
               height: 0.6rem;
             }
           }
 
-          span>svg {
+          span > svg {
             margin-right: 0.3rem;
           }
         }
@@ -311,7 +321,7 @@
 .signup-details {
   height: 100%;
 
-  &>div {
+  & > div {
     // height: 75%;
     width: 60%;
 
@@ -329,7 +339,7 @@
     border-bottom-left-radius: calc(5 * #{$border-radius}) !important;
 
     .signup-details_right_container {
-      &>div:first-child {
+      & > div:first-child {
         // max-height: 470px;
       }
 
@@ -353,7 +363,7 @@
 .signup-interest_container {
   position: relative;
 
-  &>form {
+  & > form {
     width: 75%;
     padding-bottom: 60px;
 
@@ -373,7 +383,6 @@
   .interest_subheader {
     font-size: 0.8rem;
   }
-
 }
 
 .interest_grid {

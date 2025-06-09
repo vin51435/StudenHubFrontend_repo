@@ -1,15 +1,19 @@
 import ImageUpload from '@src/components/ImageUpload';
 import { BasicModalProps } from '@src/components/Modals';
 import { post } from '@src/libs/apiConfig';
+import { getRoutePath } from '@src/utils/getRoutePath';
 import { setZodErrorsToForm } from '@src/validation';
 import { communityCreateSchema } from '@src/validation/community.schema';
 import { Button, Col, Form, Input, message, Row, Switch } from 'antd';
 import Modal from 'antd/es/modal/Modal';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ZodError } from 'zod';
 
 const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModal }) => {
   const [load, setLoad] = useState(false);
+
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const onFinish = async () => {
@@ -41,8 +45,8 @@ const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModa
 
       message.success('Community created successfully');
       form.resetFields();
-
-      // closeModal();
+      navigate(getRoutePath('COMMUNITY').replace(':slug', res?.data?.slug));
+      closeModal();
     } catch (err) {
       if (err instanceof ZodError) {
         setZodErrorsToForm(err, form);
@@ -57,6 +61,12 @@ const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModa
 
   return (
     <Modal
+      className="dark:!bg-[var(--primary-dark)] rounded-2xl"
+      classNames={{
+        header: '!bg-inherit',
+        body: '',
+        content: 'dark:!bg-[var(--primary-dark)]',
+      }}
       open={modalProps?.open}
       title="Create Custom Feed"
       onCancel={closeModal}
@@ -64,7 +74,7 @@ const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModa
       destroyOnHidden
     >
       <Form
-        className="overflow-auto "
+        className="overflow-auto custom-scrollbar !p-2"
         style={{ maxHeight: '70vh' }}
         form={form}
         layout="vertical"

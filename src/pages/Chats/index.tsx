@@ -27,7 +27,7 @@ const Chats = () => {
   };
 
   return (
-    <div className="flex !min-h-full !max-h-full pb-2 dark:bg-zinc-900 rounded-lg shadow-md">
+    <div className="chat-inbox_container flex !min-h-full !max-h-full pb-2 bg-[var(--white)] dark:bg-transparent rounded-lg shadow-md">
       <InboxList
         chats={chatData.chats}
         notifications={chatNotifications}

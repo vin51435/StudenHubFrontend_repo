@@ -26,15 +26,20 @@ $disabled-color: #d8d8d8;
 
 $border-radius: 8px;
 // $border-radius: 6px;
-$border-radius-rounded: 20px;
+$border-radius-rounded: 1rem;
 $border-color: #747775;
 
 $tooltip-fs: 0.855rem;
 
 :root {
+  --white: #{$white};
+  --secondary-white: #{$secondary-white};
+  --primary-dark: #{$primary-dark};
+  --secondary-dark: #{$secondary-dark};
+  --tertiary-dark: #{$tertiary-dark};
+
   --primary-color: #{$primary-color};
   --secondary-color: #{$secondary-color};
-  --secondary-white: #{$secondary-white};
   --primary-color1: #{$primary-color1};
   --secondary-color1: #{$secondary-color1};
   --tertiary-color: #{$tertiary-color};

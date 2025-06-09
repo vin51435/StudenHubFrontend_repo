@@ -97,9 +97,7 @@ interface IPost {
   tags: string[];
 
   communityId: string | Partial<ICommunity>;
-  community?: Partial<ICommunity>;
   authorId: string | IUser;
-  author?: IUser;
 
   views: number;
   upvotesCount: number;

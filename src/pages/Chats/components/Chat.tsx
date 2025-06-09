@@ -86,7 +86,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
           cancelText="No"
           placement="bottom"
         >
-          <Button type="text" icon={<MdDelete />} />
+          <Button type="text" icon={<MdDelete className="text-red" size="middle" color="red" />} />
         </Popconfirm>
       </div>
 

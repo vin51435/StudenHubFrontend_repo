@@ -1,9 +1,72 @@
 @use '@styles/scss.import.scss' as *;
 
 .dark {
-  .ant-btn:hover {
-    color: $secondary-color !important;
-    border-color: $secondary-color !important;
+  .anticon-close {
+    color: $secondary-white !important;
+  }
+
+  .ant-tag {
+    background-color: $secondary-dark !important;
+    color: $white !important;
+  }
+
+  .ant-btn {
+    &[type='submit'] {
+      border: 1px solid $secondary-white !important;
+    }
+    background-color: $primary-dark;
+    &:hover {
+      color: $secondary-color !important;
+      border-color: $secondary-color !important;
+    }
+    &:disabled {
+      color: $secondary-white !important;
+      border-color: $secondary-white !important;
+    }
+  }
+
+  .ant-popover {
+    .ant-popover-inner {
+      border: 1px solid $secondary-white !important;
+      background-color: $primary-dark !important;
+    }
+    .ant-popover-arrow::before {
+      background-color: $primary-dark !important;
+    }
+  }
+
+  .ant-card {
+    // background-color: $primary-dark !important;
+    .ant-card-body {
+      background-color: transparent !important;
+    }
+  }
+
+  .ant-modal-root {
+    .ant-modal-close {
+      color: $white !important;
+    }
+  }
+
+  .ant-form {
+    .ant-form-item-control-input {
+      border-radius: $border-radius-rounded !important;
+      background-color: $primary-dark !important;
+      .ant-input {
+        background-color: transparent !important;
+      }
+      .ant-input-affix-wrapper {
+        background-color: transparent !important;
+      }
+    }
+    background-color: $primary-dark !important;
+  }
+
+  .ant-dropdown {
+    .ant-dropdown-menu {
+      border: 1px solid $secondary-white !important;
+      background-color: $primary-dark !important;
+    }
   }
 
   // Antd Select
