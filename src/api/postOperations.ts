@@ -3,7 +3,7 @@ import { CENTER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { CommentPaginatedResponse } from '@src/types';
 import { IPost } from '@src/types/app';
 import { VoteEnum } from '@src/types/enum';
-import { ICommentData, IPostCommentDTO, QueryParams } from '@src/types/post.types';
+import { ICommentData, IPostCommentDTO, ThreadQueryParams } from '@src/types/post.types';
 import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
 class PostOp {
@@ -46,7 +46,7 @@ class PostOp {
   static async fetchComment(
     postId: string,
     commentId: string | null = null,
-    queries?: Partial<QueryParams>
+    queries?: Partial<ThreadQueryParams>
   ) {
     const allQueries = {
       ...queries,

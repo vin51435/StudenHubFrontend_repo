@@ -1,5 +1,5 @@
 import RecentPostsSidebar from '@src/components/Post/RecentPostsSidebar';
-import PopularFeed from '@src/pages/Popular/componets/feed';
+import PopularFeed from '@src/pages/Popular/componets/Feed';
 import { Row, Col } from 'antd';
 
 const Popular = () => {

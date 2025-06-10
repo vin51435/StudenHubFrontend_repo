@@ -5,14 +5,12 @@ import { IPost } from '@src/types/app';
 type feedType = 'home' | 'latest' | 'popular';
 
 const initialState: {
-  type: feedType;
   posts: IPost[];
   recentlyViewed: IPost[];
   page: number;
   hasMore: boolean;
   loading: boolean;
 } = {
-  type: 'home',
   posts: [],
   recentlyViewed: [],
   page: 1,
@@ -29,7 +27,6 @@ const homeSlice = createSlice({
     },
     setHomePosts(state, action: PayloadAction<{ posts: IPost[]; type: feedType }>) {
       state.posts = action.payload.posts;
-      state.type = action.payload.type;
       state.page = 1;
       state.hasMore = action.payload.posts.length > 0;
     },
@@ -52,7 +49,6 @@ const homeSlice = createSlice({
       })
       .addCase(fetchHomeFeed.fulfilled, (state, action) => {
         state.posts = action.payload.data;
-        state.type = action.payload.type as feedType;
         state.loading = false;
       })
       .addCase(fetchHomeFeed.rejected, (state) => {

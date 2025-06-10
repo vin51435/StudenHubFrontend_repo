@@ -1,9 +1,10 @@
 import PostOverview from '@src/components/Post/PostOverview';
 import { useAppSelector, useAppDispatch } from '@src/redux/hook';
+import { updatePopularPosts } from '@src/redux/reducers/cache/popularPosts.slice';
 import {
+  fetchMorePopularFeedThunk,
   fetchPopularFeedThunk,
-  updatePopularPosts,
-} from '@src/redux/reducers/cache/popularPosts.slice';
+} from '@src/redux/reducers/cache/popularPosts.thunks';
 import { IPost } from '@src/types/app';
 import { Spin } from 'antd';
 import React, { useEffect } from 'react';
@@ -16,8 +17,15 @@ const PopularFeed = () => {
 
   useEffect(() => {
     if (popularFeed.posts.length) return;
-    dispatch(fetchPopularFeedThunk({ page: 1, sort: 'Top', fresh: true }));
+    dispatch(fetchPopularFeedThunk({ sort: 'Top' }));
   }, []);
+
+  // Infinite scroll
+  useEffect(() => {
+    if (inView && popularFeed.hasMore) {
+      dispatch(fetchMorePopularFeedThunk({ sort: 'Top' }));
+    }
+  }, [inView]);
 
   const updatePost = (post: IPost) => {
     dispatch(updatePopularPosts(post));

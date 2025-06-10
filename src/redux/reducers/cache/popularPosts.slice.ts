@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import UserOp from '@src/api/userOperations';
+import {
+  fetchMorePopularFeedThunk,
+  fetchPopularFeedThunk,
+} from '@src/redux/reducers/cache/popularPosts.thunks';
 import { IPost } from '@src/types/app';
 
 interface GlobalPopularPostState {
@@ -16,14 +20,6 @@ const initialState: GlobalPopularPostState = {
   hasMore: true,
 };
 
-export const fetchPopularFeedThunk = createAsyncThunk(
-  'popularPosts/fetch',
-  async ({}, { dispatch }) => {
-    const res = await UserOp.fetchGlobalPopularFeed();
-    return res.data;
-  }
-);
-
 const popularPostsSlice = createSlice({
   name: 'popularPosts',
   initialState,
@@ -36,9 +32,9 @@ const popularPostsSlice = createSlice({
       state.loading = action.payload;
     },
     appendPopularPosts(state, action: PayloadAction<IPost[]>) {
-      state.posts.push(...action.payload);
-      state.page += 1;
-      state.hasMore = action.payload.length > 0;
+      const existingIds = new Set(state.posts.map((post) => post._id));
+      const newPosts = action.payload.filter((post) => !existingIds.has(post._id));
+      state.posts.push(...newPosts);
     },
     updatePopularPosts(state, action: PayloadAction<Partial<IPost>>) {
       const index = state.posts.findIndex((p) => p._id === action.payload._id);
@@ -56,11 +52,18 @@ const popularPostsSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchPopularFeedThunk.fulfilled, (state, action) => {
-        state.posts = action.payload;
+        state.posts = action.payload.data;
+        state.page = action.payload.currentPage;
+        state.hasMore = action.payload.hasMore;
         state.loading = false;
       })
       .addCase(fetchPopularFeedThunk.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(fetchMorePopularFeedThunk.fulfilled, (state, action) => {
+        // page is appended in thunk itself
+        state.page = action.payload.currentPage;
+        state.hasMore = action.payload.hasMore;
       });
   },
 });

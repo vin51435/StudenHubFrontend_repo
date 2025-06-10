@@ -102,7 +102,7 @@ export default function CommunityOverview() {
         <Avatar
           size={100}
           src={community.avatarUrl}
-          className="border-4 border-[--var(white)] absolute -top-0 left-0 !h-24 !w-24"
+          className="border-4 border-[var(--white)] absolute -top-0 left-0 !h-24 !w-24"
         />
         <div className="flex justify-between ml-3 flex-1">
           <Title level={1} className="!m-0 font-extrabold">

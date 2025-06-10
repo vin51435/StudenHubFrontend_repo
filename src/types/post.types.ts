@@ -5,7 +5,7 @@ export interface IPostCommentDTO {
   content: string;
 }
 
-export interface QueryParams {
+export interface ThreadQueryParams {
   postId: string;
   commentId: string;
   limit?: string; // default: '5'

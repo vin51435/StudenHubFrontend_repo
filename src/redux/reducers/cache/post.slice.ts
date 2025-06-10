@@ -6,6 +6,7 @@ interface PostState {
   communityId: string;
   posts: IPost[];
   page: number;
+  sort: string;
   hasMore: boolean;
   loading: boolean;
 }
@@ -13,6 +14,7 @@ interface PostState {
 const initialState: PostState = {
   communityId: '',
   posts: [],
+  sort: 'Top',
   page: 1,
   hasMore: true,
   loading: false,
@@ -25,15 +27,18 @@ const postSlice = createSlice({
     setCommunityId(state, action: PayloadAction<string>) {
       state.communityId = action.payload;
     },
+    setSort(state, action: PayloadAction<string>) {
+      state.sort = action.payload;
+    },
     setPosts(state, action: PayloadAction<IPost[]>) {
       state.posts = action.payload;
       state.page = 1;
       state.hasMore = action.payload.length > 0;
     },
     appendPosts(state, action: PayloadAction<IPost[]>) {
-      state.posts.push(...action.payload);
-      state.page += 1;
-      state.hasMore = action.payload.length > 0;
+      const existingIds = new Set(state.posts.map((post) => post._id));
+      const newPosts = action.payload.filter((post) => !existingIds.has(post._id));
+      state.posts.push(...newPosts);
     },
     updatePost(state, action: PayloadAction<IPost>) {
       const index = state.posts.findIndex((p) => p._id === action.payload._id);
@@ -61,11 +66,19 @@ const postSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchInitialPosts.fulfilled, (state, action) => {
-        state.posts = action.payload;
+        // post is being appended to in the thunk itself
+        state.page = action.payload.currentPage;
+        state.hasMore = action.payload.hasMore;
+        state.posts = action.payload.data;
         state.loading = false;
       })
       .addCase(fetchInitialPosts.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(fetchMorePosts.fulfilled, (state, action) => {
+        // post is being appended to in the thunk itself
+        state.page = action.payload.currentPage;
+        state.hasMore = action.payload.hasMore;
       });
   },
 });

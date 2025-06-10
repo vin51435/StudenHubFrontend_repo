@@ -1,9 +1,9 @@
 import { searchModel } from '@src/api/searchModel';
 import { get, patch } from '@src/libs/apiConfig';
 import { CENTER_ENDPOINTS, USER_ENDPOINTS } from '@src/libs/apiEndpoints';
-import { IPaginationRequestQueries } from '@src/types';
+import { IPaginatedResponse, IPaginationRequestQueries } from '@src/types';
 import { ICommunity, IPost } from '@src/types/app';
-import { QueryParams } from '@src/types/post.types';
+import { ThreadQueryParams } from '@src/types/post.types';
 import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
 class UserOp {
@@ -22,15 +22,12 @@ class UserOp {
     return res;
   }
 
-  static async fetchGlobalPopularFeed(queries?: Partial<QueryParams>) {
+  static async fetchGlobalPopularFeed(queries?: Partial<IPaginationRequestQueries>) {
     const allQueries = { ...queries, limit: 20 };
-    const res = await get<IPost[], IPaginationRequestQueries<ICommunity>>(
-      USER_ENDPOINTS.GLOBAL_FEED,
-      {
-        BASE_URLS: 'user',
-        queries: [allQueries],
-      }
-    );
+    const res = await get<IPost[], IPaginatedResponse<IPost>>(USER_ENDPOINTS.GLOBAL_FEED, {
+      BASE_URLS: 'user',
+      queries: [allQueries],
+    });
     return res;
   }
 }

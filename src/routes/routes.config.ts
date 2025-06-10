@@ -51,6 +51,7 @@ const ROUTES = [
       { name: 'CREATE_COMMUNITY', path: '/create' },
     ],
   },
+  { name: 'USER', path: '/user', children: [{ name: 'USER_PROFILE', path: '/:userSlug' }] },
   { name: 'POPULAR', path: '/popular', title: 'Popular' },
   {
     name: 'COMMUNITY',

@@ -36,7 +36,7 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
   // Infinite scroll
   useEffect(() => {
     if (inView && hasMore && !fresh.current) {
-      dispatch(fetchMorePosts({ communityId: community._id, page: page + 1, sort, range }));
+      dispatch(fetchMorePosts({ sort, range }));
     }
   }, [inView]);
 

@@ -104,7 +104,7 @@ const MainLayout: React.FC = () => {
             className="!bg-transparent !pl-2 !pt-2 "
           >
             <Menu
-              className="!min-h-full !bg-transparent !pr-1"
+              className="!min-h-full !bg-transparent !pr-1 !border-[var(--secondary-white)]"
               rootClassName="sidebar_menu"
               mode="inline"
               selectedKeys={selectedKey ? [selectedKey] : []}

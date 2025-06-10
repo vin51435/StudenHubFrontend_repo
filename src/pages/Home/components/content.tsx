@@ -1,7 +1,7 @@
 import PostOverview from '@src/components/Post/PostOverview';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { updateHomePosts } from '@src/redux/reducers/cache/home.slice';
-import { fetchHomeFeed } from '@src/redux/reducers/cache/home.thunks';
+import { fetchHomeFeed, fetchMoreHomeFeed } from '@src/redux/reducers/cache/home.thunks';
 import { IPost } from '@src/types/app';
 import Spin from 'antd/es/spin';
 import { useEffect } from 'react';
@@ -16,6 +16,12 @@ export default function HomeFeed() {
     if (homeFeed.posts.length) return;
     dispatch(fetchHomeFeed({ page: 1, sort: 'Top', fresh: true }));
   }, []);
+
+  useEffect(() => {
+    if (inView && homeFeed.hasMore) {
+      dispatch(fetchMoreHomeFeed({}));
+    }
+  }, [inView]);
 
   const updatePost = (post: IPost) => {
     dispatch(updateHomePosts(post));
