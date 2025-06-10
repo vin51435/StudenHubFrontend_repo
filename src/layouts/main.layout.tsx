@@ -2,7 +2,7 @@ import { RiMenuUnfold3Fill, RiMenuUnfold4Fill } from 'react-icons/ri';
 import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, MenuProps, theme } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { getSidebarMenuItems } from '@src/config/menuItems';
+import { useSidebarMenuItems } from '@src/config/menuItems';
 import TopHeader from '@src/layouts/components/TopHeader';
 import { getRouteDetails } from '@src/utils/getRoutePath';
 import { searchArrayNestedObjByKey } from '@src/utils/common';
@@ -39,7 +39,7 @@ const MainLayout: React.FC = () => {
     token: { borderRadiusLG },
   } = theme.useToken();
 
-  const menuItems = getSidebarMenuItems(collapsed, openModal);
+  const menuItems = useSidebarMenuItems(collapsed, openModal);
 
   useEffect(() => {
     setSelectedMenu();
@@ -100,10 +100,11 @@ const MainLayout: React.FC = () => {
             collapsible
             collapsed={collapsed}
             collapsedWidth={0}
+            width={250}
             className="!bg-transparent !pl-2 !pt-2 "
           >
             <Menu
-              className="!min-h-full !bg-transparent"
+              className="!min-h-full !bg-transparent !pr-1"
               rootClassName="sidebar_menu"
               mode="inline"
               selectedKeys={selectedKey ? [selectedKey] : []}

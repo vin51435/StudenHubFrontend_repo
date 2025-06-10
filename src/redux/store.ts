@@ -7,6 +7,7 @@ import postReducer from '@src/redux/reducers/cache/post.slice';
 import inboxReducer from '@src/redux/reducers/cache/inbox.slice';
 import homeReducer from '@src/redux/reducers/cache/home.slice';
 import recentReducer from '@src/redux/reducers/cache/recents.slice';
+import { popularPostsReducer } from '@src/redux/reducers/cache/popularPosts.slice';
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     chatInboxCache: inboxReducer,
     homeCache: homeReducer,
     recentStore: recentReducer,
+    popularFeedCache: popularPostsReducer,
   },
   devTools: import.meta.env.VITE_NODE_ENV !== 'production',
 });

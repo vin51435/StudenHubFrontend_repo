@@ -44,6 +44,7 @@ export const USER_ENDPOINTS = {
   CHATS: '/chats',
 
   FEED: '/home/feed',
+  GLOBAL_FEED: '/popular/feed',
 } as const;
 
 export const CENTER_ENDPOINTS = {

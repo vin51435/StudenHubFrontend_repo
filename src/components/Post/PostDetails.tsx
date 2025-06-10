@@ -218,7 +218,10 @@ const PostDetailPage: React.FC = () => {
                   <Image
                     src={url}
                     alt={`Media ${index + 1}`}
-                    preview={false}
+                    preview={{
+                      toolbarRender: () => null,
+                      mask: <span className=""></span>,
+                    }}
                     className="w-full h-full object-contain"
                   />
                 </div>

@@ -1,24 +1,62 @@
-import { LuTrendingUp, LuActivity } from 'react-icons/lu';
+import { useEffect, useState } from 'react';
 import { IoHomeOutline } from 'react-icons/io5';
-import { PiChats } from 'react-icons/pi';
+import { LuTrendingUp, LuActivity } from 'react-icons/lu';
 import { TbUsersGroup } from 'react-icons/tb';
 import { FaPlus } from 'react-icons/fa6';
+import { MenuProps, ModalProps } from 'antd';
+import { getRoutePath } from '@src/utils/getRoutePath';
+import UserOp from '@src/api/userOperations';
 import { ModalType } from '@src/contexts/Model.context';
-import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
-import { Badge, MenuProps, ModalProps } from 'antd';
 
 export type MenuItem = Required<MenuProps>['items'][number] & {
   path?: string;
   children?: MenuItem[];
 };
 
-export const getSidebarMenuItems = (
+export const useSidebarMenuItems = (
   collapsed: boolean,
   openModal: (type: ModalType, props?: ModalProps) => void
 ): MenuItem[] => {
+  const [followedCommunities, setFollowedCommunities] = useState<{
+    loading: boolean;
+    data: { name: string; slug: string }[];
+  }>({
+    loading: true,
+    data: [],
+  });
+
+  useEffect(() => {
+    UserOp.fetchFollowedCommunity().then((res) => {
+      setFollowedCommunities({
+        loading: false,
+        data: res.data?.map((item) => ({ name: item.name, slug: item.slug })) ?? [],
+      });
+    });
+  }, [collapsed]);
+
+  const communityChildren: MenuItem[] = [
+    {
+      key: 'create-community',
+      icon: <FaPlus />,
+      label: 'Create a Community',
+      onClick: () => openModal('createCommunity', { open: true }),
+    },
+    followedCommunities.loading
+      ? {
+          key: 'loading-communities',
+          label: 'Loading...',
+          disabled: true,
+        }
+      : followedCommunities.data.map((comm) => ({
+          key: `community-${comm.slug}`,
+          label: comm.name,
+          path: `/c/${comm.slug}`,
+        })),
+  ].flat();
+
   return [
     {
-      key: '1',
+      key: 'home',
       label: 'Home',
       icon: <IoHomeOutline />,
       path: '/home',
@@ -33,26 +71,18 @@ export const getSidebarMenuItems = (
       type: 'divider',
     },
     {
-      key: '3',
+      key: 'activities',
       icon: <LuActivity />,
       label: 'Activities',
       path: '/activities',
     },
     {
-      key: 'sub1',
+      key: 'communities',
       label: 'Communities',
       icon: <TbUsersGroup />,
       type: 'submenu',
       className: 'community-submenu',
-      children: [
-        {
-          key: 'g1',
-          icon: <FaPlus />,
-          label: 'Create a Community',
-          type: 'item',
-          onClick: () => openModal('createCommunity', { open: true }),
-        },
-      ],
+      children: communityChildren,
     },
   ];
 };

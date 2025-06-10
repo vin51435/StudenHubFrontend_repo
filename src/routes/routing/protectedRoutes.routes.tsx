@@ -8,7 +8,7 @@ import AppLayout from '@src/layouts/Index';
 import Community from '@src/pages/Community';
 import CreatePost from '@src/components/Post/CreatePost';
 import PostDetailPage from '@src/components/Post/PostDetails';
-import Popular from '@src/pages/Popular/Popular';
+import Popular from '@src/pages/Popular/Index';
 
 export const protectedRoutes: RouteObject[] = [
   {
