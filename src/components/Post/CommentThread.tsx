@@ -1,3 +1,4 @@
+import { BiSolidUpvote, BiUpvote, BiDownvote, BiSolidDownvote } from 'react-icons/bi';
 import { MdEdit, MdOutlineReply, MdDelete } from 'react-icons/md';
 import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
 import React, { useState } from 'react';
@@ -93,45 +94,41 @@ const Comment: React.FC<CommentProps> = ({
               />
               <div className="flex items-center gap-2 mt-2">
                 <Space className="float-right">
-                  <div className="flex items-center ">
-                    <Button
-                      type="text"
-                      className="dark:text-white"
-                      icon={
-                        <VoteIcon
-                          dir="up"
-                          className={`text-gray-400 ${
-                            comment?.voteType === VoteEnum.upVote && 'text-orange-500'
-                          }
-                            `}
-                        />
-                      }
-                      onClick={() => handleVote(comment, 1)}
-                    />
+                  <div className="flex">
+                    {comment.voteType === VoteEnum.upVote ? (
+                      <BiSolidUpvote
+                        className=" text-orange-700 flex items-center cursor-pointer"
+                        size={18}
+                        onClick={() => handleVote(comment, 1)}
+                      />
+                    ) : (
+                      <BiUpvote
+                        className=" flex items-center cursor-pointer"
+                        size={18}
+                        onClick={() => handleVote(comment, 1)}
+                      />
+                    )}
                     <span className="text-xs text-gray-600">
                       {comment.upvotesCount - comment.downvotesCount}
                     </span>
                   </div>
-                  <Button
-                    type="text"
-                    className="dark:text-white"
-                    icon={
-                      <VoteIcon
-                        dir="down"
-                        className={`text-gray-400 ${
-                          comment?.voteType === VoteEnum.downVote && 'text-purple-500'
-                        }
-                           `}
-                      />
-                    }
-                    onClick={() => handleVote(comment, -1)}
-                  />
+                  {comment.voteType === VoteEnum.downVote ? (
+                    <BiSolidDownvote
+                      className="text-blue-400  flex items-center cursor-pointer"
+                      size={18}
+                      onClick={() => handleVote(comment, -1)}
+                    />
+                  ) : (
+                    <BiDownvote
+                      className=" flex items-center cursor-pointer"
+                      size={18}
+                      onClick={() => handleVote(comment, -1)}
+                    />
+                  )}
                   {showEdit && (
-                    <Button
-                      type="text"
-                      size="small"
-                      className="dark:text-white"
-                      icon={<MdEdit />}
+                    <MdEdit
+                      size={18}
+                      className="dark:text-white ml-3 flex items-center cursor-pointer"
                       onClick={() => {
                         setActiveComment(comment._id);
                         setEditActive?.(true);
@@ -139,25 +136,25 @@ const Comment: React.FC<CommentProps> = ({
                     />
                   )}
                   {showDelete && (
-                    <Button
-                      type="text"
-                      size="small"
-                      className="dark:text-white"
-                      icon={<MdDelete />}
+                    <MdDelete
+                      size={18}
+                      className="dark:text-white ml-3 flex items-center cursor-pointer"
                       onClick={() => deleteComment?.(comment)}
                     />
                   )}
                   <div className="flex gap-3 text-xs text-gray-500">
-                    <button
+                    <MdOutlineReply
+                      size={18}
                       onClick={() =>
                         setActiveComment((prev) => (comment._id === prev ? '' : comment._id))
                       }
-                      className="hover:underline"
-                    >
-                      <MdOutlineReply /> Reply
-                    </button>
+                      className="hover:underline ml-3 flex items-center cursor-pointer"
+                    ></MdOutlineReply>
                     {comment.childrenCount > 0 && (
-                      <button onClick={() => toggleCommentCollapse()} className="hover:underline">
+                      <button
+                        onClick={() => toggleCommentCollapse()}
+                        className="hover:underline flex items-center cursor-pointer"
+                      >
                         {comment.isCollapsed ? <IoIosArrowDown /> : <IoIosArrowBack />}{' '}
                         {comment.isCollapsed ? 'Expand' : 'Collapse'} {comment.childrenCount}{' '}
                         replies

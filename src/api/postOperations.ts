@@ -43,6 +43,13 @@ class PostOp {
     return res;
   }
 
+  static async _savePostToggle(postId: string, communityId: string = 'dontmatter') {
+    const res = await patch(CENTER_ENDPOINTS.POST_SAVE(communityId, postId), {
+      BASE_URLS: 'center',
+    });
+    return res;
+  }
+
   static async fetchComment(
     postId: string,
     commentId: string | null = null,

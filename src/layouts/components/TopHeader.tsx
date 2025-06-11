@@ -1,11 +1,7 @@
-import { GoBellFill } from 'react-icons/go';
-import { FaUser, FaUserEdit } from 'react-icons/fa';
-import { IoLogOutSharp, IoChatbubbleEllipsesOutline, IoClose } from 'react-icons/io5';
-import { AutoComplete, Avatar, Badge, Dropdown, Input, Tag, Tooltip } from 'antd';
-import { useThemeMode } from '@src/theme/ThemeProvider';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import ThemeToggle from '@src/components/themeToggle';
+import { AutoComplete, Avatar, Badge, Dropdown, Input, Tag, Tooltip } from 'antd';
+import { useThemeMode } from '@src/theme/ThemeProvider';
 import { useLogout } from '@src/hooks/useLogout';
 import CommunityOp from '@src/api/communityOperations';
 import { matchRoute } from '@src/utils/common';
@@ -13,73 +9,70 @@ import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { fetchInitialPosts } from '@src/redux/reducers/cache/post.thunks';
 import { appendRecentSearch, clearRecentSearches } from '@src/redux/reducers/cache/recents.slice';
+import ThemeToggle from '@src/components/themeToggle';
+import { GoBellFill } from 'react-icons/go';
+import { FaUserEdit, FaUser } from 'react-icons/fa';
+import { IoClose, IoLogOutSharp, IoChatbubbleEllipsesOutline } from 'react-icons/io5';
+import { BaseOptionType, OptionProps } from 'antd/es/select';
 
 const TopHeader = () => {
-  const [options, setOptions] = useState<{ value: string; label: React.ReactNode }[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [enableSearch, setEnableSearch] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<string>('');
+  const [options, setOptions] = useState<BaseOptionType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [enableSearch, setEnableSearch] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user)!;
   const recentSearches = useAppSelector((state) => state.recentStore.searches);
   const { newMessage: newMessageNotifications } = useAppSelector(
     (state) => state.notification.notifications
   );
-  const { slug } = useParams<{ slug: string }>();
+  const { slug } = useParams();
   const communityCache = useAppSelector((state) => state.communityCache.cache);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
   const { themeMode } = useThemeMode();
   const logout = useLogout();
+
+  const unreadCount = newMessageNotifications.filter((n) => !n.isRead).length;
 
   useEffect(() => {
     if (slug) {
       setInputValue('');
       dispatch(appendRecentSearch({ string: slug, id: `${Date.now()}`, type: 'community' }));
-      const matchSlug = matchRoute(getExactRoutePath('COMMUNITY'), pathname);
-      if (matchSlug === slug) {
+      if (matchRoute(getExactRoutePath('COMMUNITY'), pathname) === slug) {
         CommunityOp.setCommunitySlug(slug);
       }
     }
+    setEnableSearch(
+      [getRoutePath('APP'), getRoutePath('POPULAR'), getRoutePath('COMMUNITY')].includes(pathname)
+    );
+  }, [slug, pathname]);
 
-    if (
-      pathname === getRoutePath('APP') ||
-      pathname === getRoutePath('POPULAR') ||
-      pathname === getRoutePath('COMMUNITY')
-    ) {
-      setEnableSearch(true);
-    } else {
-      setEnableSearch(false);
-    }
-  }, [slug]);
-
-  async function searchCommunity(value: string, searchInCommunity?: string) {
+  const searchCommunity = async (value: string) => {
     setLoading(true);
     setInputValue(value);
     const res = await CommunityOp.search(value);
     if (!res) return;
-    const results = res?.data;
-
     setOptions(
-      results.map((c) => ({
+      res.data.map((c) => ({
         value: c.name,
         label: (
           <Link
             to={getRoutePath('COMMUNITY').replace(':slug', c.slug)}
             onClick={() => setInputValue('')}
-            style={{ display: 'flex', alignItems: 'center' }}
+            className="flex items-center w-full"
           >
-            <Avatar src={c.avatarUrl} size={24} style={{ marginRight: 8 }} />
-            <h4> {c.name}</h4>
+            <span className="mr-2">
+              <Avatar src={c.avatarUrl} size={24} className="mr-2" />
+            </span>
+            <h4 className="truncate !m-0">{c.name}</h4>
           </Link>
         ),
       }))
     );
-
     setLoading(false);
-  }
+  };
 
   const searchInsideCommunity = (val: string) => {
     if (!slug || !communityCache) return;
@@ -125,30 +118,23 @@ const TopHeader = () => {
     {
       key: '1',
       icon: <FaUserEdit />,
-      label: <Link to="/profile">Profile</Link>,
+      label: (
+        <Link to={getRoutePath('USER_PROFILE').replace(':username', user?.username)}>Profile</Link>
+      ),
     },
     {
       key: '2',
       icon: <IoLogOutSharp />,
       label: (
-        <span
-          onClick={(e) => {
-            console.log('logout clicked');
-            e.preventDefault();
-            logout();
-          }}
-          className="cursor-pointer"
-        >
+        <span onClick={logout} className="cursor-pointer">
           Logout
         </span>
       ),
     },
   ];
 
-  const unreadCount = newMessageNotifications.filter((n) => !n.isRead).length;
-
   return (
-    <div className="flex items-center gap-6 ml-auto w-full h-full space-between align-center">
+    <div className="flex items-center gap-6 ml-auto w-full h-full">
       <div
         className="text-2xl !px-4 flex justify-center items-center my-3 cursor-pointer"
         onClick={() => navigate(getExactRoutePath('APP'))}
@@ -165,94 +151,64 @@ const TopHeader = () => {
           disabled={!enableSearch}
           onChange={(val) => {
             setInputValue(val);
-            if (!slug) {
-              // Search Community
-              searchCommunity(val);
-              return;
-            }
+            if (!slug) searchCommunity(val);
           }}
-          onSearch={(val) => {
-            // Search Community
-            if (!slug) {
-              searchCommunity(val);
-              return;
-            }
-            // Search in Community
-            searchInsideCommunity(val);
-          }}
+          onSearch={(val) => (!slug ? searchCommunity(val) : searchInsideCommunity(val))}
         >
           <Input
-            className="w-full !h-[90%] flex items-center"
-            style={{ borderRadius: '999px', height: '100%', width: '100%' }}
+            className="w-full !h-[90%]"
+            style={{ borderRadius: '999px' }}
             disabled={!enableSearch}
             addonBefore={
-              slug ? (
+              slug && (
                 <Tag
                   closable
-                  className="cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    e.preventDefault();
                     navigate(getRoutePath('COMMUNITY').replace(':slug', slug));
                   }}
                   onClose={(e) => {
                     e.stopPropagation();
-                    e.preventDefault();
                     navigate(getRoutePath('APP'));
                   }}
                 >
                   r/{slug}
                 </Tag>
-              ) : null
+              )
             }
             allowClear
-            placeholder={enableSearch ? (slug ? `Search in ${slug}` : 'Search Communities') : ''}
+            placeholder={slug ? `Search in ${slug}` : 'Search Communities'}
             value={inputValue}
           />
         </AutoComplete>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Chat */}
-        <Tooltip title={'Chat'}>
-          <Link className="!text-inherit flex" to={getExactRoutePath('CHATS')}>
-            <Badge
-              className={`menu-label_badge my-auto`}
-              count={unreadCount}
-              color="red"
-              size="small"
-            >
+        <Tooltip title="Chat">
+          <Link className="flex" to={getExactRoutePath('CHATS')}>
+            <Badge count={unreadCount} color="red" size="small">
               <IoChatbubbleEllipsesOutline size={24} />
             </Badge>
           </Link>
         </Tooltip>
 
-        {/* Theme Switch */}
         <Tooltip title={themeMode === 'dark' ? 'Switch to Light' : 'Switch to Dark'}>
-          <div className="flex">
-            <ThemeToggle className="my-auto" />
-          </div>
+          <ThemeToggle className="my-auto" />
         </Tooltip>
 
-        {/* Notification Bell */}
         <Tooltip title="Notifications">
-          <div className="flex">
-            <Badge count={unreadCount} size="small">
-              <GoBellFill size={24} className="cursor-pointer" />
-            </Badge>
-          </div>
+          <Badge count={unreadCount} size="small">
+            <GoBellFill size={24} className="cursor-pointer" />
+          </Badge>
         </Tooltip>
 
-        {/* User Avatar */}
         <Dropdown menu={{ items: menuItems }} trigger={['click']}>
-          <div className="flex">
-            <Avatar
-              size={24}
-              className="cursor-pointer"
-              icon={<FaUser />}
-              src={user?.profilePicture}
-            />
-          </div>
+          <Avatar
+            size={24}
+            className="cursor-pointer"
+            icon={<FaUser />}
+            src={user?.profilePicture}
+          />
         </Dropdown>
       </div>
     </div>

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Carousel, Divider, Typography, Row, Col, Image, Popconfirm } from 'antd';
+import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuMessageSquareText } from 'react-icons/lu';
-import { ICommunity, IPost, IUser } from '@src/types/app';
+import { MdDelete, MdEdit } from 'react-icons/md';
 import { VoteEnum } from '@src/types/enum';
+import { ICommunity, IPost, IUser } from '@src/types/app';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostOp from '@src/api/postOperations';
 import { useLoader } from '@src/hooks/useLoader';
 import Communitysidebar from '@src/components/Community/Community.sidebar';
-import VoteIcon from '@src/components/Vote.svg';
+import { BiSolidUpvote, BiUpvote, BiDownvote, BiSolidDownvote } from 'react-icons/bi';
 import PostComments from '@src/components/Post/PostComments';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { appendRecentPost } from '@src/redux/reducers/cache/recents.slice';
 import { timeAgo } from '@src/utils/common';
-import { MdDelete, MdEdit } from 'react-icons/md';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { clearPosts } from '@src/redux/reducers/cache/post.slice';
 
@@ -130,10 +131,22 @@ const PostDetailPage: React.FC = () => {
     );
   };
 
+  const handlePostSave = async () => {
+    if (!post._id) return;
+    await PostOp._savePostToggle(post._id!);
+    setPost(
+      (prev) =>
+        ({
+          ...prev,
+          isSaved: prev?.isSaved ?? true,
+        } as IPost)
+    );
+  };
+
   return (
     <Row
       gutter={[18, 18]}
-      className="post-detail_container flex flex-col items-start h-auto min-h-full w-full mx-auto  space-y-6 bg-white shadow-md rounded-xl text-start p-6"
+      className="post-detail_container flex flex-col items-start h-auto min-h-full w-full mx-auto  space-y-6 shadow-md rounded-xl text-start p-6"
     >
       <Col span={24} md={17} className="">
         {!load && !post ? (
@@ -153,16 +166,24 @@ const PostDetailPage: React.FC = () => {
                     navigate(-1);
                   }}
                 />
-                <div>
+                <div
+                  className="cursor-pointer flex flex-col"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!(post?.authorId as IUser)?.username) return;
+                    navigate(
+                      getRoutePath('USER_PROFILE').replace(
+                        ':username',
+                        (post?.authorId as IUser)?.username
+                      )
+                    );
+                  }}
+                >
                   <Text className="text-gray-500 text-sm">
-                    <span className="font-medium">
-                      u/{(post?.authorId as IUser)?.username ?? '[Deleted]'}
-                    </span>
+                    u/{(post?.authorId as IUser)?.username ?? '[Deleted]'}
                   </Text>
-                  <div className="text-xs text-gray-400">
-                    {/* {new Date(post?.createdAt!).toLocaleString()} */}
-                    {timeAgo(post?.createdAt!)}
-                  </div>
+                  <span className="text-xs text-gray-400">{timeAgo(post?.createdAt!)}</span>
                 </div>
               </div>
               {user?._id === (post?.authorId as IUser)?._id && (
@@ -229,29 +250,51 @@ const PostDetailPage: React.FC = () => {
             </Carousel>
 
             {/* Voting Section */}
-            <div className="flex items-center gap-6 text-gray-500">
-              <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1 text-sm">
-                  <VoteIcon
-                    dir="up"
-                    onClick={() => handleVote(1)}
-                    className={`cursor-pointer text-gray-400 ${
-                      post?.voteType === VoteEnum.upVote && 'text-orange-700'
-                    }`}
-                  />
-                  {post?.netVotes ?? post?.upvotesCount - post?.downvotesCount}
-                  <VoteIcon
-                    dir="down"
-                    onClick={() => handleVote(-1)}
-                    className={`cursor-pointer ml-2 text-gray-400 ${
-                      post?.voteType === VoteEnum.downVote && 'text-purple-500'
-                    }`}
-                  />
-                </span>
+            <div className="flex flex-row justify-between items-center text-lg">
+              <div className="flex items-center gap-6 text-gray-500">
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1 text-lg">
+                    {post.voteType === VoteEnum.upVote ? (
+                      <BiSolidUpvote
+                        onClick={() => handleVote(1)}
+                        className="cursor-pointer text-orange-700"
+                        size={18}
+                      />
+                    ) : (
+                      <BiUpvote
+                        onClick={() => handleVote(1)}
+                        className="cursor-pointer"
+                        size={18}
+                      />
+                    )}
+
+                    {post.netVotes ?? post.upvotesCount - post.downvotesCount}
+
+                    {post.voteType === VoteEnum.downVote ? (
+                      <BiSolidDownvote
+                        onClick={() => handleVote(-1)}
+                        className="cursor-pointer ml-2 text-purple-500"
+                        size={18}
+                      />
+                    ) : (
+                      <BiDownvote
+                        onClick={() => handleVote(-1)}
+                        className="cursor-pointer ml-2"
+                        size={18}
+                      />
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <LuMessageSquareText size={18} /> <span>{post?.commentsCount} Comments</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <LuMessageSquareText />
-                <span>{post?.commentsCount} Comments</span>
+              <div>
+                {post?.isSaved ? (
+                  <FaBookmark size={18} className={`text-blue-400 `} />
+                ) : (
+                  <FaRegBookmark size={18} onClick={handlePostSave} className={``} />
+                )}
               </div>
             </div>
 

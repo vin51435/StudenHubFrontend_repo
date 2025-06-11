@@ -1,10 +1,10 @@
+import { BiSolidUpvote, BiUpvote, BiDownvote, BiSolidDownvote } from 'react-icons/bi';
+import { FaRegBookmark, FaBookmark, FaRegUser } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
 import { IoMdEye } from 'react-icons/io';
-import { FaRegUser } from 'react-icons/fa';
 import { FC } from 'react';
 import { Card, Typography, Avatar, Carousel, Image } from 'antd';
 import { ICommunity, IPost, IUser } from '@src/types/app';
-import VoteIcon from '@src/components/Vote.svg';
 import { VoteEnum } from '@src/types/enum';
 import PostOp from '@src/api/postOperations';
 import { getRoutePath } from '@src/utils/getRoutePath';
@@ -74,6 +74,15 @@ const PostOverview: FC<{
     onChangePost?.(updatedPost);
   };
 
+  const handleSave = async () => {
+    await PostOp._savePostToggle(post._id!);
+    const updatedPost = {
+      ...post,
+      isSaved: post?.isSaved ?? true,
+    };
+    onChangePost?.(updatedPost);
+  };
+
   return (
     <Link
       to={getRoutePath('POST')
@@ -97,7 +106,12 @@ const PostOverview: FC<{
                 e.stopPropagation();
                 if (community?._id) {
                   // Posts are inside community, user will be shown
-                  // navigate(g)
+                  navigate(
+                    getRoutePath('USER_PROFILE').replace(
+                      ':username',
+                      (post?.authorId as IUser)?.username
+                    )
+                  );
                 } else {
                   // Posts are not inside community, communioty name will be shown
                   navigate(
@@ -145,7 +159,7 @@ const PostOverview: FC<{
           </div> */}
         {/* Content Preview */}
         <Paragraph
-          className="post-overview_content text-sm text-start text-gray-700 !mb-0"
+          className="post-overview_content text-lg text-start text-gray-700 !mb-0"
           ellipsis={{ rows: 3, symbol: '...' }}
         >
           <div dangerouslySetInnerHTML={{ __html: post.content as string }} />
@@ -183,43 +197,68 @@ const PostOverview: FC<{
           </Carousel>
         </div>
         {/* Post Stats */}
-        <div className="flex items-center gap-5 text-sm text-gray-500 mt-2">
+        <div className="flex flex-row justify-between items-center">
+          <div className="flex items-center gap-5 text-gray-500 mt-2">
+            <div
+              className="flex items-center gap-1"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <span className="flex items-center gap-1 text-lg text-gray-400">
+                {post.voteType === VoteEnum.upVote ? (
+                  <BiSolidUpvote
+                    onClick={() => handleVote(1)}
+                    className="cursor-pointer text-orange-700"
+                    size={18}
+                  />
+                ) : (
+                  <BiUpvote onClick={() => handleVote(1)} className="cursor-pointer" size={18} />
+                )}
+
+                {post.netVotes ?? post.upvotesCount - post.downvotesCount}
+
+                {post.voteType === VoteEnum.downVote ? (
+                  <BiSolidDownvote
+                    onClick={() => handleVote(-1)}
+                    className="cursor-pointer ml-2 text-purple-500"
+                    size={18}
+                  />
+                ) : (
+                  <BiDownvote
+                    onClick={() => handleVote(-1)}
+                    className="cursor-pointer ml-2"
+                    size={18}
+                  />
+                )}
+              </span>
+            </div>
+            <div className="items-center gap-1 flex">
+              <span className="inline-block text-center my-auto h-full text-lg">
+                <LuMessageSquareText size={18} />
+              </span>
+              <span className="inline-block text-center my-auto h-full ">{post.commentsCount}</span>
+            </div>
+            <div className=" ml-3 items-center gap-1 flex">
+              <span className="inline-block text-center my-auto h-full text-lg">
+                <IoMdEye size={18} />
+              </span>
+              <span className="inline-block text-center my-auto h-full ">{post.views}</span>
+            </div>
+          </div>
           <div
-            className="flex items-center gap-1"
+            className="text-lg cursor-pointer"
             onClick={(e) => {
-              e.preventDefault();
               e.stopPropagation();
+              e.preventDefault();
             }}
           >
-            <span className="flex items-center gap-1 text-sm text-gray-400">
-              <VoteIcon
-                dir="up"
-                onClick={() => handleVote(1)}
-                className={`cursor-pointer  ${
-                  post.voteType === VoteEnum.upVote && 'text-orange-700'
-                }`}
-              />
-              {post.netVotes ?? post.upvotesCount - post.downvotesCount}
-              <VoteIcon
-                dir="down"
-                onClick={() => handleVote(-1)}
-                className={`cursor-pointer ml-2 ${
-                  post.voteType === VoteEnum.downVote && 'text-purple-500'
-                }`}
-              />
-            </span>
-          </div>
-          <div className="items-center gap-1  flex">
-            <span className="inline-block text-center my-auto h-full ">
-              <LuMessageSquareText />
-            </span>
-            <span className="inline-block text-center my-auto h-full ">{post.commentsCount}</span>
-          </div>
-          <div className=" ml-3 items-center gap-1 flex">
-            <span className="inline-block text-center my-auto h-full ">
-              <IoMdEye />
-            </span>
-            <span className="inline-block text-center my-auto h-full ">{post.views}</span>
+            {post?.isSaved ? (
+              <FaBookmark size={18} className={`text-blue-400 `} />
+            ) : (
+              <FaRegBookmark size={18} onClick={handleSave} className={``} />
+            )}
           </div>
         </div>
       </Card>

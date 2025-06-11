@@ -18,7 +18,8 @@ const Chats = () => {
   // 1. Load all chat participants
   useEffect(() => {
     // would be better to match cached chatIds to new chatIds
-    if (!chatIds) return;
+    if (!chatIds || !chatIds.length) return;
+    console.log('chatIds', chatIds);
     dispatch(fetchInbox(chatIds));
   }, [chatIds]);
 

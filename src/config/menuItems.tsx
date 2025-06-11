@@ -3,10 +3,12 @@ import { IoHomeOutline } from 'react-icons/io5';
 import { LuTrendingUp, LuActivity } from 'react-icons/lu';
 import { TbUsersGroup } from 'react-icons/tb';
 import { FaPlus } from 'react-icons/fa6';
-import { MenuProps, ModalProps } from 'antd';
+import { Avatar, MenuProps, ModalProps } from 'antd';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import UserOp from '@src/api/userOperations';
 import { ModalType } from '@src/contexts/Model.context';
+import { ICommunity } from '@src/types/app';
+import DefaultAvatar from '/profile-default.svg';
 
 export type MenuItem = Required<MenuProps>['items'][number] & {
   path?: string;
@@ -19,7 +21,7 @@ export const useSidebarMenuItems = (
 ): MenuItem[] => {
   const [followedCommunities, setFollowedCommunities] = useState<{
     loading: boolean;
-    data: { name: string; slug: string }[];
+    data: ICommunity[];
   }>({
     loading: true,
     data: [],
@@ -29,10 +31,10 @@ export const useSidebarMenuItems = (
     UserOp.fetchFollowedCommunity().then((res) => {
       setFollowedCommunities({
         loading: false,
-        data: res.data?.map((item) => ({ name: item.name, slug: item.slug })) ?? [],
+        data: res.data ?? [],
       });
     });
-  }, [collapsed]);
+  }, []);
 
   const communityChildren: MenuItem[] = [
     {
@@ -49,8 +51,9 @@ export const useSidebarMenuItems = (
         }
       : followedCommunities.data.map((comm) => ({
           key: `community-${comm.slug}`,
+          icon: <Avatar size="small" src={comm.avatarUrl ?? DefaultAvatar} />,
           label: comm.name,
-          path: `/c/${comm.slug}`,
+          path: getRoutePath('COMMUNITY').replace(':slug', comm.slug),
         })),
   ].flat();
 
@@ -70,12 +73,12 @@ export const useSidebarMenuItems = (
     {
       type: 'divider',
     },
-    {
-      key: 'activities',
-      icon: <LuActivity />,
-      label: 'Activities',
-      path: '/activities',
-    },
+    // {
+    //   key: 'activities',
+    //   icon: <LuActivity />,
+    //   label: 'Activities',
+    //   path: '/activities',
+    // },
     {
       key: 'communities',
       label: 'Communities',

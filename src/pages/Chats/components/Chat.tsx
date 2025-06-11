@@ -10,6 +10,8 @@ import { IUser } from '@src/types/app';
 import { useAppDispatch } from '@src/redux/hook';
 import { deleteChat } from '@src/redux/reducers/cache/inbox.slice';
 import useScrollTopDetection from '@src/hooks/useScrollTopDetection';
+import { useNavigate } from 'react-router-dom';
+import { getRoutePath } from '@src/utils/getRoutePath';
 
 const roles = {
   remote: {
@@ -43,6 +45,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
     fetchMessagesForChat,
   } = useSocketChat(chatId, userB?._id!);
   const joinedRef = useRef(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!joinedRef.current) {
@@ -75,7 +78,14 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
   return (
     <div className="chat_container h-full flex flex-col">
       <div className="p-4 flex items-center font-semibold border-b text-start">
-        <span className="w-full flex items-center">
+        <span
+          className="w-full flex items-center cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate(getRoutePath('USER_PROFILE').replace(':username', userB?.username!));
+          }}
+        >
           <Avatar className="!mr-2" src={userB?.profilePicture ?? DefaultAvatar} />
           <span className="truncate w-full">{userB?.username}</span>
         </span>

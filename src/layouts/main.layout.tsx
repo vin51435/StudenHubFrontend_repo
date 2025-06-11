@@ -24,13 +24,10 @@ const siderStyle: React.CSSProperties = {
   backgroundColor: 'transparent',
 };
 
-const toggleButtonStyle: React.CSSProperties = {
-  marginTop: '4px',
-};
-
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(getSettings().menuCollapsed);
   const [selectedKey, setSelectedKey] = useState<string | null>();
+  const [onMenuHover, setOnMenuHover] = useState(false);
 
   const { openModal } = useModal();
   const navigate = useNavigate();
@@ -69,10 +66,7 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <Layout
-      id="Main-layout"
-      className="layout-main_container  h-full bg-transparent dark:bg-transparent"
-    >
+    <Layout id="Main-layout" className="layout-main_container h-full" rootClassName="layout-">
       <Header
         style={{
           position: 'sticky',
@@ -89,43 +83,71 @@ const MainLayout: React.FC = () => {
           <TopHeader />
         </div>
       </Header>
-      <Layout hasSider className="overflow-auto h-full sticky bg-white ">
+      <Layout hasSider className="layout-main-content_container overflow-hidden h-full sticky">
         <section
-          style={siderStyle}
-          className="sidebar_section pl-2 pt-2 flex relative h-full justify-between gap-2 "
+          style={{
+            ...siderStyle,
+            // position: onMenuHover ? 'absolute' : 'sticky',
+            transition: 'width 0.3s',
+          }}
+          className="sidebar_section pt-2 flex relative h-full justify-between gap-0.5"
+          // onMouseEnter={() => {
+          //   if (collapsed) {
+          //     setTimeout(() => setOnMenuHover(true), 500);
+          //   }
+          // }}
+          // onMouseLeave={() => {
+          //   if (collapsed) setOnMenuHover(false);
+          // }}
         >
           <Sider
-            style={siderStyle}
+            style={{
+              ...siderStyle,
+              zIndex: 10,
+              height: '100vh',
+            }}
             trigger={null}
             collapsible
             collapsed={collapsed}
-            collapsedWidth={0}
+            // collapsed={collapsed && !onMenuHover}
+            collapsedWidth={10}
             width={250}
-            className="!bg-transparent !pl-2 !pt-2 "
+            className="dark:!bg-[var(--primary-dark)] !bg-[var(--white)] px-2 border-r-1 border-[var(--secondary-white)] dark:border-[var(--secondary-dark)]"
           >
             <Menu
-              className="!min-h-full !bg-transparent !pr-1 !border-[var(--secondary-white)]"
+              className="!min-h-full !bg-transparent !px-1 !border-0"
               rootClassName="sidebar_menu"
               mode="inline"
               selectedKeys={selectedKey ? [selectedKey] : []}
               onClick={handleMenuClick}
               items={menuItems}
             />
+            <span
+              className="nav_button h-fit absolute top-2 right-0"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onMouseEnter={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <Button
+                className="absolute "
+                type="text"
+                icon={collapsed ? <RiMenuUnfold3Fill size={20} /> : <RiMenuUnfold4Fill size={20} />}
+                onClick={() => {
+                  const newVal = !collapsed;
+                  setCollapsed(newVal);
+                  setSettings({ menuCollapsed: newVal });
+                }}
+              />
+            </span>
           </Sider>
-          <Button
-            className="absolute"
-            type="text"
-            icon={collapsed ? <RiMenuUnfold3Fill size={20} /> : <RiMenuUnfold4Fill size={20} />}
-            onClick={() => {
-              setCollapsed(!collapsed);
-              setSettings({ menuCollapsed: !collapsed });
-            }}
-            style={toggleButtonStyle}
-          />
         </section>
         <Content
           data-scroll-id="content"
-          className="layout-content_container w-full h-full pt-2 custom-scrollbar"
+          className="layout-content_container w-full h-full pt-2 ml-5 custom-scrollbar"
         >
           <div
             className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1150px] w-[95%] py-1 bg-transparent "

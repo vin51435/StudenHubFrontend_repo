@@ -11,7 +11,7 @@ const AppLoader: React.FC<PropsWithChildren> = ({ children }) => {
       <div className="h-full" style={{ opacity: loading ? 0 : 1 }}>
         {children}
       </div>
-      {loading && <Spin fullscreen />}
+      {loading && <Spin fullscreen className="dark:bg-[var(--primary-dark)]" />}
     </div>
   );
 };

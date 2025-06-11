@@ -3,6 +3,7 @@ import { timeAgo } from '@src/utils/common';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { Avatar, Image } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
+import DefaultAvatar from '/profile-default.svg';
 
 const PostOverviewCompact = ({ post }: { post: IPost }) => {
   const community = post.communityId as ICommunity;
@@ -26,7 +27,11 @@ const PostOverviewCompact = ({ post }: { post: IPost }) => {
             }}
           >
             {/* Avatar */}
-            <Avatar size="small" src={community?.avatarUrl} className="mr-1 shrink-0" />
+            <Avatar
+              size="small"
+              src={community?.avatarUrl ?? DefaultAvatar}
+              className="mr-1 shrink-0"
+            />
 
             {/* Slug */}
             <span className="font-medium mx-1 max-w-[50%] truncate ">r/{community?.slug}</span>

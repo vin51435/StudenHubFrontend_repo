@@ -57,11 +57,13 @@ export interface IUser {
     chatIds: string[];
     groupChatIds: string[];
   };
+
   postsCount: number;
   followingCommunitiesCount: number;
   followingsCount: number;
   followersCount: number;
   savesCount: number;
+  isFollowing: boolean;
 }
 
 export interface ICommunity {
@@ -104,14 +106,16 @@ interface IPost {
   downvotesCount: number;
   commentsCount: number;
   savesCount: number;
+  isSaved: boolean;
+  voteType?: VoteEnum | null;
+  netVotes?: number;
+
   popularityScore: number;
   popularityUpdatedAt?: string;
   isDeleted?: boolean;
   isFlagged?: boolean;
   isApproved?: boolean;
   flagReason?: string;
-  voteType?: VoteEnum | null;
-  netVotes?: number;
 
   createdAt: string;
   updatedAt?: string;

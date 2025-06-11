@@ -45,13 +45,20 @@ const ROUTES = [
     name: 'APP',
     path: '/home',
     title: 'Home',
+    children: [{ name: 'CREATE_COMMUNITY', path: '/create' }],
+  },
+  { name: 'CHATS', path: '/chats' },
+  {
+    name: 'USER',
+    path: '/user',
     children: [
-      { name: 'PROFILE', title: 'Profile', path: '/profile' },
-      { name: 'CHATS', path: '/chats' },
-      { name: 'CREATE_COMMUNITY', path: '/create' },
+      {
+        name: 'USER_PROFILE',
+        path: '/:username',
+      },
+      { name: 'USER_SETTINGS', path: '/settings' },
     ],
   },
-  { name: 'USER', path: '/user', children: [{ name: 'USER_PROFILE', path: '/:userSlug' }] },
   { name: 'POPULAR', path: '/popular', title: 'Popular' },
   {
     name: 'COMMUNITY',

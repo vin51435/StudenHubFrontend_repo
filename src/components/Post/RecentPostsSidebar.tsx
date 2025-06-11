@@ -8,6 +8,10 @@ const RecentPostsSidebar = () => {
   const recentPosts = useAppSelector((state) => state.recentStore);
   const dispatch = useAppDispatch();
 
+  if (recentPosts.posts.length === 0) {
+    return null;
+  }
+
   return (
     <Card
       className="recent-posts_sidebar !bg-transparent !border-[var(--secondary-white)]"
@@ -29,14 +33,12 @@ const RecentPostsSidebar = () => {
       }
     >
       {recentPosts.posts.map((post) => {
-        if (!post._id) return;
+        if (!post._id || !post.slug) return;
         return (
-          <>
-            <div key={post._id} className="">
-              <PostOverviewCompact post={post as IPost} />
-            </div>
+          <div key={post._id}>
+            <PostOverviewCompact post={post as IPost} />
             <Divider />
-          </>
+          </div>
         );
       })}
     </Card>

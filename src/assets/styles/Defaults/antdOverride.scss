@@ -11,17 +11,18 @@
   }
 
   .ant-btn {
+    border: none !important;
     &[type='submit'] {
       border: 1px solid $secondary-white !important;
     }
     background-color: $primary-dark;
     &:hover {
       color: $secondary-color !important;
-      border-color: $secondary-color !important;
+      border: none !important;
     }
     &:disabled {
       color: $secondary-white !important;
-      border-color: $secondary-white !important;
+      border: none !important;
     }
   }
 

@@ -1,7 +1,8 @@
 @use 'sass:string';
 
 $white: #ffffff;
-$secondary-white: #ffffff33;
+$secondary-white: #cacaca;
+$tertiary-white: #999999;
 $primary-dark: #0b1416;
 $secondary-dark: #0e1113;
 $tertiary-dark: #4e4e4e;
@@ -37,6 +38,7 @@ $tooltip-fs: 0.855rem;
   --primary-dark: #{$primary-dark};
   --secondary-dark: #{$secondary-dark};
   --tertiary-dark: #{$tertiary-dark};
+  --black: #{$black};
 
   --primary-color: #{$primary-color};
   --secondary-color: #{$secondary-color};

@@ -31,6 +31,10 @@ export const AUTH_ENDPOINTS = {
 } as const;
 
 export const USER_ENDPOINTS = {
+  USER_DETAIL: (identifier: string) => `/details/${identifier}`,
+  FOLLOW_USER: (id: string) => `/${id}/follow/toggle`,
+  CREATE_CHAT: '/chat', // Create a new chat userBId in body
+
   ACADEMIC_PROGRAMS: '/academicprograms/academicdetails',
   SEARCH_USERS: '/search',
   NOTIFICATIONS: '/notifications',
@@ -38,7 +42,6 @@ export const USER_ENDPOINTS = {
   // Communication
   NOTIFICATION_SUBSCRIBE: '/subscribe',
   GET_INBOX_PARTICIPANTS: '/getSecondParticipants',
-  USERS_BY_ID: '/usersbyid',
   CHAT_ID: (id?: string) => `/chatid${id ? `/${id}` : ''}`,
   GET_MESSAGES_BY_CHAT_ID: '/messages',
   CHATS: '/chats',
@@ -62,6 +65,8 @@ export const CENTER_ENDPOINTS = {
     `/communitypost/${communityId}/${postId}/vote/${voteType}`,
   POSTS: '/communityposts',
   POST: (communityId: string, oostIdSlug: string) => `communitypost/${communityId}/${oostIdSlug}`,
+  POST_SAVE: (communityId: string, oostIdSlug: string) =>
+    `communitypost/${communityId}/${oostIdSlug}/save`,
 
   POST_COMMENT: (id: string | number) => `/${id}`,
   COMMENT_VOTE: (id: string, voteType: VoteEnum) => `/${id}/vote/${voteType}`,

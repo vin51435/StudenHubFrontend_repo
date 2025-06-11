@@ -11,7 +11,7 @@ import { setZodErrorsToForm } from '@src/validation';
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const Profile: React.FC = () => {
+export const Settings: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [interest, setInterest] = useState({ data: [], required: 0 });
   const [form] = Form.useForm();
@@ -88,7 +88,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <Card className="mx-auto dark:bg-gray-900">
+    <Card className="mx-auto dark:!bg-[var(--primary-dark)]">
       <Row className="flex items-center space-x-6 mb-8">
         <Col className="flex flex-col items-center">
           <ImageUpload

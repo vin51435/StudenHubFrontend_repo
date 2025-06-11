@@ -1,10 +1,9 @@
 @use '@styles/scss.import.scss' as *;
 
 .layout-main_container {
-  .bg-white {
-    .dark & {
-      background-color: $primary-dark !important;
-    }
+  &,
+  & .layout-main-content_container {
+    background-color: $white !important;
   }
 
   .ant-divider {
@@ -24,7 +23,7 @@
     .top-header_search {
       .ant-select {
         .dark & {
-          &::placeholder {
+          & .ant-input::placeholder {
             color: $secondary-white !important;
           }
         }
@@ -52,16 +51,42 @@
   }
 
   .sidebar_section {
+    .nav_button {
+      translate: 50% 0%;
+      .ant-btn {
+        &:hover {
+          background-color: transparent !important;
+          border: none;
+        }
+        svg {
+          background-color: $white;
+        }
+      }
+    }
     .ant-menu-item-divider {
       border-color: $secondary-dark !important;
     }
   }
+}
+.dark {
+  .layout-main_container {
+    &,
+    & .layout-main-content_container {
+      background-color: $primary-dark !important;
+    }
 
-  .dark {
     .sidebar_section {
       border-right: 1px solid $secondary-white !important;
       background-color: $secondary-dark !important;
 
+      .nav_button {
+        background-color: $secondary-dark !important;
+        .ant-btn {
+          svg {
+            background-color: $secondary-dark !important;
+          }
+        }
+      }
       .ant-menu-item-divider {
         border-color: $secondary-white !important;
       }

@@ -40,6 +40,27 @@
   }
 
   .comment_input {
+    .dark & {
+      background-color: $secondary-dark !important;
+      .ql-editor {
+        position: relative;
+
+        &.ql-blank::before {
+          content: attr(data-placeholder);
+          color: #a0a0a0 !important;
+          position: absolute;
+          pointer-events: none;
+          left: 15px;
+          top: 12px;
+          font-size: 1rem;
+        }
+
+        // Hide placeholder when content is not empty
+        &:not(.ql-blank)::before {
+          content: none !important;
+        }
+      }
+    }
     .ql-editor {
       &::placeholder {
         color: $secondary-white !important;

@@ -1,0 +1,36 @@
+@use '@styles/scss.import.scss' as *;
+
+.dark {
+  .user-profile_container {
+  }
+}
+
+.user-profile_container {
+  .ant-tabs {
+    .ant-tabs-nav-wrap {
+      // justify-content: center;
+    }
+
+    .ant-tabs-tab {
+      &:hover {
+        .dark & {
+          color: $white !important;
+        }
+      }
+      .ant-tabs-tab-btn {
+        color: $white;
+      }
+      &.ant-tabs-tab-active {
+        .dark & {
+          border-bottom-color: $primary-dark !important;
+          background-color: transparent !important;
+        }
+      }
+    }
+  }
+  .profile-main_container {
+    img {
+      object-fit: contain;
+    }
+  }
+}

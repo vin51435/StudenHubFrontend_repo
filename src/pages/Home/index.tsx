@@ -4,7 +4,7 @@ import { Row, Col } from 'antd';
 
 const Home = () => {
   return (
-    <Row className="w-full max-w-7xl mx-auto mt-6 px-4 " gutter={[18, 18]}>
+    <Row className="w-full max-w-7xl mx-auto mt-6 " gutter={[18, 18]}>
       <Col span={24} md={17} className="">
         {/* Post Feed */}
         <HomeFeed />
