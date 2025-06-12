@@ -1,8 +1,12 @@
 import { VoteEnum } from '@src/types/enum';
 
+const isLocalhost = window.location.hostname === 'localhost';
+
 export const activeHost =
   import.meta.env.VITE_NODE_ENV === 'development'
-    ? import.meta.env.VITE_DEV_BACKEND_DEV
+    ? isLocalhost
+      ? import.meta.env.VITE_DEV_BACKEND_DEV
+      : import.meta.env.VITE_DEV_BACKEND_DEV_HOSTED
     : import.meta.env.VITE_DEV_BACKEND_PROD;
 
 export const BASE_URLS = {

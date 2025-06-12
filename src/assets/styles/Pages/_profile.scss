@@ -8,7 +8,7 @@
 .user-profile_container {
   .ant-tabs {
     .ant-tabs-nav-wrap {
-      // justify-content: center;
+      color: $black;
     }
 
     .ant-tabs-tab {
@@ -17,7 +17,7 @@
           color: $white !important;
         }
       }
-      .ant-tabs-tab-btn {
+      .dark & .ant-tabs-tab-btn {
         color: $white;
       }
       &.ant-tabs-tab-active {

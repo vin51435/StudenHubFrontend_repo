@@ -24,14 +24,27 @@ const ProfileSidebar = ({
       label: 'Share',
       key: 'share',
       onClick: () => {
+        const shareData = {
+          title: 'Check out my profile on StudenHub!',
+          url: window.location.href,
+        };
+
         if (navigator.share) {
           navigator
-            .share({
-              title: 'Check out my profile on StudenHub!',
-              url: window.location.href,
-            })
+            .share(shareData)
             .then(() => console.log('Shared'))
             .catch((error) => console.log('Error sharing:', error));
+        } else {
+          // Fallback: Copy to clipboard
+          navigator.clipboard
+            .writeText(shareData.url)
+            .then(() => {
+              alert('Link copied to clipboard! Share it manually.');
+            })
+            .catch((err) => {
+              console.error('Clipboard error:', err);
+              alert('Unable to share or copy the link.');
+            });
         }
       },
     },
@@ -89,21 +102,21 @@ const ProfileSidebar = ({
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-start text-sm text-gray-300 mb-6">
+      <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-start text-sm mb-6">
         <div className="">
-          <p className="text-white text-lg font-semibold">{user.followersCount}</p>
+          <p className="text-lg font-semibold">{user.followersCount}</p>
           <span className="uppercase text-xs text-gray-400">Followers</span>
         </div>
         <div className="">
-          <p className="text-white text-lg font-semibold">{user.followingsCount}</p>
+          <p className="text-lg font-semibold">{user.followingsCount}</p>
           <span className="uppercase text-xs text-gray-400">Following</span>
         </div>
         <div className="">
-          <p className="text-white text-lg font-semibold">{user.postsCount}</p>
+          <p className="text-lg font-semibold">{user.postsCount}</p>
           <span className="uppercase text-xs text-gray-400">Posts</span>
         </div>
         <div className="">
-          <p className="text-white text-lg font-semibold">{'-'}</p>
+          <p className="text-lg font-semibold">{'-'}</p>
           <span className="uppercase text-xs text-gray-400">DOB</span>
         </div>
       </div>
