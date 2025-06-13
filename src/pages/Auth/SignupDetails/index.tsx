@@ -201,7 +201,7 @@ const SignupAddDetails: React.FC = () => {
                   <Select
                     className="async-select"
                     showSearch
-                    onSearch={(search) => fetchCities(search)}
+                    onSearch={(search: string) => fetchCities(search)}
                     loading={selectState.load}
                     options={selectState.options.cities}
                     value={selectState.values?.cities}

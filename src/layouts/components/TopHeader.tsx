@@ -149,11 +149,11 @@ const TopHeader = () => {
           options={options.length && inputValue ? options : recentSearchOptions}
           value={inputValue}
           disabled={!enableSearch}
-          onChange={(val) => {
+          onChange={(val: string) => {
             setInputValue(val);
             if (!slug) searchCommunity(val);
           }}
-          onSearch={(val) => (!slug ? searchCommunity(val) : searchInsideCommunity(val))}
+          onSearch={(val: string) => (!slug ? searchCommunity(val) : searchInsideCommunity(val))}
         >
           <Input
             className="w-full !h-[90%]"

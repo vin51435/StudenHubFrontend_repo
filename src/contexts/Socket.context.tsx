@@ -23,7 +23,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const s = io(activeHost, {
-      transports: ['websocket'],
+      // transports: ['websocket'],
       autoConnect: true,
       reconnection: true,
     });

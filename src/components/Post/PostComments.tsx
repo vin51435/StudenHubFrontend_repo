@@ -69,7 +69,7 @@ const PostComments = ({ postId }: { postId: string }) => {
           className="!ml-2 !w-fit"
           defaultValue={sort}
           style={{ width: 120 }}
-          onChange={(value) => {
+          onChange={(value: string) => {
             setSort(value as CommentSortMethod);
           }}
         >

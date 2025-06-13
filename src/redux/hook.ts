@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from './store';
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
+export function useAppDispatch() {
+  return useDispatch<AppDispatch>();
+}
 
-export const useAppSelector = <T>(selector: (state: RootState) => T) => useSelector(selector);
+export function useAppSelector<T>(selector: (state: RootState) => T) {
+  return useSelector(selector);
+}

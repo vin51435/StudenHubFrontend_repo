@@ -1,11 +1,11 @@
-import axios, { AxiosInstance } from 'axios';
-import store from '../redux/store';
 import { loginSuccess, setRedirectUrl } from '../redux/reducers/auth';
 import { BASE_URLS } from './apiEndpoints';
 import { BaseUrlType, IErrorResponse, RequestBodyType } from '../types';
 import { ErrorCodes } from '@src/contants/errorCodes';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
+import store from '@src/redux/store';
+import axios, { AxiosInstance } from 'axios';
 
 function redirection(redirectUrl: string, errorCode?: string) {
   store.dispatch(setLoading(true));
