@@ -1,4 +1,5 @@
 import fetchUserInfo from '@src/api/fetchUser';
+import UserAuthOp from '@src/api/userAuthOperations';
 import { useNotification } from '@src/contexts/NotificationContext';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 import { RootState } from '@src/redux/store';
@@ -13,6 +14,7 @@ const ProtectAuthRoutes: React.FC = () => {
   const loading = useSelector((state: RootState) => state.ui.loading);
   const { isAuthenticated, redirectUrl } = useSelector((state: RootState) => state.auth);
   const { pathname, search, hash } = useLocation();
+  const urlParams = new URLSearchParams(search);
   const { notif, startRemoveNotification } = useNotification();
 
   const navigate = useNavigate();
@@ -20,7 +22,8 @@ const ProtectAuthRoutes: React.FC = () => {
 
   useEffect(() => {
     dispatch(setLoading(true));
-    Promise.all([checkIfAlreadyLoggedIn(), handleAuthCheck()])
+
+    Promise.all([checkIfAlreadyLoggedIn(), handleOAuthCheck()])
       .catch(console.error)
       .finally(() => {
         setTimeout(() => setCheckingAuth(false), 0);
@@ -50,7 +53,12 @@ const ProtectAuthRoutes: React.FC = () => {
     }
   }
 
-  async function handleAuthCheck() {
+  async function handleOAuthCheck() {
+    // if /login or /signup, return
+    if (pathname === getRoutePath('LOGIN') || pathname === getRoutePath('SIGNUP')) {
+      return;
+    }
+
     // Checks if the path starts with /login/... or /signup/...
     const currentPathStarts: string | null = pathname.startsWith(getRoutePath('LOGIN'))
       ? 'login'
@@ -82,35 +90,52 @@ const ProtectAuthRoutes: React.FC = () => {
      * Allow query parameters for OAuth callbacks
      *
      */
+    const code = urlParams.get('code');
+    const noCallbackCodeQuery = isOAuthCallback && !code;
     const hasQueryOrParam = !!search && !isOAuthCallback; // Ignore query params for OAuth callbacks
     const hasAdditionalSegments = pathname.split('/').length > 3 && !isOAuthCallback; // Ignore path segments for OAuth callbacks
 
     // Check for invalid paths or parameters
-    // if (
-    //   hasQueryOrParam ||
-    //   hasAdditionalSegments ||
-    //   (!isAuthPath && !isPath && !isOAuthCallback)
-    // ) {
-    //   console.log('invalide param login', {
-    //     hasQueryOrParam,
-    //     search: !!search,
-    //     isOAuthCallback,
-    //     hasAdditionalSegments,
-    //     isAuthPath,
-    //     isPath,
-    //     result:
-    //       hasQueryOrParam ||
-    //       hasAdditionalSegments ||
-    //       (!isAuthPath && !isPath && !isOAuthCallback),
-    //   });
-    //   navigate('/login');
-    //   return;
-    // }
+    if (
+      !code ||
+      hasQueryOrParam ||
+      noCallbackCodeQuery ||
+      hasAdditionalSegments ||
+      (!isAuthPath && !isPath && !isOAuthCallback)
+    ) {
+      console.log('invalide param login', {
+        code,
+        hasQueryOrParam,
+        noCallbackCodeQuery,
+        search: !!search,
+        isOAuthCallback,
+        hasAdditionalSegments,
+        isAuthPath,
+        isPath,
+        result:
+          code ||
+          hasQueryOrParam ||
+          hasAdditionalSegments ||
+          (!isAuthPath && !isPath && !isOAuthCallback),
+      });
+      // navigate('/login');
+      return;
+    }
 
-    // if (!isAuthenticated) {
-    //   dispatch(setLoading(false));
-    //   return;
-    // }
+    try {
+      let func: any;
+      if (isGoogleCallback) {
+        func = UserAuthOp.LoginGoogleCallback;
+      } else if (isGithubCallback) {
+        func = UserAuthOp.LoginGithubCallback;
+      }
+      if (!func) return;
+
+      const res = await func(code);
+      navigate(getRoutePath('APP'));
+    } catch (error) {
+      navigate(getRoutePath('LOGIN'));
+    }
   }
 
   if (checkingAuth || loading) return null;

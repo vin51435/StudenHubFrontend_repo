@@ -15,10 +15,10 @@ const ROUTES = [
         children: [
           {
             name: 'CALLBACK',
-            path: '/auth',
+            path: '/oauth2',
             children: [
-              { name: 'GOOGLE', path: '/google/callback' },
-              { name: 'GITHUB', path: '/github/callback' },
+              { name: 'GOOGLE', path: 'google/callback' },
+              { name: 'GITHUB', path: 'github/callback' },
             ],
           },
         ],
@@ -29,10 +29,10 @@ const ROUTES = [
         children: [
           {
             name: 'CALLBACK',
-            path: '/auth',
+            path: '/oauth2',
             children: [
-              { name: 'GOOGLE', path: '/google/callback' },
-              { name: 'GITHUB', path: '/github/callback' },
+              { name: 'GOOGLE', path: 'google/callback' },
+              { name: 'GITHUB', path: 'github/callback' },
             ],
           },
           { name: 'DETAILS', path: '/details' },
