@@ -133,9 +133,9 @@ const ProtectAuthRoutes: React.FC = () => {
       if (!func) return;
 
       const res = await func(code);
-      navigate(getRoutePath('APP'));
+      // navigate(getRoutePath('APP'));
     } catch (error) {
-      navigate(getRoutePath('LOGIN'));
+      // navigate(getRoutePath('LOGIN'));
     }
   }
 
