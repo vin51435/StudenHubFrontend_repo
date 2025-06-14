@@ -120,7 +120,7 @@ const ProtectAuthRoutes: React.FC = () => {
           hasAdditionalSegments ||
           (!isAuthPath && !isPath && !isOAuthCallback),
       });
-      // navigate('/login');
+      navigate('/login');
       return;
     }
 
@@ -134,9 +134,9 @@ const ProtectAuthRoutes: React.FC = () => {
       if (!func) return;
 
       const res = await func(code);
-      // navigate(getRoutePath('APP'));
+      navigate(getRoutePath('APP'));
     } catch (error) {
-      // navigate(getRoutePath('LOGIN'));
+      navigate(getRoutePath('LOGIN'));
     }
   }
 
