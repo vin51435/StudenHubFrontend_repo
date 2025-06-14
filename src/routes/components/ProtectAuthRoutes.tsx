@@ -22,14 +22,20 @@ const ProtectAuthRoutes: React.FC = () => {
 
   useEffect(() => {
     dispatch(setLoading(true));
-
-    Promise.all([checkIfAlreadyLoggedIn(), handleOAuthCheck()])
-      .catch(console.error)
-      .finally(() => {
-        setTimeout(() => setCheckingAuth(false), 0);
-        dispatch(setLoading(false));
-      });
+    runAuth();
   }, [pathname, dispatch]);
+
+  async function runAuth() {
+    if (pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK'))) {
+      await handleOAuthCheck();
+    } else if (pathname === getRoutePath('LOGIN') || pathname === getRoutePath('SIGNUP')) {
+      await checkIfAlreadyLoggedIn();
+    } else {
+      navigate(getRoutePath('LOGIN'));
+    }
+    dispatch(setLoading(false));
+    setTimeout(() => setCheckingAuth(false), 0);
+  }
 
   async function checkIfAlreadyLoggedIn() {
     let notifId: string | null = null;
@@ -54,11 +60,6 @@ const ProtectAuthRoutes: React.FC = () => {
   }
 
   async function handleOAuthCheck() {
-    // if /login or /signup, return
-    if (pathname === getRoutePath('LOGIN') || pathname === getRoutePath('SIGNUP')) {
-      return;
-    }
-
     // Checks if the path starts with /login/... or /signup/...
     const currentPathStarts: string | null = pathname.startsWith(getRoutePath('LOGIN'))
       ? 'login'
