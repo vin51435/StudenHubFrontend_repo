@@ -12,29 +12,19 @@ const ROUTES = [
       {
         name: 'LOGIN',
         path: '/login',
+      },
+      {
+        name: 'OAUTH_CALLBACK',
+        path: '/oauth2',
         children: [
-          {
-            name: 'CALLBACK',
-            path: '/oauth2',
-            children: [
-              { name: 'GOOGLE', path: 'google/callback' },
-              { name: 'GITHUB', path: 'github/callback' },
-            ],
-          },
+          { name: 'GOOGLE', path: 'google/callback' },
+          { name: 'GITHUB', path: 'github/callback' },
         ],
       },
       {
         name: 'SIGNUP',
         path: '/signup',
         children: [
-          {
-            name: 'CALLBACK',
-            path: '/oauth2',
-            children: [
-              { name: 'GOOGLE', path: 'google/callback' },
-              { name: 'GITHUB', path: 'github/callback' },
-            ],
-          },
           { name: 'DETAILS', path: '/details' },
           { name: 'INTERESTS', path: '/interests' },
         ],

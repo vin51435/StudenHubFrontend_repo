@@ -34,8 +34,7 @@ function redirection(redirectUrl: string, errorCode?: string) {
     redirectPath &&
     !(
       window.location.pathname === redirectPath ||
-      window.location.pathname.startsWith(getRoutePath('LOGIN.CALLBACK')) ||
-      window.location.pathname.startsWith(getRoutePath('SIGNUP.CALLBACK'))
+      window.location.pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK'))
     )
   ) {
     window.location.href = redirectPath;

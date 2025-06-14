@@ -71,20 +71,21 @@ const ProtectAuthRoutes: React.FC = () => {
 
     let isAuthPath: boolean = false; // Allows SIGNUP_STARTSWITH or LOGIN_STARTSWITH but exclude OAuth callbacks
 
+    // !no need to checkout differntly for login and signup
     if (currentPathStarts === 'login') {
       isPath = pathname === getRoutePath('LOGIN');
-      isGoogleCallback = pathname === getRoutePath('LOGIN.CALLBACK.GOOGLE');
-      isGithubCallback = pathname === getRoutePath('LOGIN.CALLBACK.GITHUB');
+      isGoogleCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GOOGLE');
+      isGithubCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GITHUB');
       isOAuthCallback = isGoogleCallback || isGithubCallback;
 
-      isAuthPath = pathname.startsWith(getRoutePath('LOGIN.CALLBACK')) && !isOAuthCallback;
+      isAuthPath = pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK')) && !isOAuthCallback;
     } else {
       isPath = pathname === getRoutePath('SIGNUP');
-      isGoogleCallback = pathname === getRoutePath('SIGNUP.CALLBACK.GOOGLE');
-      isGithubCallback = pathname === getRoutePath('SIGNUP.CALLBACK.GITHUB');
+      isGoogleCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GOOGLE');
+      isGithubCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GITHUB');
       isOAuthCallback = isGoogleCallback || isGithubCallback;
 
-      isAuthPath = pathname.startsWith(getRoutePath('SIGNUP.CALLBACK')) && !isOAuthCallback;
+      isAuthPath = pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK')) && !isOAuthCallback;
     }
     /**
      * Allow query parameters for OAuth callbacks

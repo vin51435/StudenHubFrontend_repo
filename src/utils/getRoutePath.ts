@@ -78,7 +78,7 @@ function buildFullPath(node: SearchableNode): string {
 }
 
 /**
- * Searches by a dot-separated key (e.g., 'LOGIN.CALLBACK').
+ * Searches by a dot-separated key (e.g., 'AUTH.OAUTH_CALLBACK').
  * Supports partial or nested keys starting from any level.
  */
 function searchByKey(nodes: RouteConfig, key: string): SearchableNode | null {
