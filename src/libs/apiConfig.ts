@@ -40,7 +40,7 @@ const handleResponse = (response: AxiosResponse) => {
 const handleError = (error: IErrorResponse) => {
   const msg = error?.message || 'Server Error';
   console.error('Error:', msg);
-  if (import.meta.env.VITE_NODE_ENV !== 'production') throw new Error(msg);
+  throw new Error(msg);
 };
 
 // Public API methods

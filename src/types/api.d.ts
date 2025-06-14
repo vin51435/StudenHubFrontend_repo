@@ -34,7 +34,7 @@ export interface IBaseResponse {
   statusCode: number;
   status: string;
   message: string;
-  redirectUrl?: string;
+  redirectUrl?: string | null;
   errorCode?: DeepFlatten<typeof ErrorCodes>;
 }
 

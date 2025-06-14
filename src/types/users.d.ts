@@ -4,5 +4,5 @@ interface UserInfoResponse {
   data: {
     user: User;
   };
-  redirectUrl?: string;
+  redirectUrl?: string | null;
 }
