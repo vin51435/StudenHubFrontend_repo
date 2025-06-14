@@ -118,18 +118,14 @@ const TopHeader = () => {
     {
       key: '1',
       icon: <FaUserEdit />,
-      label: (
-        <Link to={getRoutePath('USER_PROFILE').replace(':username', user?.username)}>Profile</Link>
-      ),
+      onClick: () => navigate(getRoutePath('USER_PROFILE').replace(':username', user?.username)),
+      label: 'Profile',
     },
     {
       key: '2',
       icon: <IoLogOutSharp />,
-      label: (
-        <span onClick={logout} className="cursor-pointer">
-          Logout
-        </span>
-      ),
+      onClick: logout,
+      label: 'Logout',
     },
   ];
 
