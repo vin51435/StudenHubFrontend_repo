@@ -27,7 +27,7 @@ export const AUTH_ENDPOINTS = {
   USER_SIGNUP: '/signup',
   USER_SIGNUP_DETAILS: '/signupdetails',
   USER_SIGNUP_INTEREST: '/signupinterest',
-  USER_FORGOT_PASSWORD: '/forgotPassword',
+  USER_FORGOT_PASSWORD: (token?: string) => `/forgotPassword${token ? `/${token}` : ''}`,
   USER_LOGIN: '/login',
   USER_LOGOUT: '/logout',
   GOOGLE_CALLBACK: '/callback',

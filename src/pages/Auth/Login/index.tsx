@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
   return (
-    <div className="auth-page_main relative h-full">
+    <div className="auth-page_main relative h-full w-full">
       <Row className="h-full ">
         {/* <Col span={24} className={`top_container ${windowSize.medium ? 'hidden' : 'hidden'}`}>
           <div>

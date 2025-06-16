@@ -96,3 +96,24 @@ export const signupDetailsSchema = z.object({
 });
 
 export type SignupDetailsSchema = z.infer<typeof signupDetailsSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string({ required_error: 'Password is required' })
+      .min(
+        appConfig.user.passwordMinLength,
+        `Password must be at least ${appConfig.user.passwordMinLength} characters`
+      )
+      .max(
+        appConfig.user.passwordMaxLength,
+        `Password must not exceed ${appConfig.user.passwordMaxLength} characters`
+      ),
+    passwordConfirm: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    path: ['passwordConfirm'],
+    message: 'Passwords do not match',
+  });
+
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;

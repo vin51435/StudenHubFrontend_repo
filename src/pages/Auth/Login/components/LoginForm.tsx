@@ -10,6 +10,7 @@ import {
 import { ZodError } from 'zod';
 import { useNotification } from '@src/contexts/NotificationContext';
 import { getRoutePath } from '@src/utils/getRoutePath';
+import { AUTH_ENDPOINTS } from '@src/libs/apiEndpoints';
 
 const { Link } = Typography;
 
@@ -71,12 +72,11 @@ const LoginForm: React.FC = () => {
 
     try {
       passwordResetSchema.parse(values); // Validate with Zod only
-      // return;
       setLoad(true);
 
-      post('USER_FORGOT_PASSWORD', {
-        BASE_URLS: 'userAuth',
-        data: { email: values },
+      post(AUTH_ENDPOINTS.USER_FORGOT_PASSWORD(), {
+        BASE_URLS: 'auth',
+        data: { email: values.email },
       })
         .then((response) => {
           if (response.status === 'success') {

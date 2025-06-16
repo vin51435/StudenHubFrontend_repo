@@ -1,6 +1,7 @@
 import fetchUserInfo from '@src/api/fetchUser';
+import UserAuthOp from '@src/api/userAuthOperations';
 import { useNotification } from '@src/contexts/NotificationContext';
-import { setLoading } from '@src/redux/reducers/uiSlice';
+import { useLoader } from '@src/hooks/useLoader';
 import { RootState } from '@src/redux/store';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import React, { useEffect, useState } from 'react';
@@ -10,23 +11,30 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 const ProtectAuthRoutes: React.FC = () => {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const loading = useSelector((state: RootState) => state.ui.loading);
   const { isAuthenticated, redirectUrl } = useSelector((state: RootState) => state.auth);
   const { pathname, search, hash } = useLocation();
+  const urlParams = new URLSearchParams(search);
   const { notif, startRemoveNotification } = useNotification();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { startPageLoad, stopPageLoad, pageLoading } = useLoader();
 
   useEffect(() => {
-    dispatch(setLoading(true));
-    Promise.all([checkIfAlreadyLoggedIn(), handleAuthCheck()])
-      .catch(console.error)
-      .finally(() => {
-        setTimeout(() => setCheckingAuth(false), 0);
-        dispatch(setLoading(false));
-      });
+    startPageLoad();
+    runAuth();
   }, [pathname, dispatch]);
+
+  async function runAuth() {
+    if (pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK'))) {
+      await handleOAuthCheck();
+    } else if (pathname.startsWith(getRoutePath('RESET_PASSWORD'))) {
+    } else {
+      await checkIfAlreadyLoggedIn();
+    }
+    stopPageLoad();
+    setTimeout(() => setCheckingAuth(false), 0);
+  }
 
   async function checkIfAlreadyLoggedIn() {
     let notifId: string | null = null;
@@ -50,7 +58,7 @@ const ProtectAuthRoutes: React.FC = () => {
     }
   }
 
-  async function handleAuthCheck() {
+  async function handleOAuthCheck() {
     // Checks if the path starts with /login/... or /signup/...
     const currentPathStarts: string | null = pathname.startsWith(getRoutePath('LOGIN'))
       ? 'login'
@@ -63,57 +71,75 @@ const ProtectAuthRoutes: React.FC = () => {
 
     let isAuthPath: boolean = false; // Allows SIGNUP_STARTSWITH or LOGIN_STARTSWITH but exclude OAuth callbacks
 
+    // !no need to checkout differntly for login and signup
     if (currentPathStarts === 'login') {
       isPath = pathname === getRoutePath('LOGIN');
-      isGoogleCallback = pathname === getRoutePath('LOGIN.CALLBACK.GOOGLE');
-      isGithubCallback = pathname === getRoutePath('LOGIN.CALLBACK.GITHUB');
+      isGoogleCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GOOGLE');
+      isGithubCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GITHUB');
       isOAuthCallback = isGoogleCallback || isGithubCallback;
 
-      isAuthPath = pathname.startsWith(getRoutePath('LOGIN.CALLBACK')) && !isOAuthCallback;
+      isAuthPath = pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK')) && !isOAuthCallback;
     } else {
       isPath = pathname === getRoutePath('SIGNUP');
-      isGoogleCallback = pathname === getRoutePath('SIGNUP.CALLBACK.GOOGLE');
-      isGithubCallback = pathname === getRoutePath('SIGNUP.CALLBACK.GITHUB');
+      isGoogleCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GOOGLE');
+      isGithubCallback = pathname === getRoutePath('AUTH.OAUTH_CALLBACK.GITHUB');
       isOAuthCallback = isGoogleCallback || isGithubCallback;
 
-      isAuthPath = pathname.startsWith(getRoutePath('SIGNUP.CALLBACK')) && !isOAuthCallback;
+      isAuthPath = pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK')) && !isOAuthCallback;
     }
     /**
      * Allow query parameters for OAuth callbacks
      *
      */
+    const code = urlParams.get('code');
+    const noCallbackCodeQuery = isOAuthCallback && !code;
     const hasQueryOrParam = !!search && !isOAuthCallback; // Ignore query params for OAuth callbacks
     const hasAdditionalSegments = pathname.split('/').length > 3 && !isOAuthCallback; // Ignore path segments for OAuth callbacks
 
     // Check for invalid paths or parameters
-    // if (
-    //   hasQueryOrParam ||
-    //   hasAdditionalSegments ||
-    //   (!isAuthPath && !isPath && !isOAuthCallback)
-    // ) {
-    //   console.log('invalide param login', {
-    //     hasQueryOrParam,
-    //     search: !!search,
-    //     isOAuthCallback,
-    //     hasAdditionalSegments,
-    //     isAuthPath,
-    //     isPath,
-    //     result:
-    //       hasQueryOrParam ||
-    //       hasAdditionalSegments ||
-    //       (!isAuthPath && !isPath && !isOAuthCallback),
-    //   });
-    //   navigate('/login');
-    //   return;
-    // }
+    if (
+      !code ||
+      hasQueryOrParam ||
+      noCallbackCodeQuery ||
+      hasAdditionalSegments ||
+      (!isAuthPath && !isPath && !isOAuthCallback)
+    ) {
+      console.log('invalide param login', {
+        code,
+        hasQueryOrParam,
+        noCallbackCodeQuery,
+        search: !!search,
+        isOAuthCallback,
+        hasAdditionalSegments,
+        isAuthPath,
+        isPath,
+        result:
+          code ||
+          hasQueryOrParam ||
+          hasAdditionalSegments ||
+          (!isAuthPath && !isPath && !isOAuthCallback),
+      });
+      navigate(getRoutePath('LOGIN'));
+      return;
+    }
 
-    // if (!isAuthenticated) {
-    //   dispatch(setLoading(false));
-    //   return;
-    // }
+    try {
+      let func: any;
+      if (isGoogleCallback) {
+        func = UserAuthOp.LoginGoogleCallback;
+      } else if (isGithubCallback) {
+        func = UserAuthOp.LoginGithubCallback;
+      }
+      if (!func) return;
+
+      const res = await func(code);
+      navigate(getRoutePath('APP'));
+    } catch (error) {
+      navigate(getRoutePath('LOGIN'));
+    }
   }
 
-  if (checkingAuth || loading) return null;
+  if (checkingAuth || pageLoading) return null;
 
   // ✅ If authenticated, continue to protected route
   if (
@@ -127,7 +153,6 @@ const ProtectAuthRoutes: React.FC = () => {
   }
 
   return null;
-  // return <Navigate to={getRoutePath('LOGIN')} state={{ from: location }} replace />;
 };
 
 export default ProtectAuthRoutes;

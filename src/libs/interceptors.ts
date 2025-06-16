@@ -28,7 +28,15 @@ function redirection(redirectUrl: string, errorCode?: string) {
     redirectPath = getRoutePath('SIGNUP.INTERESTS');
   }
 
-  if (redirectPath && window.location.pathname !== redirectPath) {
+  // Redirect to redirectPath only if the current path is not the redirect path,
+  // or if the current path is not the Google/Github OAuth callback
+  if (
+    redirectPath &&
+    !(
+      window.location.pathname === redirectPath ||
+      window.location.pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK'))
+    )
+  ) {
     window.location.href = redirectPath;
   }
   store.dispatch(setRedirectUrl(redirectPath));

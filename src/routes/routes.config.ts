@@ -14,27 +14,24 @@ const ROUTES = [
         path: '/login',
         children: [
           {
-            name: 'CALLBACK',
-            path: '/auth',
-            children: [
-              { name: 'GOOGLE', path: '/google/callback' },
-              { name: 'GITHUB', path: '/github/callback' },
-            ],
+            name: 'RESET_PASSWORD',
+            path: 'resetpassword/',
+            children: [{ name: 'RESET_PASSWORD_TOKEN', path: ':resetToken' }],
           },
+        ],
+      },
+      {
+        name: 'OAUTH_CALLBACK',
+        path: '/oauth2',
+        children: [
+          { name: 'GOOGLE', path: 'google/callback' },
+          { name: 'GITHUB', path: 'github/callback' },
         ],
       },
       {
         name: 'SIGNUP',
         path: '/signup',
         children: [
-          {
-            name: 'CALLBACK',
-            path: '/auth',
-            children: [
-              { name: 'GOOGLE', path: '/google/callback' },
-              { name: 'GITHUB', path: '/github/callback' },
-            ],
-          },
           { name: 'DETAILS', path: '/details' },
           { name: 'INTERESTS', path: '/interests' },
         ],

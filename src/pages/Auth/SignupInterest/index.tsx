@@ -6,6 +6,7 @@ import { getRoutePath } from '@src/utils/getRoutePath';
 import { Input, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLogout } from '@src/hooks/useLogout';
 
 type IInterest = {
   name: string;
@@ -23,6 +24,7 @@ const SignupInterests: React.FC = () => {
 
   const { notif } = useNotification();
   const navigate = useNavigate();
+  const logout = useLogout();
 
   useEffect(() => {
     fetchInterests();
@@ -83,69 +85,73 @@ const SignupInterests: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center dark:bg-gray-900 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-6xl flex flex-col items-center justify-center"
-      >
-        <div className="w-full text-center md:text-left">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-            Pick your favorite Topics/Interests
-          </h1>
-          <h6
-            className={`text-sm mt-1 ${
-              error ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'
-            }`}
-          >
-            Choose at least {REQUIRED_INTEREST_COUNT} – It'll help us personalize your feed.
-          </h6>
-        </div>
-
-        <div className=" w-full mt-6 max-w-md">
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
-            <Input
-              className="pl-10"
-              size="large"
-              placeholder="Search Interests"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+      <div className="signup-details_container my-3 !w-8/12">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col items-center justify-center">
+          <div className="w-full text-center md:text-left">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+              Pick your favorite Topics/Interests
+            </h1>
+            <h6
+              className={`text-sm mt-1 ${
+                error ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'
+              }`}
+            >
+              Choose at least {REQUIRED_INTEREST_COUNT} – It'll help us personalize your feed.
+            </h6>
           </div>
-        </div>
 
-        <div className="interest_grid w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-          {filteredInterests.map((item, index) => {
-            const isSelected = selected.includes(item.name);
-            return (
-              <div
-                key={index}
-                className={`image_grid_item relative rounded-lg overflow-hidden shadow-md cursor-pointer group transition-transform transform hover:scale-105 ${
-                  isSelected ? 'ring-4 ring-blue-500 interest_selected' : ''
-                }`}
-                style={{
-                  backgroundImage: `url(${item.imageURL})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-                onClick={() => toggleSelection(item.name)}
-              >
-                <div className="inset-0 bg-opacity-30 flex items-end">
-                  <span className="text-white font-semibold p-2">{item.name}</span>
+          <div className=" w-full mt-6 ">
+            <div className="relative">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
+              <Input
+                className="pl-10"
+                size="large"
+                placeholder="Search Interests"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="interest_grid w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+            {filteredInterests.map((item, index) => {
+              const isSelected = selected.includes(item.name);
+              return (
+                <div
+                  key={index}
+                  className={`image_grid_item relative rounded-lg overflow-hidden shadow-md cursor-pointer group transition-transform transform hover:scale-105 ${
+                    isSelected ? 'ring-4 ring-blue-500 interest_selected' : ''
+                  }`}
+                  style={{
+                    backgroundImage: `url(${item.imageURL})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                  onClick={() => toggleSelection(item.name)}
+                >
+                  <div className="inset-0 bg-opacity-30 flex items-end">
+                    <span className="text-white font-semibold p-2">{item.name}</span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        <div className="w-full flex justify-end items-center mt-6 px-4">
-          <span className="text-sm mr-4 text-gray-600 dark:text-gray-300">
-            {selected.length} Selected
-          </span>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Proceed
-          </Button>
-        </div>
-      </form>
+          <div className="w-full flex flex-row justify-between mt-6 ">
+            <Button type="dashed" onClick={logout}>
+              Logout
+            </Button>
+            <div className="flex justify-end items-center ">
+              <span className="text-sm mr-4 text-gray-600 dark:text-gray-300">
+                {selected.length} Selected
+              </span>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Proceed
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
