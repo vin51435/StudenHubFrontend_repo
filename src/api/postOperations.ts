@@ -92,6 +92,12 @@ class PostOp {
     return res;
   }
 
+  static postView(postId: string, communityId: string = 'dontmatter') {
+    void post(CENTER_ENDPOINTS.POST_VIEW(communityId, postId), {
+      BASE_URLS: 'center',
+    });
+  }
+
   // Debounced version
   static voteToggle = debounceAsync(this._voteToggle.bind(this), 400);
 }

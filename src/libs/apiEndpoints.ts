@@ -71,6 +71,8 @@ export const CENTER_ENDPOINTS = {
   POST: (communityId: string, oostIdSlug: string) => `communitypost/${communityId}/${oostIdSlug}`,
   POST_SAVE: (communityId: string, oostIdSlug: string) =>
     `communitypost/${communityId}/${oostIdSlug}/save`,
+  POST_VIEW: (communityId: string, oostIdSlug: string) =>
+    `communitypost/${communityId}/${oostIdSlug}/view`,
 
   POST_COMMENT: (id: string | number) => `/${id}`,
   COMMENT_VOTE: (id: string, voteType: VoteEnum) => `/${id}/vote/${voteType}`,

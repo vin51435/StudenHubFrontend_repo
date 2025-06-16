@@ -2,7 +2,7 @@ import { BiSolidUpvote, BiUpvote, BiDownvote, BiSolidDownvote } from 'react-icon
 import { FaRegBookmark, FaBookmark, FaRegUser } from 'react-icons/fa';
 import { LuMessageSquareText } from 'react-icons/lu';
 import { IoMdEye } from 'react-icons/io';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Card, Typography, Avatar, Carousel, Image } from 'antd';
 import { ICommunity, IPost, IUser } from '@src/types/app';
 import { VoteEnum } from '@src/types/enum';
@@ -10,6 +10,7 @@ import PostOp from '@src/api/postOperations';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { Link, useNavigate } from 'react-router-dom';
 import { timeAgo } from '@src/utils/common';
+import { useInView } from 'react-intersection-observer';
 
 const { Paragraph } = Typography;
 
@@ -18,7 +19,18 @@ const PostOverview: FC<{
   community?: ICommunity;
   onChangePost: (post: IPost) => void;
 }> = ({ post, community, onChangePost }) => {
+  // To trigger post view
+  const { ref, inView } = useInView({
+    threshold: 0.5, // 50% of the element is visible
+    triggerOnce: true, // Only trigger once
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (inView) {
+      PostOp.postView(post._id!);
+    }
+  }, [inView]);
 
   if (!post || !post._id) {
     return null;
@@ -91,6 +103,7 @@ const PostOverview: FC<{
       className="block cursor-pointer w-full"
     >
       <Card
+        ref={ref}
         classNames={{
           body: '!px-4 !py-3',
         }}

@@ -13,7 +13,7 @@ export const useLogout = () => {
   return async () => {
     dispatch(setLoading(true));
     try {
-      void post('USER_LOGOUT', {
+      await post('USER_LOGOUT', {
         BASE_URLS: 'auth',
       });
 
