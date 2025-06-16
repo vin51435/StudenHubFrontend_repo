@@ -7,7 +7,7 @@ const AppLoader: React.FC<PropsWithChildren> = ({ children }) => {
   const loading = useSelector((state: RootState) => state.ui.loading);
 
   return (
-    <div className="relative h-full">
+    <div className="app-loader relative h-screen min-h-screen">
       <div className="h-full" style={{ opacity: loading ? 0 : 1 }}>
         {children}
       </div>

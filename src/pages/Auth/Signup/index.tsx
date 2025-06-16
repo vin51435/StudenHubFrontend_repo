@@ -11,7 +11,7 @@ const Signup: React.FC = () => {
   const [showLoginService, setShowLoginService] = useState<boolean>(true);
 
   return (
-    <div className="auth-page_main signup_page">
+    <div className="auth-page_main signup_page w-full">
       <Row className="w-full min-h-screen flex h-full justify-center">
         {/* Left Column */}
         <Col xs={24} md={10} lg={8} className="left_container px-6 py-4 overflow-y-auto h-full">
@@ -56,10 +56,12 @@ const Signup: React.FC = () => {
           md={14}
           lg={16}
           className="right_container signup_panel_image hidden md:block h-full"
-          style={{
-            // background: 'linear-gradient(to right bottom, rgb(3, 73, 145), rgb(3, 73, 146))',
-            // display: 'flex',
-          }}
+          style={
+            {
+              // background: 'linear-gradient(to right bottom, rgb(3, 73, 145), rgb(3, 73, 146))',
+              // display: 'flex',
+            }
+          }
         >
           {/* <Image
             wrapperClassName="[&&]:m-auto"

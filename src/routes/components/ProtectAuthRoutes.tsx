@@ -1,7 +1,7 @@
 import fetchUserInfo from '@src/api/fetchUser';
 import UserAuthOp from '@src/api/userAuthOperations';
 import { useNotification } from '@src/contexts/NotificationContext';
-import { setLoading } from '@src/redux/reducers/uiSlice';
+import { useLoader } from '@src/hooks/useLoader';
 import { RootState } from '@src/redux/store';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +11,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 const ProtectAuthRoutes: React.FC = () => {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const loading = useSelector((state: RootState) => state.ui.loading);
   const { isAuthenticated, redirectUrl } = useSelector((state: RootState) => state.auth);
   const { pathname, search, hash } = useLocation();
   const urlParams = new URLSearchParams(search);
@@ -19,21 +18,21 @@ const ProtectAuthRoutes: React.FC = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { startPageLoad, stopPageLoad, pageLoading } = useLoader();
 
   useEffect(() => {
-    dispatch(setLoading(true));
+    startPageLoad();
     runAuth();
   }, [pathname, dispatch]);
 
   async function runAuth() {
     if (pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK'))) {
       await handleOAuthCheck();
-    } else if (pathname === getRoutePath('LOGIN') || pathname === getRoutePath('SIGNUP')) {
-      await checkIfAlreadyLoggedIn();
+    } else if (pathname.startsWith(getRoutePath('RESET_PASSWORD'))) {
     } else {
-      navigate(getRoutePath('LOGIN'));
+      await checkIfAlreadyLoggedIn();
     }
-    dispatch(setLoading(false));
+    stopPageLoad();
     setTimeout(() => setCheckingAuth(false), 0);
   }
 
@@ -120,7 +119,7 @@ const ProtectAuthRoutes: React.FC = () => {
           hasAdditionalSegments ||
           (!isAuthPath && !isPath && !isOAuthCallback),
       });
-      navigate('/login');
+      navigate(getRoutePath('LOGIN'));
       return;
     }
 
@@ -140,7 +139,7 @@ const ProtectAuthRoutes: React.FC = () => {
     }
   }
 
-  if (checkingAuth || loading) return null;
+  if (checkingAuth || pageLoading) return null;
 
   // ✅ If authenticated, continue to protected route
   if (
@@ -154,7 +153,6 @@ const ProtectAuthRoutes: React.FC = () => {
   }
 
   return null;
-  // return <Navigate to={getRoutePath('LOGIN')} state={{ from: location }} replace />;
 };
 
 export default ProtectAuthRoutes;

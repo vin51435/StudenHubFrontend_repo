@@ -13,6 +13,7 @@ import { Gender, UserType } from '@src/types/enum';
 import { ZodError } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { getRoutePath } from '@src/utils/getRoutePath';
+import { useLogout } from '@src/hooks/useLogout';
 
 const SignupAddDetails: React.FC = () => {
   const [load, setLoad] = useState<boolean>(false);
@@ -25,6 +26,7 @@ const SignupAddDetails: React.FC = () => {
 
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const logout = useLogout();
 
   useEffect(() => {
     fetchCities();
@@ -127,8 +129,8 @@ const SignupAddDetails: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex justify-center items-center">
-      <div className="signup-details pb-3 flex justify-center items-center w-full">
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="signup-details flex justify-center items-center w-full">
         <Row
           gutter={16}
           className="signup-details_container w-full max-w-6xl overflow-hidden flex justify-center items-center"
@@ -149,7 +151,7 @@ const SignupAddDetails: React.FC = () => {
                   A little more about you.
                 </Typography.Text>
               </div>
-              <div className="border-t my-2" />
+              <div className="border-t my-3.5" />
 
               <Form
                 layout="vertical"
@@ -216,9 +218,12 @@ const SignupAddDetails: React.FC = () => {
                   />
                 </Form.Item>
 
-                <div className="p-3 w-full flex justify-end items-center">
-                  <Form.Item label={null}>
-                    <Button type="primary" htmlType="submit" className="px-4 py-2 text-base">
+                <div className="py-3 w-full flex justify-between items-center">
+                  <Button type="dashed" onClick={logout}>
+                    Logout
+                  </Button>
+                  <Form.Item className="!m-0 !p-0" label={null}>
+                    <Button type="primary" htmlType="submit" className="text-base">
                       Next
                     </Button>
                   </Form.Item>

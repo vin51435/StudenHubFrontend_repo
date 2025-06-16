@@ -56,7 +56,6 @@ export const Settings: React.FC = () => {
         data: formData,
       });
 
-      console.log(response);
       message.success('Profile picture updated successfully!');
     } catch (error) {
       console.error(error);

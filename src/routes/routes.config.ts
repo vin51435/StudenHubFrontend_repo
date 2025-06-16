@@ -12,6 +12,13 @@ const ROUTES = [
       {
         name: 'LOGIN',
         path: '/login',
+        children: [
+          {
+            name: 'RESET_PASSWORD',
+            path: 'resetpassword/',
+            children: [{ name: 'RESET_PASSWORD_TOKEN', path: ':resetToken' }],
+          },
+        ],
       },
       {
         name: 'OAUTH_CALLBACK',
