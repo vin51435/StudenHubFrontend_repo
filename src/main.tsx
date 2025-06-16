@@ -1,3 +1,4 @@
+import '@src/utils/logger';
 import { createRoot } from 'react-dom/client';
 import 'antd/dist/reset.css';
 import App from './App';
