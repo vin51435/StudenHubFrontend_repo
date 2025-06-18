@@ -67,24 +67,26 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
           <Spin size="large" />
         </div>
       ) : posts.length > 0 ? (
-        <div className="flex flex-col gap-4">
-          {posts.map((post, index) => (
-            <PostOverview
-              key={index}
-              post={post}
-              community={community}
-              onChangePost={onPostUpdate}
-            />
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col gap-4">
+            {posts.map((post, index) => (
+              <PostOverview
+                key={index}
+                post={post}
+                community={community}
+                onChangePost={onPostUpdate}
+              />
+            ))}
+          </div>
+          {hasMore && (
+            <div ref={ref} className="h-full flex justify-center items-center">
+              Loading more...
+            </div>
+          )}
+        </>
       ) : (
         <div className="h-full flex justify-center items-center">
           <span>No posts to display</span>
-        </div>
-      )}
-      {hasMore && (
-        <div ref={ref} className="h-full flex justify-center items-center">
-          Loading more...
         </div>
       )}
     </section>

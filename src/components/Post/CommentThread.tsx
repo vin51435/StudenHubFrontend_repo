@@ -278,7 +278,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           setActiveComment={setActiveComment}
         />
       ))}
-      last
     </div>
   );
 };

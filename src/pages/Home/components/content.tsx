@@ -37,19 +37,21 @@ export default function HomeFeed() {
           <Spin size="large" />
         </div>
       ) : homeFeed.posts.length > 0 ? (
-        <div className="flex flex-col gap-4">
-          {homeFeed.posts.map((post, index) => (
-            <PostOverview key={index} post={post} onChangePost={updatePost} />
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col gap-4">
+            {homeFeed.posts.map((post, index) => (
+              <PostOverview key={index} post={post} onChangePost={updatePost} />
+            ))}
+          </div>
+          {homeFeed.hasMore && (
+            <div ref={ref} className="h-full flex justify-center items-center">
+              Loading more...
+            </div>
+          )}
+        </>
       ) : (
         <div className="h-full flex justify-center items-center">
           <span>No posts to display</span>
-        </div>
-      )}
-      {homeFeed.hasMore && (
-        <div ref={ref} className="h-full flex justify-center items-center">
-          Loading more...
         </div>
       )}
     </section>

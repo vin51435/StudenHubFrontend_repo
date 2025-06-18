@@ -41,19 +41,21 @@ const PopularFeed = () => {
           <Spin size="large" />
         </div>
       ) : popularFeed.posts.length > 0 ? (
-        <div className="flex flex-col gap-4">
-          {popularFeed.posts.map((post, index) => (
-            <PostOverview key={index} post={post} onChangePost={updatePost} />
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col gap-4">
+            {popularFeed.posts.map((post, index) => (
+              <PostOverview key={index} post={post} onChangePost={updatePost} />
+            ))}
+          </div>
+          {popularFeed.hasMore && (
+            <div ref={ref} className="h-full flex justify-center items-center">
+              Loading more...
+            </div>
+          )}
+        </>
       ) : (
         <div className="h-full flex justify-center items-center">
           <span>No posts to display</span>
-        </div>
-      )}
-      {popularFeed.hasMore && (
-        <div ref={ref} className="h-full flex justify-center items-center">
-          Loading more...
         </div>
       )}
     </section>
