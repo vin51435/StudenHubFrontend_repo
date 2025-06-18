@@ -45,7 +45,6 @@ const recentSlice = createSlice({
   initialState,
   reducers: {
     appendRecentSearch(state, action: PayloadAction<RecentSearches>) {
-      console.log('appendRecentSearch', action.payload);
       const newSearch = {
         ...action.payload,
         string: action.payload.string.trim(),
@@ -61,7 +60,6 @@ const recentSlice = createSlice({
         state.searches.pop();
       }
 
-      console.log('state.searches', state.searches);
       set(recentSearchKey, state.searches);
     },
 

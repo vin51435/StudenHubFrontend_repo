@@ -2,12 +2,11 @@ import { BiSolidUpvote, BiUpvote, BiDownvote, BiSolidDownvote } from 'react-icon
 import { MdEdit, MdOutlineReply, MdDelete } from 'react-icons/md';
 import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
 import React, { useState } from 'react';
-import { Button, Space } from 'antd';
+import { Space } from 'antd';
 import { ICommentData } from '@src/types/post.types';
 import CommentInput from '@src/components/CommentInput';
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux/store';
-import VoteIcon from '@src/components/Vote.svg';
 import { VoteEnum } from '@src/types/enum';
 import { IUser } from '@src/types/app';
 import PostOp from '@src/api/postOperations';
@@ -20,7 +19,7 @@ interface CommentProps {
   user?: IUser;
   editActive?: boolean;
   handleVote: (comment: ICommentData, type: 1 | -1) => void;
-  setEditActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditActive: React.Dispatch<React.SetStateAction<boolean>>;
   deleteComment?: (comment: ICommentData) => void;
   lastComment?: (comment: ICommentData) => void;
   updateComment: (comment: ICommentData) => void;
@@ -43,7 +42,16 @@ const Comment: React.FC<CommentProps> = ({
   setActiveComment,
   updateComment,
 }) => {
+  if (comment.childrenCount > 0 && !!!comment?.children?.length) {
+    comment.isCollapsed = true;
+  }
+
   const toggleCommentCollapse = () => {
+    // If the comment is collapsed and has no fetched children element but has children count
+    if (comment.isCollapsed && comment.childrenCount > 0 && !!!comment?.children?.length) {
+      lastComment?.(comment);
+    }
+
     updateComment?.({
       ...comment,
       isCollapsed: !comment.isCollapsed || false,
@@ -52,10 +60,6 @@ const Comment: React.FC<CommentProps> = ({
 
   const ChildComments = () => {
     if (comment.isCollapsed) return;
-    if (comment.childrenCount > 0 && !comment.children) {
-      lastComment?.(comment);
-      return;
-    }
     if (!comment.isCollapsed && comment.children) {
       return (
         <div className="mt-2">
@@ -65,12 +69,13 @@ const Comment: React.FC<CommentProps> = ({
               user={user}
               comment={child}
               depth={depth + 1}
-              handleVote={handleVote}
-              setEditActive={setEditActive}
               activeComment={activeComment}
               showDelete={child.userId === user?._id}
               showEdit={child.userId === user?._id}
-              editActive={child.userId === user?._id}
+              editActive={editActive}
+              lastComment={lastComment}
+              handleVote={handleVote}
+              setEditActive={setEditActive}
               deleteComment={deleteComment}
               setActiveComment={setActiveComment}
               updateComment={updateComment}
@@ -108,7 +113,7 @@ const Comment: React.FC<CommentProps> = ({
                         onClick={() => handleVote(comment, 1)}
                       />
                     )}
-                    <span className="text-xs text-gray-600">
+                    <span className="text-xs pl-1 text-gray-600">
                       {comment.upvotesCount - comment.downvotesCount}
                     </span>
                   </div>
@@ -130,8 +135,8 @@ const Comment: React.FC<CommentProps> = ({
                       size={18}
                       className="dark:text-white ml-3 flex items-center cursor-pointer"
                       onClick={() => {
+                        setEditActive(true);
                         setActiveComment(comment._id);
-                        setEditActive?.(true);
                       }}
                     />
                   )}
@@ -145,19 +150,20 @@ const Comment: React.FC<CommentProps> = ({
                   <div className="flex gap-3 text-xs text-gray-500">
                     <MdOutlineReply
                       size={18}
-                      onClick={() =>
-                        setActiveComment((prev) => (comment._id === prev ? '' : comment._id))
-                      }
+                      onClick={() => {
+                        setEditActive(false);
+                        setActiveComment(comment._id);
+                      }}
                       className="hover:underline ml-3 flex items-center cursor-pointer"
-                    ></MdOutlineReply>
+                    />
                     {comment.childrenCount > 0 && (
                       <button
                         onClick={() => toggleCommentCollapse()}
                         className="hover:underline flex items-center cursor-pointer"
                       >
                         {comment.isCollapsed ? <IoIosArrowDown /> : <IoIosArrowBack />}{' '}
-                        {comment.isCollapsed ? 'Expand' : 'Collapse'} {comment.childrenCount}{' '}
-                        replies
+                        {comment.isCollapsed ? 'Expand' : 'Collapse'}{' '}
+                        {comment.isCollapsed && `${comment.childrenCount} replies`}
                       </button>
                     )}
                   </div>
@@ -169,7 +175,7 @@ const Comment: React.FC<CommentProps> = ({
                   comment={comment}
                   child
                   edit={editActive && comment.userId === user?._id}
-                  value={editActive ? comment.content ?? '' : ''}
+                  value={editActive ? comment?.content ?? '' : ''}
                   postButtonLabel={editActive ? 'Save' : 'Reply'}
                   showEditorByDefault={true}
                   onCancel={() => setActiveComment('')}
@@ -191,6 +197,7 @@ interface CommentSectionProps {
   comments: ICommentData[];
   updateComment: (comment: ICommentData) => void;
   deleteComment?: (comment: ICommentData) => void;
+  lastComment?: (comment: ICommentData) => void;
   fetchComments?: (commentId: string | null, page: number) => void;
 }
 
@@ -199,6 +206,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   fetchComments,
   updateComment,
   deleteComment,
+  lastComment,
 }) => {
   const [activeComment, setActiveComment] = useState<string>('');
   const [editActive, setEditActive] = useState<boolean>(false);
@@ -245,7 +253,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     updateComment(updatedComment);
   }
 
-  function updateMeta(id: string) {}
+  function commentUpdated(comment: ICommentData) {
+    setActiveComment('');
+    setEditActive(false);
+    updateComment(comment);
+  }
 
   return (
     <div className="mt-6">
@@ -255,16 +267,18 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           showDelete={user?._id === comment.userId}
           showEdit={user?._id === comment.userId}
           user={user!}
-          deleteComment={deleteComment}
           editActive={editActive}
+          comment={comment}
+          activeComment={activeComment}
+          lastComment={lastComment}
+          deleteComment={deleteComment}
+          updateComment={commentUpdated}
           setEditActive={setEditActive}
           handleVote={handleVote}
-          comment={comment}
-          updateComment={updateComment}
-          activeComment={activeComment}
           setActiveComment={setActiveComment}
         />
       ))}
+      last
     </div>
   );
 };

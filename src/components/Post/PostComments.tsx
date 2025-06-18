@@ -19,8 +19,9 @@ const PostComments = ({ postId }: { postId: string }) => {
   async function fetchComments(commentId: string | null = null, page: number = 1) {
     const res = await PostOp.fetchComment(postId!, commentId, { sortMethod: sort });
     if (commentId) {
+      updateComment(res.data as ICommentData);
     } else {
-      setComments(res.data ?? []);
+      setComments((res.data as ICommentData[]) ?? []);
     }
     setLoading(false);
   }
@@ -39,6 +40,10 @@ const PostComments = ({ postId }: { postId: string }) => {
     } else if (updatedComments) {
       setComments(updatedComments);
     }
+  }
+
+  async function lastComment(comment: ICommentData) {
+    await fetchComments(comment._id);
   }
 
   async function deleteComment(comment: ICommentData) {
@@ -85,6 +90,7 @@ const PostComments = ({ postId }: { postId: string }) => {
           comments={comments}
           updateComment={updateComment}
           deleteComment={deleteComment}
+          lastComment={lastComment}
           fetchComments={fetchComments}
         />
       )}

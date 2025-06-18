@@ -1,16 +1,18 @@
-import Home from '@src/pages/Home';
+import { RouteObject } from 'react-router-dom';
 import ProtectedRoutes from '@src/routes/components/ProtectRoutes';
 import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
-import { RouteObject } from 'react-router-dom';
-import Chats from '@src/pages/Chats';
 import AppLayout from '@src/layouts/Index';
-import Community from '@src/pages/Community';
-import CreatePost from '@src/components/Post/CreatePost';
-import PostDetailPage from '@src/components/Post/PostDetails';
-import Popular from '@src/pages/Popular/Index';
-import Profile from '@src/pages/User/Profile';
-import { Settings } from '@src/pages/User/settings';
-import NotFoundPage from '@src/pages/NotFound';
+import {
+  Chats,
+  Community,
+  CreatePost,
+  Home,
+  NotFoundPage,
+  Popular,
+  PostDetailPage,
+  Profile,
+  Settings,
+} from '@src/routes/routing/lazyPages';
 
 export const protectedRoutes: RouteObject[] = [
   {

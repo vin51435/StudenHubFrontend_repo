@@ -122,14 +122,15 @@ const ProfileSidebar = ({
       </div>
 
       {/* Extra sections */}
-      <div
-        className="text-start text-sm text-gray-300"
+      <Typography.Text
+        strong
+        className="text-start text-sm cursor-pointer hover:underline"
         onClick={() => {
           navigate(getRoutePath('USER_SETTINGS'));
         }}
       >
         Update profile
-      </div>
+      </Typography.Text>
       <div className="text-start text-sm text-gray-300 mt-2">Socials</div>
     </div>
   );

@@ -81,7 +81,7 @@ export default function CommunityOverview() {
     dispatch(updateCommunity({ isFollowing: !community.isFollowing }));
     setTimeout(() => {
       setJoinLoading(false);
-    }, 1000);
+    }, 3000);
   };
 
   return (
@@ -132,7 +132,7 @@ export default function CommunityOverview() {
       <Divider />
 
       {/* Main Layout */}
-      <Row className="w-full max-w-7xl mx-auto mt-6 px-4 " gutter={[18, 18]}>
+      <Row className="w-full max-w-7xl mx-auto pb-4 px-4 " gutter={[18, 18]}>
         <Col span={24} md={17} className="">
           {/* Post Feed */}
           <CommunityFeed community={community} />

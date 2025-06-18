@@ -117,6 +117,7 @@ const MainLayout: React.FC = () => {
             <Menu
               className="!min-h-full !bg-transparent !px-1 !border-0"
               rootClassName="sidebar_menu"
+              defaultOpenKeys={collapsed ? [] : ['communities']}
               mode="inline"
               selectedKeys={selectedKey ? [selectedKey] : []}
               onClick={handleMenuClick}

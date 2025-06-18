@@ -10,8 +10,7 @@ import { setZodErrorsToForm } from '@src/validation';
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-export const Settings: React.FC = () => {
+const Settings: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [interest, setInterest] = useState({ data: [], required: 0 });
   const [form] = Form.useForm();
@@ -165,3 +164,5 @@ export const Settings: React.FC = () => {
     </Card>
   );
 };
+
+export default Settings;

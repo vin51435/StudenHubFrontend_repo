@@ -3,8 +3,6 @@ import { get, patch, post } from '@src/libs/apiConfig';
 import { CENTER_ENDPOINTS, USER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IPaginatedResponse, IPaginationRequestQueries } from '@src/types';
 import { ICommunity, IPost, IUser } from '@src/types/app';
-import { ThreadQueryParams } from '@src/types/post.types';
-import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
 class UserOp {
   private static followedCommunity: ICommunity[] | null = null;
@@ -59,6 +57,8 @@ class UserOp {
 
     return res.data;
   }
+
+  static async updateProfilePicture(data: FormData) {}
 }
 
 export default UserOp;

@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState, LoginPayload } from '@src/types/redux';
 import { RootState } from '@src/redux/store';
 import { getCookie, setCookie } from '@src/utils/cookieGetterSetter';
+import { IUser } from '@src/types/app';
 
 // Token is no longer used, http-only cookies are used
 
@@ -19,6 +20,14 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    updateUser: (state, action: PayloadAction<Partial<IUser>>) => {
+      if (state.user) {
+        state.user = {
+          ...state.user,
+          ...action.payload,
+        };
+      }
+    },
     loginSuccess: (state, action: PayloadAction<LoginPayload>) => {
       state.user = action.payload.user;
       state.redirectUrl = action.payload.redirectUrl ?? null;

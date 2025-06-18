@@ -63,7 +63,6 @@ const CreatePost = () => {
       setLoad(true);
       createPostSchema.parse(values);
 
-      console.log(values);
       Object.entries(values).forEach(([key, value]) => {
         if (key === 'files' && Array.isArray(value)) {
           value.forEach((file: File) => {

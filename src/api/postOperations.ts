@@ -60,9 +60,9 @@ class PostOp {
       postId,
       ...(commentId && { commentId }),
       children: 5,
-      limit: 20,
+      limit: 30,
     };
-    const res = await get<ICommentData[], CommentPaginatedResponse<ICommentData>>('/', {
+    const res = await get<{}, CommentPaginatedResponse<ICommentData | ICommentData[]>>('/', {
       BASE_URLS: 'comments',
       queries: [allQueries],
     });

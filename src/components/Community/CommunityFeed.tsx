@@ -28,7 +28,7 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
   const { hasMore, page, posts, loading, communityId } = useAppSelector((state) => state.postCache);
 
   useEffect(() => {
-    if (communityId === community._id) return;
+    // if (communityId === community._id) return;
     dispatch(fetchInitialPosts({ communityId: community._id, sort, range }));
     fresh.current = false;
   }, [slug, sort, range]);

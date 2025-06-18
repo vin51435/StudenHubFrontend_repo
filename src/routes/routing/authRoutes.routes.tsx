@@ -1,12 +1,13 @@
 import { RouteObject } from 'react-router-dom';
 import ProtectAuthRoutes from '@src/routes/components/ProtectAuthRoutes';
-import SignupAddDetails from '@src/pages/Auth/SignupDetails';
-import SignupInterests from '@src/pages/Auth/SignupInterest';
-// import { Login, Signup } from '@src/routes/lazyPages';
-import Login from '@src/pages/Auth/Login';
-import Signup from '@src/pages/Auth/Signup';
-import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
-import ResetPassword from '@src/pages/Auth/ResetPassword';
+import { getRoutePath } from '@src/utils/getRoutePath';
+import {
+  Login,
+  ResetPassword,
+  Signup,
+  SignupAddDetails,
+  SignupInterests,
+} from '@src/routes/routing/lazyPages';
 
 export const authRoutes: RouteObject[] = [
   {

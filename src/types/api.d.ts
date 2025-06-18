@@ -72,7 +72,7 @@ export interface IPaginatedResponse<T = any> extends IBaseResponse {
 }
 
 export interface CommentPagination<T = any> {
-  data: T[];
+  data: T;
   hasMore: boolean;
   rootId: string;
   page: number;

@@ -1,7 +1,7 @@
 import { IoIosClose } from 'react-icons/io';
 import { IoMdSend } from 'react-icons/io';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'antd';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
@@ -35,6 +35,10 @@ const CommentInput: React.FC<CommentInputProps> = ({
 }) => {
   const [value, setValue] = useState(defaultValue);
   const [showEditor, setShowEditor] = useState(showEditorByDefault);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue, edit]);
 
   const newComment = async (value: string) => {
     const data: IPostCommentDTO = { content: value };

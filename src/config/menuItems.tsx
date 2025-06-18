@@ -28,6 +28,7 @@ export const useSidebarMenuItems = (
   });
 
   useEffect(() => {
+    setFollowedCommunities((prev) => ({ ...prev, loading: true }));
     UserOp.fetchFollowedCommunity().then((res) => {
       setFollowedCommunities({
         loading: false,
@@ -73,12 +74,6 @@ export const useSidebarMenuItems = (
     {
       type: 'divider',
     },
-    // {
-    //   key: 'activities',
-    //   icon: <LuActivity />,
-    //   label: 'Activities',
-    //   path: '/activities',
-    // },
     {
       key: 'communities',
       label: 'Communities',
