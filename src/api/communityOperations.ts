@@ -124,6 +124,36 @@ class CommunityOp {
     return res;
   }
 
+  static async updateAvatar(data: FormData, communityId: string) {
+    const res = await patch<ICommunity>(CENTER_ENDPOINTS.UPDATE_COMMUNITY_AVATAR(communityId), {
+      BASE_URLS: 'center',
+      data,
+      bodyType: 'form-data',
+    });
+    return res;
+  }
+
+  static async updateBanner(data: FormData, communityId: string) {
+    const res = await patch<{ bannerUrl: string }>(
+      CENTER_ENDPOINTS.UPDATE_COMMUNITY_BANNER(communityId),
+      {
+        BASE_URLS: 'center',
+        data,
+        bodyType: 'form-data',
+      }
+    );
+    return res;
+  }
+
+  static async updateCommunity(data: FormData, communityId: string) {
+    const res = await patch<ICommunity>(CENTER_ENDPOINTS.COMMUNITY_BY_ID(communityId), {
+      bodyType: 'form-data',
+      BASE_URLS: 'center',
+      data,
+    });
+    return res;
+  }
+
   // Debounced version
   static search = debounceAsync(this._search.bind(this), 400);
   static followToggle = debounceAsync(this._followToggle.bind(this), 400);

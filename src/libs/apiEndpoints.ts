@@ -58,6 +58,9 @@ export const CENTER_ENDPOINTS = {
   COMMUNITY: '/community',
   COMMUNITY_BY_SLUG: (slug: string) => `/community/${slug}`,
   COMMUNITY_BY_ID: (id: string) => `/community/${id}`,
+  UPDATE_COMMUNITY_AVATAR: (id: string) => `/community/${id}/avatar`,
+  UPDATE_COMMUNITY_BANNER: (id: string) => `/community/${id}/banner`,
+
   COMMUNITY_POST: (id: string | number, postId?: string | number) =>
     `/communitypost/${id}${postId ? `/${postId}` : ''}`,
   COMMUNITY_POSTS: (id: string | number) => `/communitypost/${id}/posts`,

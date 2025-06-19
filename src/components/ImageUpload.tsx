@@ -1,5 +1,5 @@
 import { FaPlus } from 'react-icons/fa6';
-import { GetProp, UploadProps, UploadFile, Upload, Image, ImageProps, message } from 'antd';
+import { GetProp, UploadProps, UploadFile, Upload, Image, ImageProps, message, Button } from 'antd';
 import { UploadFileStatus } from 'antd/es/upload/interface';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
@@ -22,22 +22,26 @@ interface ImageDetails {
 interface ImageUploadProps {
   multiple?: boolean;
   base64URLValue?: string | string[]; // initial image(s)
-  onChange?: (files: { base64: string; file: File }[]) => void;
   imageDetails?: ImageDetails[];
   maxCount?: number;
   uploadProps?: Omit<UploadProps, 'onChange'>;
   imagePreviewProps?: Omit<ImageProps, 'onChange'>;
+  showImage?: boolean;
+  uploadButtonNode?: React.ReactNode;
+  onChange?: (files: { base64: string; file: File }[]) => void;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
   base64URLValue,
-  onChange,
   imageDetails,
   multiple = false,
   maxCount = 1,
+  showImage = true,
+  uploadButtonNode,
+  onChange,
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
+  const [previewImage, setPreviewImage] = useState<string | null>(showImage ? '' : null);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const fileListRef = useRef<UploadFile[]>([]);
 
@@ -72,7 +76,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         const base64 = await getBase64(file.originFileObj as FileType);
         file.preview = base64;
       }
-      setPreviewImage(file.url || (file.preview as string));
+      if (showImage) {
+        setPreviewImage(file.url || (file.preview as string));
+      }
       setPreviewOpen(true);
     },
     [base64URLValue]
@@ -127,9 +133,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     <>
       <Upload
         accept="image/jpeg,image/png,image/jpg"
-        listType="picture-card"
+        listType={uploadButtonNode ? 'text' : 'picture-card'}
         fileList={fileList}
-        onPreview={handlePreview}
+        onPreview={uploadButtonNode ? undefined : handlePreview}
         onChange={handleChange}
         beforeUpload={(file, newFiles) => {
           const total = fileListRef.current.length + newFiles.length;
@@ -141,8 +147,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         }}
         multiple={multiple}
         pastable
+        rootClassName="image-upload_root"
+        className="image-upload"
       >
-        {(!multiple && fileList.length >= 1) || fileList.length >= maxCount ? null : uploadButton()}
+        {(!multiple && fileList.length >= 1) || fileList.length >= maxCount
+          ? null
+          : uploadButtonNode || uploadButton()}
       </Upload>
       {previewImage && (
         <Image

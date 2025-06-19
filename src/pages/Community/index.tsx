@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Avatar, Button, Typography, Skeleton, Row, Col, Divider } from 'antd';
+import { Avatar, Button, Typography, Skeleton, Row, Col, Divider, Upload } from 'antd';
+import { FiEdit2 } from 'react-icons/fi';
 import { FaPlus } from 'react-icons/fa6';
 import CommunityOp from '@src/api/communityOperations';
 import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
@@ -31,6 +32,7 @@ export default function CommunityOverview() {
   const dispatch = useAppDispatch();
   const communityCache = useAppSelector((state) => state.communityCache.cache);
   const loading = useAppSelector((state) => state.communityCache.loading);
+  const user = useAppSelector((state) => state.auth.user)!;
   const community = communityCache ?? null;
 
   const [joinLoading, setJoinLoading] = useState(false);
@@ -84,6 +86,30 @@ export default function CommunityOverview() {
     }, 3000);
   };
 
+  const changeAvatar = (info: any) => {
+    const file = info.file; // This is the actual File object
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    CommunityOp.updateAvatar(formData, community._id).then(() => {
+      dispatch(fetchCommunity(community.slug));
+    });
+  };
+
+  const changeBanner = async (info: any) => {
+    const file = info.file; // This is the actual File object
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('banner', file);
+
+    CommunityOp.updateBanner(formData, community._id).then(() => {
+      dispatch(fetchCommunity(community.slug));
+    });
+  };
+
   return (
     <div className="flex mt-1 flex-col w-full max-h-screen">
       {/* Banner */}
@@ -92,18 +118,36 @@ export default function CommunityOverview() {
           <img
             src={community.bannerUrl}
             alt="Banner"
-            className="bg-repeat-x w-full h-full rounded-2xl"
+            className="bg-repeat-x w-full h-full rounded-2xl object-covr"
           />
+        )}
+        {community.owner === user._id && (
+          <label className="absolute top-2 right-2 rounded-full p-1 cursor-pointer ">
+            <Upload customRequest={changeBanner} maxCount={1} showUploadList={false}>
+              <FiEdit2 className="" size={20} />
+            </Upload>
+          </label>
         )}
       </div>
 
       {/* Header */}
       <div className="community_header relative flex items-end justify-start max-h-[56px] !w-full px-4">
-        <Avatar
-          size={100}
-          src={community.avatarUrl}
-          className="border-4 border-[var(--white)] absolute -top-0 left-0 !h-24 !w-24"
-        />
+        <div className="relative w-fit">
+          <Avatar
+            size={100}
+            src={community.avatarUrl}
+            alt="Avatar"
+            className="border-4 border-[var(--white)] absolute -top-0 left-0 !h-24 !w-24"
+          />
+          {community.owner === user._id && (
+            <label className="absolute top-2 right-2 rounded-full p-1 cursor-pointer ">
+              <Upload customRequest={changeAvatar} maxCount={1} showUploadList={false}>
+                <FiEdit2 className="" size={20} />
+              </Upload>
+            </label>
+          )}
+        </div>
+
         <div className="flex justify-between ml-3 flex-1">
           <Title level={1} className="!m-0 font-extrabold">
             r/{community.name}
