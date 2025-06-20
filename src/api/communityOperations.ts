@@ -116,7 +116,7 @@ class CommunityOp {
       if (!this.communityId) return null;
       communityId = this.communityId;
     }
-    const res = await post<ICommunity>(CENTER_ENDPOINTS.COMMUNITY_POST(communityId), {
+    const res = await post<IPost>(CENTER_ENDPOINTS.COMMUNITY_POST(communityId), {
       BASE_URLS: 'center',
       data,
       bodyType: 'form-data',

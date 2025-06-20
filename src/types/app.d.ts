@@ -90,7 +90,7 @@ export interface ICommunity {
   updatedAt: string;
 }
 
-interface IPost {
+export interface IPost {
   _id?: string;
   title: string;
   slug: string;
@@ -98,7 +98,7 @@ interface IPost {
   mediaUrls: string[];
   tags: string[];
 
-  communityId: string | Partial<ICommunity>;
+  communityId: string | ICommunity;
   authorId: string | IUser;
 
   views: number;

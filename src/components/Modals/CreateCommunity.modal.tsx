@@ -68,7 +68,7 @@ const CreateCommunityModal: React.FC<BasicModalProps> = ({ modalProps, closeModa
         content: 'dark:!bg-[var(--primary-dark)]',
       }}
       open={modalProps?.open}
-      title="Create Custom Feed"
+      title="Create a community"
       onCancel={closeModal}
       footer={null}
       destroyOnHidden

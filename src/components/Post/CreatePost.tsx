@@ -85,7 +85,11 @@ const CreatePost = () => {
       message.success('Post created successfully');
 
       if (res?.data?._id) {
-        navigate(getRoutePath('POST').replace(':postSlug', res.data.slug));
+        navigate(
+          getRoutePath('POST')
+            .replace(':postSlug', res.data.slug)
+            .replace(':slug', (res.data.communityId as ICommunity)?.slug)
+        );
       }
 
       form.resetFields();
