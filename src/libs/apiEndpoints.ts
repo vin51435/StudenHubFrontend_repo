@@ -17,6 +17,7 @@ export const BASE_URLS = {
   userFormats: `${activeHost}/api/v1/userformat`,
   center: `${activeHost}/api/v1/center`,
   comments: `${activeHost}/api/v1/comments`,
+  admin: `${activeHost}/api/v1/admin`,
 };
 
 export const AUTH_ENDPOINTS = {
@@ -81,6 +82,10 @@ export const CENTER_ENDPOINTS = {
   COMMENT_VOTE: (id: string, voteType: VoteEnum) => `/${id}/vote/${voteType}`,
 };
 
+export const ADMIN_ENDPOINTS = {
+  ACCESS_LOGS: '/accesslogs',
+};
+
 export const FORMAT_ENDPOINTS = {
   GET_STATES: '/allstates',
   GET_CITIES: '/allcities',
@@ -92,6 +97,7 @@ export const flatEndpointObjects = {
   ...USER_ENDPOINTS,
   ...FORMAT_ENDPOINTS,
   ...CENTER_ENDPOINTS,
+  ...ADMIN_ENDPOINTS,
 } as const;
 
 const githubAuthBaseURL = BASE_URLS.githubAuth;

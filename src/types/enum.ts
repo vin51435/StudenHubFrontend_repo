@@ -9,6 +9,10 @@ export enum Gender {
   Other = 'Other',
 }
 
+export enum AccType {
+  Admin = 'admin',
+}
+
 export enum UserType {
   Student = 'Student',
   CollegeStudent = 'College Student',

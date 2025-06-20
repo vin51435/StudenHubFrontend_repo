@@ -67,6 +67,12 @@ const ROUTES = [
       { name: 'CREATE_POST', title: 'Create Post', path: 'create' },
     ],
   },
+  {
+    name: 'ADMIN',
+    path: '/admin',
+    title: 'Admin',
+    children: [{ name: 'DASHBOARD', path: 'dashboard' }],
+  },
 ] as const;
 
 export default ROUTES;

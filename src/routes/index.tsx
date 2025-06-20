@@ -7,15 +7,26 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 import ScrollRestoration from '@src/components/ScrollRestoration';
 import { Spin } from 'antd';
-import PageTransitionWrapper from '@src/components/PageTransitionWrapper';
 import { setNavigator } from '@src/utils/navigate';
+import { useAppSelector } from '@src/redux/hook';
+import { AccType } from '@src/types/enum';
+import { adminRoutes } from '@src/routes/routing/admin.routes';
 
 const AppRoutes = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const routes = [...publicRoutes, ...authRoutes, ...protectedRoutes];
+  const user = useAppSelector((state) => state.auth.user);
 
-  const routeLoaded = useRoutes(routes);
+  console.log('user', user);
+
+  const finalRoutes = [
+    ...publicRoutes,
+    ...authRoutes,
+    ...protectedRoutes,
+    ...(user?.role === AccType.Admin ? adminRoutes : []),
+  ];
+
+  const routeLoaded = useRoutes(finalRoutes);
 
   useEffect(() => {
     if (routeLoaded) {

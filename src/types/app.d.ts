@@ -120,3 +120,25 @@ export interface IPost {
   createdAt: string;
   updatedAt?: string;
 }
+
+export interface LogEntry {
+  ip: string;
+  user: ObjectId;
+  username: string;
+  userAgent: string;
+  device: {
+    os: string;
+    browser: string;
+    platform: string;
+  };
+  location: {
+    country: string;
+    region: string;
+    city: string;
+    lat: number;
+    lon: number;
+  };
+  timeWindow?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}

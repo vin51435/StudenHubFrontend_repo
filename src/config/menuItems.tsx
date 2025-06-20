@@ -9,6 +9,8 @@ import UserOp from '@src/api/userOperations';
 import { ModalType } from '@src/contexts/Model.context';
 import { ICommunity } from '@src/types/app';
 import DefaultAvatar from '/profile-default.svg';
+import { useAppSelector } from '@src/redux/hook';
+import { AccType } from '@src/types/enum';
 
 export type MenuItem = Required<MenuProps>['items'][number] & {
   path?: string;
@@ -26,6 +28,7 @@ export const useSidebarMenuItems = (
     loading: true,
     data: [],
   });
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
     setFollowedCommunities((prev) => ({ ...prev, loading: true }));
@@ -58,7 +61,7 @@ export const useSidebarMenuItems = (
         })),
   ].flat();
 
-  return [
+  let menuItems: MenuItem[] = [
     {
       key: 'home',
       label: 'Home',
@@ -83,4 +86,15 @@ export const useSidebarMenuItems = (
       children: communityChildren,
     },
   ];
+
+  if (user && user.role === AccType.Admin) {
+    menuItems.push({
+      key: 'admin',
+      label: 'Admin',
+      icon: <LuActivity />,
+      path: getRoutePath('DASHBOARD'),
+    });
+  }
+
+  return menuItems;
 };
