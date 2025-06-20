@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Typography, FormInstance } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { post } from '@src/libs/apiConfig';
@@ -25,6 +25,13 @@ const LoginForm: React.FC = () => {
 
   const navigate = useNavigate();
   const { notif } = useNotification();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      email: 'bejat77777@cristout.com',
+      password: '',
+    });
+  }, []);
 
   const handleFinish = () => {
     const values = form.getFieldsValue();

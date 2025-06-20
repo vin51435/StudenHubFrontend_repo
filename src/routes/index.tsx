@@ -1,4 +1,4 @@
-import { useRoutes, BrowserRouter } from 'react-router-dom';
+import { useRoutes, BrowserRouter, useNavigate } from 'react-router-dom';
 import { publicRoutes } from './routing/publicRoutes.routes';
 import { protectedRoutes } from './routing/protectedRoutes.routes';
 import { Suspense, useEffect } from 'react';
@@ -8,17 +8,24 @@ import { setLoading } from '@src/redux/reducers/uiSlice';
 import ScrollRestoration from '@src/components/ScrollRestoration';
 import { Spin } from 'antd';
 import PageTransitionWrapper from '@src/components/PageTransitionWrapper';
+import { setNavigator } from '@src/utils/navigate';
 
 const AppRoutes = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const routes = [...publicRoutes, ...authRoutes, ...protectedRoutes];
 
   const routeLoaded = useRoutes(routes);
+
   useEffect(() => {
     if (routeLoaded) {
       dispatch(setLoading(false));
     }
   }, [routeLoaded]);
+
+  useEffect(() => {
+    setNavigator(navigate); // ✅ assign global nav function
+  }, [navigate]);
 
   return routeLoaded;
 };

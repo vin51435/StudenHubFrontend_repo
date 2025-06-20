@@ -77,7 +77,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ setShowLoginService }: SignupFo
       emailVerificationSchema.parse(values);
       setFormErrors({});
 
-      // return;
       setLoad(true);
 
       post('USER_EMAIL_REG', {

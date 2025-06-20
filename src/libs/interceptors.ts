@@ -6,10 +6,11 @@ import { getRoutePath } from '@src/utils/getRoutePath';
 import { setLoading } from '@src/redux/reducers/uiSlice';
 import store from '@src/redux/store';
 import axios, { AxiosInstance } from 'axios';
+import { navigateTo } from '@src/utils/navigate';
 
 function redirection(redirectUrl: string, errorCode?: string) {
   store.dispatch(setLoading(true));
-  let redirectPath: string = redirectUrl;
+  let redirectPath = redirectUrl;
 
   if (
     (errorCode === ErrorCodes.CLIENT.UNAUTHENTICATED ||
@@ -37,8 +38,9 @@ function redirection(redirectUrl: string, errorCode?: string) {
       window.location.pathname.startsWith(getRoutePath('AUTH.OAUTH_CALLBACK'))
     )
   ) {
-    window.location.href = redirectPath;
+    navigateTo(redirectPath);
   }
+
   store.dispatch(setRedirectUrl(redirectPath));
   store.dispatch(setLoading(false));
 }
