@@ -7,6 +7,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import PostOp from '@src/api/postOperations';
 import { ICommentData, IPostCommentDTO } from '@src/types/post.types';
+import { useAppSelector } from '@src/redux/hook';
 
 interface CommentInputProps {
   postId: string;
@@ -35,6 +36,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
 }) => {
   const [value, setValue] = useState(defaultValue);
   const [showEditor, setShowEditor] = useState(showEditorByDefault);
+  const user = useAppSelector(state => state.auth.user)!;
 
   useEffect(() => {
     setValue(defaultValue);
@@ -50,6 +52,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
       comment.children = comment.children ?? [];
       comment.children.push(res.data);
       comment.childrenCount += 1;
+      comment.userId = user;
       updateComment(comment);
     } else if (updateComment) {
       updateComment(res.data);

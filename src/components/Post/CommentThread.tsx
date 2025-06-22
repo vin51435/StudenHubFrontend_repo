@@ -280,7 +280,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       downvotesCount: downVote,
       voteType: vote,
     };
-    console.log('updated comment', updatedComment);
     updateComment(updatedComment);
   }
 

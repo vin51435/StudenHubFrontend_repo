@@ -86,6 +86,22 @@ export function searchArrayNestedObjByKey<T extends Record<string, any>>(
   return undefined;
 }
 
+/**
+ * Recursively updates an item in an array of nested objects by searching through
+ * nested structures via the specified `childrenKey` and updating the first item
+ * that matches the specified `key` with the given `keyValue`.
+ *
+ * If the item is found, the `updater` function will be called with the original
+ * item and the returned value will replace the original item in the array.
+ * If the item is not found, the original array will be returned unchanged.
+ *
+ * @param items - The array of objects to search through.
+ * @param key - The key to match against the specified value.
+ * @param keyValue - The value to search for.
+ * @param updater - A function that takes an item and returns the updated item.
+ * @param childrenKey - Optional key that indicates where nested child arrays exist.
+ * @returns The updated array, or null if the item was not found.
+ */
 export function updateNestedArrayById<T extends Record<string, any>>(
   items: T[],
   key: string,

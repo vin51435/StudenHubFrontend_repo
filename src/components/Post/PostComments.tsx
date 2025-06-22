@@ -1,6 +1,7 @@
 import PostOp from '@src/api/postOperations';
 import CommentInput from '@src/components/CommentInput';
 import CommentSection from '@src/components/Post/CommentThread';
+import { useAppSelector } from '@src/redux/hook';
 import { CommentSortMethod, ICommentData } from '@src/types/post.types';
 import { updateNestedArrayById } from '@src/utils/common';
 import { Typography, Select } from 'antd';
@@ -10,6 +11,7 @@ const PostComments = ({ postId }: { postId: string }) => {
   const [comments, setComments] = useState<ICommentData[]>([]);
   const [sort, setSort] = useState<CommentSortMethod>(CommentSortMethod.Votes);
   const [loading, setLoading] = useState(true);
+  const user = useAppSelector(state => state.auth.user)!;
 
   useEffect(() => {
     setLoading(true);
@@ -27,7 +29,7 @@ const PostComments = ({ postId }: { postId: string }) => {
   }
 
   function updateComment(comment: ICommentData) {
-    const updatedComments = updateNestedArrayById(
+    const updatedComments = updateNestedArrayById<ICommentData>(
       comments,
       '_id',
       comment._id,
@@ -35,7 +37,11 @@ const PostComments = ({ postId }: { postId: string }) => {
       'children'
     );
     if (!updatedComments && comment) {
-      setComments((prev) => [comment, ...prev]);
+      const newComment :ICommentData={
+        ...comment,
+        userId:user
+      }
+      setComments((prev) => [newComment, ...prev]);
       return;
     } else if (updatedComments) {
       setComments(updatedComments);
