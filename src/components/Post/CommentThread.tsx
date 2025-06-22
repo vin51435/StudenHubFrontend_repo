@@ -2,7 +2,7 @@ import { BiSolidUpvote, BiUpvote, BiDownvote, BiSolidDownvote } from 'react-icon
 import { MdEdit, MdOutlineReply, MdDelete } from 'react-icons/md';
 import { IoIosArrowBack, IoIosArrowDown } from 'react-icons/io';
 import React, { useState } from 'react';
-import { Space } from 'antd';
+import { Avatar, Space } from 'antd';
 import { ICommentData } from '@src/types/post.types';
 import CommentInput from '@src/components/CommentInput';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,9 @@ import { RootState } from '@src/redux/store';
 import { VoteEnum } from '@src/types/enum';
 import { IUser } from '@src/types/app';
 import PostOp from '@src/api/postOperations';
+import DefaultAvatar from '/profile-default.svg';
+import { Link } from 'react-router-dom';
+import { getRoutePath } from '@src/utils/getRoutePath';
 
 interface CommentProps {
   comment: ICommentData;
@@ -70,8 +73,8 @@ const Comment: React.FC<CommentProps> = ({
               comment={child}
               depth={depth + 1}
               activeComment={activeComment}
-              showDelete={child.userId === user?._id}
-              showEdit={child.userId === user?._id}
+              showDelete={child.userId._id === user?._id}
+              showEdit={child.userId._id === user?._id}
               editActive={editActive}
               lastComment={lastComment}
               handleVote={handleVote}
@@ -93,6 +96,34 @@ const Comment: React.FC<CommentProps> = ({
         <div className="flex-1">
           {!comment.isDeleted ? (
             <div className="p-2 rounded-md">
+              <Link
+                to={
+                  comment?.userId?.username
+                    ? getRoutePath('USER_PROFILE').replace(':username', comment.userId.username)
+                    : '#'
+                }
+                onClick={(e) => {
+                  if (!comment?.userId?.username) e.preventDefault();
+                }}
+                className={`flex items-center gap-1 text-inherit${
+                  comment?.userId?.username
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-50 pointer-events-none'
+                }`}
+              >
+                <Avatar
+                  size="small"
+                  src={comment?.userId?.profilePicture ?? DefaultAvatar}
+                  className="shrink-0"
+                />{' '}
+                <p className="ml-2 text-sm font-semibold">
+                  {comment?.userId?.username ? (
+                    `u/${comment.userId.fullName}`
+                  ) : (
+                    <span className="text-red-500 italic">u/Deleted</span>
+                  )}
+                </p>
+              </Link>
               <div
                 className="text-sm"
                 dangerouslySetInnerHTML={{ __html: comment.content ?? '' }}
@@ -174,7 +205,7 @@ const Comment: React.FC<CommentProps> = ({
                   postId={comment.postId}
                   comment={comment}
                   child
-                  edit={editActive && comment.userId === user?._id}
+                  edit={editActive && comment.userId._id === user?._id}
                   value={editActive ? comment?.content ?? '' : ''}
                   postButtonLabel={editActive ? 'Save' : 'Reply'}
                   showEditorByDefault={true}
@@ -264,8 +295,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       {comments.map((comment) => (
         <Comment
           key={comment._id}
-          showDelete={user?._id === comment.userId}
-          showEdit={user?._id === comment.userId}
+          showDelete={user?._id === comment.userId._id}
+          showEdit={user?._id === comment.userId._id}
           user={user!}
           editActive={editActive}
           comment={comment}

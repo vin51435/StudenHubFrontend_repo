@@ -1,3 +1,4 @@
+import { IUser } from '@src/types/app';
 import { VoteEnum } from '@src/types/enum';
 
 export interface IPostCommentDTO {
@@ -23,7 +24,7 @@ export type SortOrder = 'ascending' | 'descending'; // assuming these are the po
 export interface ICommentData {
   _id: string;
   postId: string;
-  userId: string;
+  userId: IUser;
   content: string | null;
   childrenCount: number;
   upvotesCount: number;

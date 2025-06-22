@@ -29,7 +29,7 @@ const LoginForm: React.FC = () => {
   useEffect(() => {
     form.setFieldsValue({
       email: 'bejat77777@cristout.com',
-      password: '',
+      password: 'Test@1234',
     });
   }, []);
 

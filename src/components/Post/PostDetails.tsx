@@ -133,14 +133,13 @@ const PostDetailPage: React.FC = () => {
 
   const handlePostSave = async () => {
     if (!post._id) return;
-    await PostOp._savePostToggle(post._id!);
-    setPost(
-      (prev) =>
-        ({
-          ...prev,
-          isSaved: prev?.isSaved ?? true,
-        } as IPost)
-    );
+    void PostOp._savePostToggle(post._id!);
+    setPost((prev) => {
+      return {
+        ...prev,
+        isSaved: !prev?.isSaved,
+      } as IPost;
+    });
   };
 
   return (
@@ -289,11 +288,11 @@ const PostDetailPage: React.FC = () => {
                   <LuMessageSquareText size={18} /> <span>{post?.commentsCount} Comments</span>
                 </div>
               </div>
-              <div>
+              <div className="cursor-pointer" onClick={handlePostSave}>
                 {post?.isSaved ? (
                   <FaBookmark size={18} className={`text-blue-400 `} />
                 ) : (
-                  <FaRegBookmark size={18} onClick={handlePostSave} className={``} />
+                  <FaRegBookmark size={18} className={``} />
                 )}
               </div>
             </div>

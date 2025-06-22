@@ -90,7 +90,7 @@ const PostOverview: FC<{
     await PostOp._savePostToggle(post._id!);
     const updatedPost = {
       ...post,
-      isSaved: post?.isSaved ?? true,
+      isSaved: !post?.isSaved,
     };
     onChangePost?.(updatedPost);
   };
@@ -265,12 +265,13 @@ const PostOverview: FC<{
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
+              handleSave();
             }}
           >
             {post?.isSaved ? (
               <FaBookmark size={18} className={`text-blue-400 `} />
             ) : (
-              <FaRegBookmark size={18} onClick={handleSave} className={``} />
+              <FaRegBookmark size={18} className={``} />
             )}
           </div>
         </div>
