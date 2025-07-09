@@ -126,6 +126,7 @@ export interface LogEntry {
   user: ObjectId;
   username: string;
   userAgent: string;
+  path:string,
   device: {
     os: string;
     browser: string;

@@ -28,6 +28,10 @@ const columns: ColumnsType<LogEntry> = [
       }`,
   },
   {
+    title:'Path',
+    key:'path',
+  },
+  {
     title: 'Location',
     key: 'location',
     render: (_, record) =>
