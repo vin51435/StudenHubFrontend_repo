@@ -152,7 +152,6 @@ const CustomSelect = ({
     if (!selectValue || !data) return null;
     const id = typeof selectValue === 'string' ? selectValue : selectValue?.value;
     const item = data.find((d) => d._id === id);
-    console.log('formated selectValue ran ', { selectValue, data, item });
     return item ? { value: item._id, label: renderFn(item) } : undefined;
   }, [selectValue, data, renderFn]);
 

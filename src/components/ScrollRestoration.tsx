@@ -19,7 +19,6 @@ const ScrollRestoration = () => {
           if (!scrollId) return;
           const keyId = `${prevKey.current}-${scrollId}`;
           positions.current[keyId] = container.scrollTop;
-          console.log('saved', keyId, container, container.scrollTop, container.scrollHeight);
         });
       }
     };

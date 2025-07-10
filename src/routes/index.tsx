@@ -17,8 +17,6 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const user = useAppSelector((state) => state.auth.user);
 
-  console.log('user', user);
-
   const finalRoutes = [
     ...publicRoutes,
     ...authRoutes,

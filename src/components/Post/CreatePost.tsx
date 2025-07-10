@@ -12,6 +12,7 @@ import TagInput from '@src/components/TagInput';
 import { createPostSchema } from '@src/validation/postSchema';
 import { setZodErrorsToForm } from '@src/validation';
 import { ZodError } from 'zod';
+import UserOp from '@src/api/userOperations';
 
 const { Title } = Typography;
 
@@ -32,17 +33,29 @@ const quillModules = {
 };
 
 const CreatePost = () => {
+  const [options,setOptions] =useState<ICommunity[]>([])
   const [selectedCommunity, setSelectedCommunity] = useState<ICommunity | null>(null);
   const [load, setLoad] = useState(false);
 
   const { slug } = useParams<{ slug: string }>();
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    getAllFollowedCommunities()
+  },[])
 
   useEffect(() => {
     getCommunity();
-  }, []);
+  }, [slug]);
 
+  async function getAllFollowedCommunities() {
+    const res = await UserOp.fetchFollowedCommunity();
+    if (res?.data) {
+      setOptions(res?.data);
+    }
+  }
+  
   async function getCommunity() {
     const res = await CommunityOp.fetchCommunityDetails(slug);
     if (!res?.data || !res?.data?.isFollowing) {
@@ -56,7 +69,6 @@ const CreatePost = () => {
 
   const handleFinish = async (values: any) => {
     values.files = values?.files?.map((fileData: any) => fileData?.file);
-    console.log('values', values);
     const formData = new FormData();
 
     try {
@@ -88,7 +100,7 @@ const CreatePost = () => {
         navigate(
           getRoutePath('POST')
             .replace(':postSlug', res.data.slug)
-            .replace(':slug', (res.data.communityId as ICommunity)?.slug)
+            .replace(':slug', (selectedCommunity?.slug as string) ?? 'xyz')
         );
       }
 
@@ -127,7 +139,7 @@ const CreatePost = () => {
                   navigate(getRoutePath('CREATE_POST').replace(':slug', fulloption?.slug));
                 }
               }}
-              defaultData={[selectedCommunity]}
+              defaultData={options}
             />
           )}
         </Form.Item>
