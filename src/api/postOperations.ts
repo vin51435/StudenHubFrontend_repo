@@ -36,7 +36,7 @@ class PostOp {
   }
 
   static async postComment(postId: string, data: IPostCommentDTO) {
-    const res = await post(CENTER_ENDPOINTS.POST_COMMENT(postId), {
+    const res = await post<ICommentData>(CENTER_ENDPOINTS.POST_COMMENT(postId), {
       BASE_URLS: 'comments',
       data,
     });

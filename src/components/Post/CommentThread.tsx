@@ -118,7 +118,7 @@ const Comment: React.FC<CommentProps> = ({
                 />{' '}
                 <p className="ml-2 text-sm font-semibold">
                   {comment?.userId?.username ? (
-                    `u/${comment.userId.fullName}`
+                    `u/${comment.userId.username}`
                   ) : (
                     <span className="text-red-500 italic">u/Deleted</span>
                   )}

@@ -13,12 +13,12 @@ const columns: ColumnsType<LogEntry> = [
     dataIndex: 'ip',
     key: 'ip',
   },
-  {
-    title: 'Username',
-    dataIndex: 'username',
-    key: 'username',
-    render: (text) => text || 'Guest',
-  },
+  // {
+  //   title: 'Username',
+  //   dataIndex: 'username',
+  //   key: 'username',
+  //   render: (text) => text || 'N/A',
+  // },
   {
     title: 'Device Info',
     key: 'device',
@@ -29,7 +29,13 @@ const columns: ColumnsType<LogEntry> = [
   },
   {
     title:'Path',
+    dataIndex:'path',
     key:'path',
+    render: (text) => (
+      <div title={text} className="overflow-hidden overflow-ellipsis whitespace-nowrap" style={{ maxWidth: 200 }}>
+        {text}
+      </div>
+    ),
   },
   {
     title: 'Location',

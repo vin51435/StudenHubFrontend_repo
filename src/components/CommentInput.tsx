@@ -48,11 +48,12 @@ const CommentInput: React.FC<CommentInputProps> = ({
       data.parentId = comment._id;
     }
     const res = await PostOp.postComment(postId, data);
+    if(!res.data) return
+    res.data.userId=user
     if (comment && updateComment && child) {
       comment.children = comment.children ?? [];
       comment.children.push(res.data);
       comment.childrenCount += 1;
-      comment.userId = user;
       updateComment(comment);
     } else if (updateComment) {
       updateComment(res.data);
