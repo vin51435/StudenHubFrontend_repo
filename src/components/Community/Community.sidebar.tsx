@@ -49,11 +49,14 @@ const Communitysidebar = ({
   };
 
   return (
-    <Card className="community-sidebar !hidden md:!block h-fit !shadow-md text-start sticky !bg-transparent">
-      <div className="flex justify-between items-center w-full">
+    <Card
+      classNames={{ body: '!p-4' }}
+      className="community-sidebar sticky !hidden h-fit !bg-transparent text-start !shadow-md md:!block"
+    >
+      <div className="flex w-full items-center justify-between">
         <Title
           level={5}
-          className="cursor-pointer !mb-2 truncate"
+          className="!mb-2 cursor-pointer truncate"
           onClick={() => navigate(getRoutePath('COMMUNITY').replace(':slug', community?.slug))}
         >
           r/{community?.name}
@@ -62,7 +65,7 @@ const Communitysidebar = ({
         {/* ✏️ Edit Button */}
         {community?.owner === user._id && (
           <MdModeEditOutline
-            className="text-xl text-gray-500 cursor-pointer hover:text-blue-500"
+            className="cursor-pointer text-xl text-gray-500 hover:text-blue-500"
             onClick={() => setEditing(true)}
           />
         )}
@@ -77,7 +80,7 @@ const Communitysidebar = ({
             onChange={(e) => setDesc(e.target.value)}
             disabled={saving}
           />
-          <div className="flex gap-2 justify-end">
+          <div className="flex justify-end gap-2">
             <Button size="small" onClick={() => setEditing(false)} disabled={saving}>
               Cancel
             </Button>
@@ -92,9 +95,9 @@ const Communitysidebar = ({
         </Paragraph>
       )}
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="mt-4 flex items-center justify-between">
         <div>
-          <Text type="secondary" className="dark:!text-gray-400 block text-xs">
+          <Text type="secondary" className="block text-xs dark:!text-gray-400">
             <Text className="mr-1" strong>
               {community?.followersCount || 0}
             </Text>

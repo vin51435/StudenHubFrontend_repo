@@ -59,11 +59,11 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
 
   return (
     <section>
-      <div className="mb-4">
+      <div className="mb-2">
         <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} />
       </div>
       {loading || !(communityId === community._id) ? (
-        <div className="h-full flex justify-center items-center">
+        <div className="flex h-full items-center justify-center">
           <Spin size="large" />
         </div>
       ) : posts.length > 0 ? (
@@ -79,13 +79,13 @@ const CommunityFeed = ({ community }: { community: ICommunity }) => {
             ))}
           </div>
           {hasMore && (
-            <div ref={ref} className="h-full flex justify-center items-center">
+            <div ref={ref} className="flex h-full items-center justify-center">
               Loading more...
             </div>
           )}
         </>
       ) : (
-        <div className="h-full flex justify-center items-center">
+        <div className="flex h-full items-center justify-center">
           <span>No posts to display</span>
         </div>
       )}

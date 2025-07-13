@@ -29,11 +29,11 @@ export default function HomeFeed() {
 
   return (
     <section className="">
-      <div className="mb-4">
-        {/* <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} /> */}
-      </div>
+      {/* <div className="mb-4">
+        <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} />
+      </div> */}
       {homeFeed.loading ? (
-        <div className="h-full flex justify-center items-center">
+        <div className="flex h-full items-center justify-center">
           <Spin size="large" />
         </div>
       ) : homeFeed.posts.length > 0 ? (
@@ -44,13 +44,13 @@ export default function HomeFeed() {
             ))}
           </div>
           {homeFeed.hasMore && (
-            <div ref={ref} className="h-full flex justify-center items-center">
+            <div ref={ref} className="flex h-full items-center justify-center">
               Loading more...
             </div>
           )}
         </>
       ) : (
-        <div className="h-full flex justify-center items-center">
+        <div className="flex h-full items-center justify-center">
           <span>No posts to display</span>
         </div>
       )}

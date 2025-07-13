@@ -13,51 +13,46 @@ const PostOverviewCompact = ({ post }: { post: IPost }) => {
     <Link
       to={getRoutePath('POST').replace(':postSlug', post.slug)}
       style={{ textDecoration: 'none', color: 'inherit' }}
-      className="post-overview-compact_container w-full  dflex flex-col gap-2 rounded-xl transition"
+      className="post-overview-compact_container dflex w-full flex-col gap-2 rounded-xl transition"
     >
-      <div className="grid grid-cols-3  w-full items-start">
-        <div className={`${'col-span-2'}`}>
+      <div
+        className="grid w-full items-start overflow-hidden"
+        style={{ gridTemplateColumns: post.mediaUrls?.[0] ? 'minmax(0, 1fr) 60px' : '1fr' }}
+      >
+        {/* Left Content */}
+        <div className="min-w-0 pr-2">
           {/* Top Row: Avatar + Community + Time */}
           <div
-            className="flex items-center text-sm w-full overflow-hidden"
+            className="mb-0.5 flex w-full items-center justify-between overflow-hidden text-sm"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               navigate(getRoutePath('COMMUNITY').replace(':slug', community?.slug!));
             }}
           >
-            {/* Avatar */}
-            <Avatar
-              size="small"
-              src={community?.avatarUrl ?? DefaultAvatar}
-              className="mr-1 shrink-0"
-            />
-
-            {/* Slug */}
-            <span className="font-medium mx-1 max-w-[50%] truncate ">r/{community?.slug}</span>
-
-            {/* Separator dot (optional) */}
-            {/* <span className=" mx-1 shrink-0">•</span> */}
-
-            {/* Time ago */}
-            <span className="truncate max-w-[50%] ">{timeAgo(post.createdAt)}</span>
+            <div className="flex min-w-0 items-center">
+              <Avatar
+                size={20}
+                src={community?.avatarUrl ?? DefaultAvatar}
+                className="mr-1 shrink-0"
+              />
+              <span className="mx-1 truncate font-medium">r/{community?.slug}</span>
+            </div>
+            <span className="max-w-[50%] truncate text-end">{timeAgo(post.createdAt)}</span>
           </div>
 
-          {/* Title + Optional Image */}
-
-          <h2 className="text-sm font-semibold line-clamp-2 ">{post.title}</h2>
+          <h2 className="line-clamp-2 text-sm font-semibold">{post.title}</h2>
         </div>
-        {/* Post title */}
 
-        {/* Thumbnail if exists */}
+        {/* Thumbnail (fixed size) */}
         {post.mediaUrls?.[0] && (
-          <div className="col-span-1 justify-self-end">
+          <div className="h-[60px] w-[60px] shrink-0 justify-self-end overflow-hidden rounded-md">
             <Image
               src={post.mediaUrls[0]}
               width={60}
               height={60}
               preview={false}
-              className="rounded-md object-cover"
+              className="h-full w-full rounded-md object-cover"
               alt="thumbnail"
             />
           </div>

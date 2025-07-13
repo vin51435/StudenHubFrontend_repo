@@ -33,9 +33,9 @@ const PopularFeed = () => {
 
   return (
     <section className="">
-      <div className="mb-4">
-        {/* <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} /> */}
-      </div>
+      {/* <div className="mb-4">
+        <PostSortDropdown value={{ sort: sort, timeRange: range }} onChange={handleSortChange} />
+      </div> */}
       {popularFeed.loading ? (
         <div className="h-full flex justify-center items-center">
           <Spin size="large" />

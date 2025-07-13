@@ -111,18 +111,18 @@ export default function CommunityOverview() {
   };
 
   return (
-    <div className="flex mt-1 flex-col w-full max-h-screen">
+    <div className="max-h-screen- mt-1 flex w-full flex-col items-center">
       {/* Banner */}
-      <div className="w-full h-[160px] bg-transparent relative rounded-3xl">
+      <div className="relative h-[160px] w-full rounded-3xl bg-transparent">
         {community.bannerUrl && (
           <img
             src={community.bannerUrl}
             alt="Banner"
-            className="bg-repeat-x w-full h-full rounded-2xl object-covr"
+            className="object-covr h-full w-full rounded-2xl bg-repeat-x"
           />
         )}
         {community.owner === user._id && (
-          <label className="absolute top-2 right-2 rounded-full p-1 cursor-pointer ">
+          <label className="absolute top-2 right-2 cursor-pointer rounded-full p-1">
             <Upload customRequest={changeBanner} maxCount={1} showUploadList={false}>
               <FiEdit2 className="" size={20} />
             </Upload>
@@ -131,16 +131,16 @@ export default function CommunityOverview() {
       </div>
 
       {/* Header */}
-      <div className="community_header relative flex items-end justify-start max-h-[56px] !w-full px-4">
+      <div className="community_header relative flex max-h-[56px] !w-full items-end justify-start px-4">
         <div className="relative w-fit">
           <Avatar
             size={100}
             src={community.avatarUrl}
             alt="Avatar"
-            className="border-4 border-[var(--white)] absolute -top-0 left-0 !h-24 !w-24"
+            className="absolute -top-0 left-0 !h-24 !w-24 border-4 border-[var(--white)]"
           />
           {community.owner === user._id && (
-            <label className="absolute top-2 right-2 rounded-full p-1 cursor-pointer ">
+            <label className="absolute top-2 right-2 cursor-pointer rounded-full p-1">
               <Upload customRequest={changeAvatar} maxCount={1} showUploadList={false}>
                 <FiEdit2 className="" size={20} />
               </Upload>
@@ -148,13 +148,13 @@ export default function CommunityOverview() {
           )}
         </div>
 
-        <div className="flex justify-between ml-3 flex-1">
+        <div className="ml-3 flex flex-1 justify-between">
           <Title level={1} className="!m-0 font-extrabold">
             r/{community.name}
           </Title>
-          <div className="flex gap-4 ml-auto items-center">
+          <div className="ml-auto flex items-center gap-4">
             <Button
-              className="!bg-transparent mr-2"
+              className="mr-2 !bg-transparent"
               type="dashed"
               disabled={joinLoading || !community.isFollowing}
               icon={<FaPlus />}
@@ -176,13 +176,13 @@ export default function CommunityOverview() {
       <Divider />
 
       {/* Main Layout */}
-      <Row className="w-full max-w-7xl mx-auto pb-4 px-4 " gutter={[18, 18]}>
-        <Col span={24} md={17} className="">
+      <Row className="w-full max-w-7xl px-0 pb-4" gutter={[18, 18]}>
+        <Col span={24} md={17} className="!pl-0">
           {/* Post Feed */}
           <CommunityFeed community={community} />
         </Col>
 
-        <Col span={0} md={7}>
+        <Col span={0} md={7} className="!pr-0">
           {/* Sidebar */}
           <Communitysidebar community={community} />
         </Col>

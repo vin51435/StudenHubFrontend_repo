@@ -14,18 +14,18 @@ const RecentPostsSidebar = () => {
 
   return (
     <Card
-      className="recent-posts_sidebar !bg-transparent !border-[var(--secondary-white)]"
+      className="recent-posts_sidebar !border-[var(--secondary-white)] !bg-transparent"
       classNames={{
-        body: 'text-start',
+        body: 'text-start !p-4',
         title: 'text-start',
         extra: '',
-        header: '!]borcer-b-0 !border-[var(--secondary-white)]',
+        header: '!]borcer-b-0 !border-[var(--secondary-white)] !px-4',
       }}
       title={'Recent Posts'}
       extra={
         <Button
           type="link"
-          className="hover:!border-none focus-visible:!outline-none !p-0"
+          className="!p-0 hover:!border-none focus-visible:!outline-none"
           onClick={() => dispatch(clearRecentPosts())}
         >
           Clear
@@ -35,7 +35,7 @@ const RecentPostsSidebar = () => {
       {recentPosts.posts.map((post) => {
         if (!post._id || !post.slug) return;
         return (
-          <div key={post._id}>
+          <div key={post._id} className="mb-2">
             <PostOverviewCompact post={post as IPost} />
             <Divider />
           </div>

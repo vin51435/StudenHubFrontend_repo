@@ -79,18 +79,18 @@ const MainLayout: React.FC = () => {
         }}
         className="layout_header"
       >
-        <div className="!ml-auto !mr-3 h-full w-full">
+        <div className="!mr-3 !ml-auto h-full w-full">
           <TopHeader />
         </div>
       </Header>
-      <Layout hasSider className="layout-main-content_container overflow-hidden h-full sticky">
+      <Layout hasSider className="layout-main-content_container sticky h-full overflow-hidden">
         <section
           style={{
             ...siderStyle,
             // position: onMenuHover ? 'absolute' : 'sticky',
             transition: 'width 0.3s',
           }}
-          className="sidebar_section pt-2 flex relative h-full justify-between gap-0.5"
+          className="sidebar_section relative flex h-full justify-between gap-0.5 pt-2"
           // onMouseEnter={() => {
           //   if (collapsed) {
           //     setTimeout(() => setOnMenuHover(true), 500);
@@ -112,10 +112,10 @@ const MainLayout: React.FC = () => {
             // collapsed={collapsed && !onMenuHover}
             collapsedWidth={10}
             width={250}
-            className="dark:!bg-[var(--primary-dark)] !bg-[var(--white)] px-2 border-r-1 border-[var(--secondary-white)] dark:border-[var(--secondary-dark)]"
+            className="border-r-1 border-[var(--secondary-white)] !bg-[var(--white)] px-2 dark:border-[var(--secondary-dark)] dark:!bg-[var(--primary-dark)]"
           >
             <Menu
-              className="!min-h-full !bg-transparent !px-1 !border-0"
+              className="!min-h-full !border-0 !bg-transparent !px-1"
               rootClassName="sidebar_menu"
               defaultOpenKeys={collapsed ? [] : ['communities']}
               mode="inline"
@@ -124,7 +124,7 @@ const MainLayout: React.FC = () => {
               items={menuItems}
             />
             <span
-              className="nav_button h-fit absolute top-2 right-0"
+              className="nav_button absolute top-2 right-0 h-fit"
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -134,7 +134,7 @@ const MainLayout: React.FC = () => {
               }}
             >
               <Button
-                className="absolute "
+                className="absolute"
                 type="text"
                 icon={collapsed ? <RiMenuUnfold3Fill size={20} /> : <RiMenuUnfold4Fill size={20} />}
                 onClick={() => {
@@ -148,10 +148,10 @@ const MainLayout: React.FC = () => {
         </section>
         <Content
           data-scroll-id="content"
-          className="layout-content_container w-full h-full pt-2 ml-5 custom-scrollbar"
+          className="layout-content_container custom-scrollbar ml-4 h-full w-full pt-2"
         >
           <div
-            className="!h-full max-h-full min-h-full mx-auto my-0 max-w-[1150px] w-[95%] py-1 bg-transparent "
+            className="mx-auto my-0 !h-full max-h-full min-h-full w-[95%] max-w-[1150px] bg-transparent py-1"
             style={{
               textAlign: 'center',
               borderRadius: borderRadiusLG,
