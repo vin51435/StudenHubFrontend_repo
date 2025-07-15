@@ -1,4 +1,5 @@
 import { VoteEnum } from '@src/types/enum';
+import { pickStringEndpoints } from '@src/utils/apiUtils';
 
 const isLocalhost = window.location.hostname === 'localhost';
 
@@ -84,6 +85,13 @@ export const CENTER_ENDPOINTS = {
 
 export const ADMIN_ENDPOINTS = {
   ACCESS_LOGS: '/accesslogs',
+  USERS: '/users',
+  USER_BY_ID: (id: string) => `/users/${id}`,
+  COMMUNITIES: '/communities',
+  COMMUNITY_BY_ID: (id: string) => `/communities/${id}`,
+  POSTS: '/posts',
+  POST_BY_ID: (id: string) => `/posts/${id}`,
+  BANNED_IPS: (id?: string) => `/banned-ips${id ? `/${id}` : ''}`,
 };
 
 export const FORMAT_ENDPOINTS = {
@@ -97,7 +105,7 @@ export const flatEndpointObjects = {
   ...USER_ENDPOINTS,
   ...FORMAT_ENDPOINTS,
   ...CENTER_ENDPOINTS,
-  ...ADMIN_ENDPOINTS,
+  ...pickStringEndpoints(ADMIN_ENDPOINTS),
 } as const;
 
 const githubAuthBaseURL = BASE_URLS.githubAuth;

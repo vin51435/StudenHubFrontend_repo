@@ -1,5 +1,5 @@
 import AppLayout from '@src/layouts/Index';
-import AccessLogDashboard from '@src/pages/Dash';
+import AdminDashboard from '@src/pages/Admin';
 import { getRoutePath } from '@src/utils/getRoutePath';
 import { RouteObject } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ export const adminRoutes: RouteObject[] = [
     children: [
       {
         path: getRoutePath('DASHBOARD'),
-        element: <AccessLogDashboard />,
+        element: <AdminDashboard />,
       },
     ],
   },

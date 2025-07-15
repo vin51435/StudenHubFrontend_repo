@@ -91,7 +91,7 @@ export interface ICommunity {
 }
 
 export interface IPost {
-  _id?: string;
+  _id: string;
   title: string;
   slug: string;
   content?: string;
@@ -122,11 +122,12 @@ export interface IPost {
 }
 
 export interface LogEntry {
+  _id: string;
   ip: string;
   user: ObjectId;
   username: string;
   userAgent: string;
-  path:string;
+  path: string;
   device: {
     os: string;
     browser: string;
