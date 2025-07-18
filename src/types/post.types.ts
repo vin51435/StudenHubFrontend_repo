@@ -1,4 +1,4 @@
-import { IUser } from '@src/types/app';
+import { IPost, IUser } from '@src/types/app';
 import { VoteEnum } from '@src/types/enum';
 
 export interface IPostCommentDTO {

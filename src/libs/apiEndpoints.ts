@@ -45,6 +45,12 @@ export const USER_ENDPOINTS = {
   SEARCH_USERS: '/search',
   NOTIFICATIONS: '/notifications',
 
+  USER_POST: (id?: string) => `/posts${id ? `/${id}` : ''}`,
+  USER_SAVED_POSTS: '/saved',
+  USER_COMMENTS: (id?: string) => `/comments${id ? `/${id}` : ''}`,
+  USER_UPVOTED_POSTS: '/upvoted',
+  USER_DOWNVOTED_POSTS: '/downvoted',
+
   // Communication
   NOTIFICATION_SUBSCRIBE: '/subscribe',
   GET_INBOX_PARTICIPANTS: '/getSecondParticipants',

@@ -62,7 +62,7 @@ export interface IPaginationRequestQueries<T = any> extends ParsedQs {
   [key: string]: any;
 }
 
-export interface IPaginatedResponse<T = any> extends IBaseResponse {
+export interface IPaginatedResponseData<T = any> {
   data: T[];
   totalItems: number;
   totalPages: number;
@@ -70,6 +70,8 @@ export interface IPaginatedResponse<T = any> extends IBaseResponse {
   pageSize: number;
   hasMore: boolean;
 }
+
+export interface IPaginatedResponse<T = any> extends IPaginatedResponseData<T>, IBaseResponse {}
 
 export interface CommentPagination<T = any> {
   data: T;

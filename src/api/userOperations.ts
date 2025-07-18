@@ -3,6 +3,7 @@ import { get, patch, post } from '@src/libs/apiConfig';
 import { CENTER_ENDPOINTS, USER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IPaginatedResponse, IPaginationRequestQueries } from '@src/types';
 import { ICommunity, IPost, IUser } from '@src/types/app';
+import { ICommentData } from '@src/types/post.types';
 
 class UserOp {
   private static followedCommunity: ICommunity[] | null = null;
@@ -56,6 +57,46 @@ class UserOp {
     });
 
     return res.data;
+  }
+
+  static async getPosts(page: number, id?: string) {
+    const res = await get<{}, IPaginatedResponse<IPost>>(USER_ENDPOINTS.USER_POST(id), {
+      BASE_URLS: 'user',
+      queries: [{ page: String(page) }, { pageSize: String(10) }],
+    });
+    return res;
+  }
+
+  static async getSavedPosts(page: number) {
+    const res = await get<{}, IPaginatedResponse<IPost>>('USER_SAVED_POSTS', {
+      BASE_URLS: 'user',
+      queries: [{ page: String(page) }, { pageSize: String(10) }],
+    });
+    return res;
+  }
+
+  static async getComments(page: number, id?: string) {
+    const res = await get<{}, IPaginatedResponse<ICommentData>>(USER_ENDPOINTS.USER_COMMENTS(id), {
+      BASE_URLS: 'user',
+      queries: [{ page: String(page) }, { pageSize: String(10) }],
+    });
+    return res;
+  }
+
+  static async getUpvotedPosts(page: number) {
+    const res = await get<{}, IPaginatedResponse<IPost>>('USER_UPVOTED_POSTS', {
+      BASE_URLS: 'user',
+      queries: [{ page: String(page) }, { pageSize: String(10) }],
+    });
+    return res;
+  }
+
+  static async getDownvotedPosts(page: number) {
+    const res = await get<{}, IPaginatedResponse<IPost>>('USER_DOWNVOTED_POSTS', {
+      BASE_URLS: 'user',
+      queries: [{ page: String(page) }, { pageSize: String(10) }],
+    });
+    return res;
   }
 
   static async updateProfilePicture(data: FormData) {}

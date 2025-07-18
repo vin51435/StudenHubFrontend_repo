@@ -1,8 +1,9 @@
 import { useAppSelector } from '@src/redux/hook';
 import { IUser } from '@src/types/app';
 import { Avatar, Tabs, TabsProps, Typography } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DefaultAvatar from '/profile-default.svg';
+import DisplayProfileContents from './DisplayProfileContents';
 
 const ProfileContent = ({
   user,
@@ -12,25 +13,26 @@ const ProfileContent = ({
   updateProfile: (ele: Partial<IUser>) => void;
 }) => {
   const client = useAppSelector((state) => state.auth.user);
+  const [self, setSelf] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
 
-  const self: boolean = user._id === client?._id;
+  useEffect(() => setSelf(user._id === client?._id), [user._id, client?._id]);
 
   const tabs: TabsProps['items'] = [
     {
       label: 'Overview',
       key: '1',
-      children: 'Overview',
+      children: <DisplayProfileContents type="overview" userId={self ? undefined : user._id} />,
     },
     {
       label: 'Posts',
       key: '2',
-      children: 'Posts',
+      children: <DisplayProfileContents userId={self ? undefined : user._id} type="posts" />,
     },
     {
       label: 'Comments',
       key: '3',
-      children: 'Comments',
+      children: <DisplayProfileContents userId={self ? undefined : user._id} type="comments" />,
     },
   ];
 
@@ -39,16 +41,24 @@ const ProfileContent = ({
       {
         label: 'Saved',
         key: '4',
-        children: 'Saved',
+        children: <DisplayProfileContents userId={self ? undefined : user._id} type="saved" />,
       },
-      { label: 'Upvoted', key: '5', children: 'Upvoted' },
-      { label: 'Downvoted', key: '6', children: 'Downvoted' },
+      {
+        label: 'Upvoted',
+        key: '5',
+        children: <DisplayProfileContents userId={self ? undefined : user._id} type="upvoted" />,
+      },
+      {
+        label: 'Downvoted',
+        key: '6',
+        children: <DisplayProfileContents userId={self ? undefined : user._id} type="downvoted" />,
+      },
     ]);
   }
 
   return (
     <div className="profile-main_container w-full">
-      <div className="w-full flex flex-row justify-start items-center mb-4">
+      <div className="mb-4 flex w-full flex-row items-center justify-start">
         <Avatar
           size={100}
           className="object-contain"

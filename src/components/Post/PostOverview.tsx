@@ -17,8 +17,9 @@ const { Paragraph } = Typography;
 const PostOverview: FC<{
   post: IPost;
   community?: ICommunity;
+  view?: boolean;
   onChangePost: (post: IPost) => void;
-}> = ({ post, community, onChangePost }) => {
+}> = ({ post, community, view = true, onChangePost }) => {
   // To trigger post view
   const { ref, inView } = useInView({
     threshold: 0.5, // 50% of the element is visible
@@ -27,7 +28,7 @@ const PostOverview: FC<{
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (inView) {
+    if (inView && view) {
       PostOp.postView(post._id!);
     }
   }, [inView]);
@@ -100,17 +101,17 @@ const PostOverview: FC<{
       to={getRoutePath('POST')
         .replace(':slug', (post.communityId as ICommunity)?.slug ?? community?.slug)
         .replace(':postSlug', post.slug)}
-      className="block cursor-pointer w-full"
+      className="block w-full cursor-pointer"
     >
       <Card
         ref={ref}
         classNames={{
           body: '!px-4 !py-3',
         }}
-        className="post-overview rounded-2xl !bg-transparent w-full shadow-sm hover:shadow-md transition-all mb-4 h-auto"
+        className="post-overview mb-4 h-auto w-full rounded-2xl !bg-transparent shadow-sm transition-all hover:shadow-md"
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="mb-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span
               className="cursor-pointer"
@@ -145,7 +146,7 @@ const PostOverview: FC<{
                 }
                 icon={<FaRegUser />}
               />
-              <span className="text-xs ml-1">
+              <span className="ml-1 text-xs">
                 {community?._id ? (
                   <>
                     <span className="mr-1">u/{(post?.authorId as IUser)?.fullName}</span>
@@ -161,7 +162,7 @@ const PostOverview: FC<{
           </div>
         </div>
         {/* Title */}
-        <h2 className="post-overview_title text-start text-lg font-semibold ">{post.title}</h2>
+        <h2 className="post-overview_title text-start text-lg font-semibold">{post.title}</h2>
         {/* Tags */}
         {/* <div className="my-2 flex flex-wrap gap-2">
         {post.tags.map((tag) => (
@@ -172,7 +173,7 @@ const PostOverview: FC<{
           </div> */}
         {/* Content Preview */}
         <Paragraph
-          className="post-overview_content text-lg text-start text-gray-700 !mb-0"
+          className="post-overview_content !mb-0 text-start text-lg text-gray-700"
           ellipsis={{ rows: 3, symbol: '...' }}
         >
           <div dangerouslySetInnerHTML={{ __html: post.content as string }} />
@@ -194,7 +195,7 @@ const PostOverview: FC<{
                   e.stopPropagation();
                 }}
               >
-                <div className="w-full h-64 overflow-hidden">
+                <div className="h-64 w-full overflow-hidden">
                   <Image
                     src={url}
                     alt={`Media ${index + 1}`}
@@ -202,7 +203,7 @@ const PostOverview: FC<{
                       toolbarRender: () => null,
                       mask: <span className=""></span>,
                     }}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </div>
               </div>
@@ -210,8 +211,8 @@ const PostOverview: FC<{
           </Carousel>
         </div>
         {/* Post Stats */}
-        <div className="flex flex-row justify-between items-center">
-          <div className="flex items-center gap-5 text-gray-500 mt-2">
+        <div className="flex flex-row items-center justify-between">
+          <div className="mt-2 flex items-center gap-5 text-gray-500">
             <div
               className="flex items-center gap-1"
               onClick={(e) => {
@@ -235,33 +236,33 @@ const PostOverview: FC<{
                 {post.voteType === VoteEnum.downVote ? (
                   <BiSolidDownvote
                     onClick={() => handleVote(-1)}
-                    className="cursor-pointer ml-2 text-purple-500"
+                    className="ml-2 cursor-pointer text-purple-500"
                     size={18}
                   />
                 ) : (
                   <BiDownvote
                     onClick={() => handleVote(-1)}
-                    className="cursor-pointer ml-2"
+                    className="ml-2 cursor-pointer"
                     size={18}
                   />
                 )}
               </span>
             </div>
-            <div className="items-center gap-1 flex">
-              <span className="inline-block text-center my-auto h-full text-lg">
+            <div className="flex items-center gap-1">
+              <span className="my-auto inline-block h-full text-center text-lg">
                 <LuMessageSquareText size={18} />
               </span>
-              <span className="inline-block text-center my-auto h-full ">{post.commentsCount}</span>
+              <span className="my-auto inline-block h-full text-center">{post.commentsCount}</span>
             </div>
-            <div className=" ml-3 items-center gap-1 flex">
-              <span className="inline-block text-center my-auto h-full text-lg">
+            <div className="ml-3 flex items-center gap-1">
+              <span className="my-auto inline-block h-full text-center text-lg">
                 <IoMdEye size={18} />
               </span>
-              <span className="inline-block text-center my-auto h-full ">{post.views}</span>
+              <span className="my-auto inline-block h-full text-center">{post.views}</span>
             </div>
           </div>
           <div
-            className="text-lg cursor-pointer"
+            className="cursor-pointer text-lg"
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -269,7 +270,7 @@ const PostOverview: FC<{
             }}
           >
             {post?.isSaved ? (
-              <FaBookmark size={18} className={`text-blue-400 `} />
+              <FaBookmark size={18} className={`text-blue-400`} />
             ) : (
               <FaRegBookmark size={18} className={``} />
             )}
