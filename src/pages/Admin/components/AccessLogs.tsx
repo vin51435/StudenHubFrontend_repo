@@ -18,6 +18,16 @@ export default function AccessLogDashboard() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await AdminOp.deleteAccessLogs(id);
+      message.success('Data deleted');
+      setRefreshKey((prev) => prev + 1);
+    } catch (err) {
+      message.error('Delete failed');
+    }
+  };
+
   return (
     <PaginatedTableDashboard<LogEntry>
       title="API Access Logs"
@@ -39,7 +49,7 @@ export default function AccessLogDashboard() {
         </div>
       }
       refreshKey={refreshKey}
-      columns={accessLogColumns}
+      columns={accessLogColumns(handleDelete)}
       fetchData={AdminOp.getAccessLogs}
     />
   );

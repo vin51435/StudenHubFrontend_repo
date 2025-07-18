@@ -12,8 +12,8 @@ class AdminOp {
     });
   }
 
-  static async deleteAccessLogs() {
-    return await deleteResource('ACCESS_LOGS', {
+  static async deleteAccessLogs(id?: string) {
+    return await deleteResource(ADMIN_ENDPOINTS.ACCESS_LOGS(id), {
       BASE_URLS: 'admin',
     });
   }

@@ -1,7 +1,9 @@
 import type { ColumnsType } from 'antd/es/table';
 import { LogEntry } from '@src/types/app';
+import { Popconfirm, Button } from 'antd';
+import { MdDelete } from 'react-icons/md';
 
-export const accessLogColumns: ColumnsType<LogEntry> = [
+export const accessLogColumns = (onDelete: (id: string) => void): ColumnsType<LogEntry> => [
   {
     title: 'IP Address',
     dataIndex: 'ip',
@@ -45,5 +47,19 @@ export const accessLogColumns: ColumnsType<LogEntry> = [
     dataIndex: 'createdAt',
     key: 'createdAt',
     render: (text) => new Date(text).toLocaleString(),
+  },
+  {
+    title: 'Actions',
+    key: 'actions',
+    render: (_, record) => (
+      <Popconfirm
+        title="Are you sure you want to delete this data?"
+        onConfirm={() => onDelete(record._id)}
+        okText="Yes"
+        cancelText="No"
+      >
+        <Button danger size="small" icon={<MdDelete />} />
+      </Popconfirm>
+    ),
   },
 ];
