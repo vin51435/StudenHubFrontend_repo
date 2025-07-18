@@ -6,7 +6,7 @@ import { ICommunity, IPost, IUser, LogEntry } from '@src/types/app';
 class AdminOp {
   // ✅ Access Logs
   static async getAccessLogs(page: number, pageSize: number) {
-    return await get<{}, IPaginatedResponse<LogEntry>>('ACCESS_LOGS', {
+    return await get<{}, IPaginatedResponse<LogEntry>>(ADMIN_ENDPOINTS.ACCESS_LOGS(), {
       BASE_URLS: 'admin',
       queries: [{ page: String(page) }, { pageSize: String(pageSize) }],
     });

@@ -90,7 +90,7 @@ export const CENTER_ENDPOINTS = {
 };
 
 export const ADMIN_ENDPOINTS = {
-  ACCESS_LOGS: (id?: string) => `/accesslogs/${id ? `/${id}` : ''}`,
+  ACCESS_LOGS: (id?: string) => `/accesslogs${id ? `/${id}` : ''}`,
   USERS: '/users',
   USER_BY_ID: (id: string) => `/users/${id}`,
   COMMUNITIES: '/communities',
