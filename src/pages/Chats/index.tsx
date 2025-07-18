@@ -23,12 +23,12 @@ const Chats = () => {
     dispatch(fetchInbox(chatIds));
   }, [chatIds]);
 
-  const handleUserSelect = (chat: InboxState) => {
+  const handleUserSelect = (chat?: InboxState) => {
     setSelectedChat(chat ?? null);
   };
 
   return (
-    <div className="chat-inbox_container flex !min-h-full !max-h-full pb-2 bg-[var(--white)] dark:bg-transparent rounded-lg shadow-md">
+    <div className="chat-inbox_container flex !max-h-full !min-h-full rounded-lg bg-[var(--white)] pb-2 shadow-md dark:bg-transparent">
       <InboxList
         chats={chatData.chats}
         notifications={chatNotifications}
@@ -36,16 +36,17 @@ const Chats = () => {
         onSelect={handleUserSelect}
         loading={chatData.chatsLoading}
       />
-      <div className="flex-1 border border-gray-200 rounded-r-lg">
+      <div className="flex-1 rounded-r-lg border border-gray-200">
         {selectedChat?.chatId ? (
           <Chat
             chatId={selectedChat.chatId}
+            handleUserSelect={handleUserSelect}
             height={600}
             userB={selectedChat?.participantData} // optional: for showing name/picture
             userA={currentUser!}
           />
         ) : (
-          <div className="h-full flex items-center justify-center text-gray-400">
+          <div className="flex h-full items-center justify-center text-gray-400">
             Select a chat to start messaging
           </div>
         )}

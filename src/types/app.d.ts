@@ -55,7 +55,7 @@ export interface IUser {
   contacts: string[];
   chats: {
     chatIds: string[];
-    groupChatIds: string[];
+    groupChatIds?: string[];
   };
 
   postsCount: number;

@@ -8,7 +8,7 @@ import DefaultAvatar from '/profile-default.svg';
 import { useSocket } from '@src/contexts/Socket.context';
 import { IUser } from '@src/types/app';
 import { useAppDispatch } from '@src/redux/hook';
-import { deleteChat } from '@src/redux/reducers/cache/inbox.slice';
+import { deleteChat, InboxState } from '@src/redux/reducers/cache/inbox.slice';
 import useScrollTopDetection from '@src/hooks/useScrollTopDetection';
 import { useNavigate } from 'react-router-dom';
 import { getRoutePath } from '@src/utils/getRoutePath';
@@ -27,11 +27,12 @@ const roles = {
 interface ChatProps {
   chatId: string;
   userB: IUser | null;
+  handleUserSelect: (chat?: InboxState) => void;
   height?: number;
   userA: IUser;
 }
 
-const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
+const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA, handleUserSelect }) => {
   const dispatch = useAppDispatch();
   const [content, setContent] = useState('');
   const socket = useSocket()?.socket;
@@ -76,10 +77,10 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
   });
 
   return (
-    <div className="chat_container h-full flex flex-col">
-      <div className="p-4 flex items-center font-semibold border-b text-start">
+    <div className="chat_container flex h-full flex-col">
+      <div className="flex items-center border-b p-4 text-start font-semibold">
         <span
-          className="w-full flex items-center cursor-pointer"
+          className="flex w-full cursor-pointer items-center"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -87,11 +88,14 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
           }}
         >
           <Avatar className="!mr-2" src={userB?.profilePicture ?? DefaultAvatar} />
-          <span className="truncate w-full">{userB?.username}</span>
+          <span className="w-full truncate">{userB?.username}</span>
         </span>
         <Popconfirm
           title="Are you sure you want to delete this chat?"
-          onConfirm={() => dispatch(deleteChat(chatId))}
+          onConfirm={() => {
+            handleUserSelect();
+            dispatch(deleteChat(chatId));
+          }}
           okText="Yes"
           cancelText="No"
           placement="bottom"
@@ -100,7 +104,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA }) => {
         </Popconfirm>
       </div>
 
-      <Flex vertical gap="middle" className="flex-1 p-4 overflow-y-auto">
+      <Flex vertical gap="middle" className="flex-1 overflow-y-auto p-4">
         {chatLoaded ? (
           <div>loading...</div>
         ) : currentMessages.length ? (

@@ -1,12 +1,13 @@
 import { IoChatbubbleEllipsesOutline } from 'react-icons/io5';
 import { SlUserFollow } from 'react-icons/sl';
-import { useAppSelector } from '@src/redux/hook';
+import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { IUser } from '@src/types/app';
 import { Button, Dropdown, MenuProps, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { IoIosMore } from 'react-icons/io';
 import UserOp from '@src/api/userOperations';
 import { getRoutePath } from '@src/utils/getRoutePath';
+import { updateUser } from '@src/redux/reducers/auth';
 
 const ProfileSidebar = ({
   user,
@@ -15,9 +16,18 @@ const ProfileSidebar = ({
   user: IUser;
   updateProfile: (ele: Partial<IUser>) => void;
 }) => {
-  const client = useAppSelector((state) => state.auth.user);
+  const client = useAppSelector((state) => state.auth.user)!;
   const navigate = useNavigate();
   const self: boolean = user._id === client?._id;
+  const dispatch = useAppDispatch();
+
+  const createNewChat = async () => {
+    const resNewChatId = await UserOp.createChat(user._id);
+    const chatIds = new Set([...(client.chats?.chatIds || []), resNewChatId?.chatId]);
+    const updatedClient = { ...client, chats: { chatIds: Array.from(chatIds, String) } };
+    dispatch(updateUser(updatedClient));
+    navigate(getRoutePath('CHATS'));
+  };
 
   const moreOptions: MenuProps['items'] = [
     {
@@ -51,10 +61,10 @@ const ProfileSidebar = ({
   ];
 
   return (
-    <div className="w-full max-h-full overflow-auto dark:bg-[var(--black)] rounded-2xl px-4 py-4 text-start">
+    <div className="max-h-full w-full overflow-auto rounded-2xl px-4 py-4 text-start dark:bg-[var(--black)]">
       {/* Header with Name and More Button */}
-      <div className="mb-1 flex justify-between items-center">
-        <Typography.Title level={3} className="text-lg font-semibold !m-0">
+      <div className="mb-1 flex items-center justify-between">
+        <Typography.Title level={3} className="!m-0 text-lg font-semibold">
           {user.fullName}
         </Typography.Title>
         <Dropdown
@@ -68,17 +78,17 @@ const ProfileSidebar = ({
 
       {/* Bio */}
       <div className="mb-4">
-        <Typography.Text className="text-md text-start text-gray-300 mb-6">
+        <Typography.Text className="text-md mb-6 text-start text-gray-300">
           {user.bio}
         </Typography.Text>
       </div>
 
       {/* Actions */}
       {!self && (
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="mb-4 grid grid-cols-2 gap-3">
           <Button
             type="default"
-            className="w-full text-base flex items-center gap-2 justify-center"
+            className="flex w-full items-center justify-center gap-2 text-base"
             icon={<SlUserFollow />}
             onClick={async () => {
               await UserOp.followUser(user._id);
@@ -89,11 +99,10 @@ const ProfileSidebar = ({
           </Button>
           <Button
             type="default"
-            className="w-full text-base flex items-center gap-2 justify-center"
+            className="flex w-full items-center justify-center gap-2 text-base"
             icon={<IoChatbubbleEllipsesOutline />}
-            onClick={async () => {
-              await UserOp.createChat(user._id);
-              navigate(getRoutePath('CHATS'));
+            onClick={() => {
+              createNewChat();
             }}
           >
             Chat
@@ -102,36 +111,36 @@ const ProfileSidebar = ({
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-start text-sm mb-6">
+      <div className="mb-6 grid grid-cols-2 gap-x-4 gap-y-3 text-start text-sm">
         <div className="">
           <p className="text-lg font-semibold">{user.followersCount}</p>
-          <span className="uppercase text-xs text-gray-400">Followers</span>
+          <span className="text-xs text-gray-400 uppercase">Followers</span>
         </div>
         <div className="">
           <p className="text-lg font-semibold">{user.followingsCount}</p>
-          <span className="uppercase text-xs text-gray-400">Following</span>
+          <span className="text-xs text-gray-400 uppercase">Following</span>
         </div>
         <div className="">
           <p className="text-lg font-semibold">{user.postsCount}</p>
-          <span className="uppercase text-xs text-gray-400">Posts</span>
+          <span className="text-xs text-gray-400 uppercase">Posts</span>
         </div>
         <div className="">
           <p className="text-lg font-semibold">{'-'}</p>
-          <span className="uppercase text-xs text-gray-400">DOB</span>
+          <span className="text-xs text-gray-400 uppercase">DOB</span>
         </div>
       </div>
 
       {/* Extra sections */}
       <Typography.Text
         strong
-        className="text-start text-sm cursor-pointer hover:underline"
+        className="cursor-pointer text-start text-sm hover:underline"
         onClick={() => {
           navigate(getRoutePath('USER_SETTINGS'));
         }}
       >
         Update profile
       </Typography.Text>
-      <div className="text-start text-sm text-gray-300 mt-2">Socials</div>
+      <div className="mt-2 text-start text-sm text-gray-300">Socials</div>
     </div>
   );
 };
