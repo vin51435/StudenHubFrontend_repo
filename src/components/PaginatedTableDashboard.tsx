@@ -60,7 +60,7 @@ export function PaginatedTableDashboard<T extends { _id: string }>({
       }
     >
       <Spin spinning={loading}>
-        {form && <div className="mb-4">{form}</div>}
+        {form && <div className="my-4">{form}</div>}
         <Table
           className="dark:!bg-[var(--primary-dark)]"
           columns={columns}

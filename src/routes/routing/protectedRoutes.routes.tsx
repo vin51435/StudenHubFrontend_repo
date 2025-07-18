@@ -13,6 +13,7 @@ import {
   Profile,
   Settings,
 } from '@src/routes/routing/lazyPages';
+import SearchPage from '@src/pages/Search';
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -31,6 +32,7 @@ export const protectedRoutes: RouteObject[] = [
             path: '/home',
             children: [{ path: '', element: <Home /> }],
           },
+          { path: getExactRoutePath('SEARCH'), element: <SearchPage /> },
           {
             path: getRoutePath('USER'),
             children: [

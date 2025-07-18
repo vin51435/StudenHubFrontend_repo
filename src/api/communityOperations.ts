@@ -24,8 +24,6 @@ class CommunityOp {
   };
 
   static async _search(search: string, searchTerm: IPaginationRequestQueries = {}) {
-    if (!search.trim()) return null;
-
     const defaultSearchTerm: IPaginationRequestQueries = {
       ...searchTerm,
       searchValue: search,

@@ -23,6 +23,7 @@ export const BASE_URLS = {
 
 export const AUTH_ENDPOINTS = {
   USER: '/',
+  USER_SEARCH: '/search',
   USER_PICTURE: '/picture',
   USER_EMAIL_REG: '/emailReg',
   USER_EMAIL_VERIFY: '/emailVerify',

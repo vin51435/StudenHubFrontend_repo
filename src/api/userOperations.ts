@@ -4,6 +4,7 @@ import { CENTER_ENDPOINTS, USER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IPaginatedResponse, IPaginationRequestQueries } from '@src/types';
 import { ICommunity, IPost, IUser } from '@src/types/app';
 import { ICommentData } from '@src/types/post.types';
+import { debounceAsync } from '@src/utils/debounceApiWrappe';
 
 class UserOp {
   private static followedCommunity: ICommunity[] | null = null;
@@ -19,6 +20,14 @@ class UserOp {
       BASE_URLS: 'user',
     });
     return res.data;
+  }
+
+  static async searchUser(value: string, page: number) {
+    const res = await searchModel<IUser>('user', 'USER_SEARCH', {
+      searchValue: value,
+      page: String(page),
+    });
+    return res;
   }
 
   static async fetchFollowedCommunity(id: string | undefined = undefined) {
@@ -100,6 +109,8 @@ class UserOp {
   }
 
   static async updateProfilePicture(data: FormData) {}
+
+  static _searchUser = debounceAsync(this.searchUser.bind(this), 400);
 }
 
 export default UserOp;

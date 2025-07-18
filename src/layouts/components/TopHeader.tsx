@@ -4,7 +4,7 @@ import { AutoComplete, Avatar, Badge, Dropdown, Input, Tag, Tooltip } from 'antd
 import { useThemeMode } from '@src/theme/ThemeProvider';
 import { useLogout } from '@src/hooks/useLogout';
 import CommunityOp from '@src/api/communityOperations';
-import { matchRoute } from '@src/utils/common';
+import { matchRoute, withQuery } from '@src/utils/common';
 import { getExactRoutePath, getRoutePath } from '@src/utils/getRoutePath';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
 import { fetchInitialPosts } from '@src/redux/reducers/cache/post.thunks';
@@ -13,10 +13,11 @@ import ThemeToggle from '@src/components/themeToggle';
 import { GoBellFill } from 'react-icons/go';
 import { FaUserEdit, FaUser } from 'react-icons/fa';
 import { IoClose, IoLogOutSharp, IoChatbubbleEllipsesOutline } from 'react-icons/io5';
-import { BaseOptionType, OptionProps } from 'antd/es/select';
+import { BaseOptionType, DefaultOptionType } from 'antd/es/select';
+import UserOp from '@src/api/userOperations';
 
 const TopHeader = () => {
-  const [options, setOptions] = useState<BaseOptionType[]>([]);
+  const [options, setOptions] = useState<DefaultOptionType[]>([]);
   const [loading, setLoading] = useState(false);
   const [enableSearch, setEnableSearch] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -49,31 +50,6 @@ const TopHeader = () => {
     );
   }, [slug, pathname]);
 
-  const searchCommunity = async (value: string) => {
-    setLoading(true);
-    setInputValue(value);
-    const res = await CommunityOp.search(value);
-    if (!res) return;
-    setOptions(
-      res.data.map((c) => ({
-        value: c.name,
-        label: (
-          <Link
-            to={getRoutePath('COMMUNITY').replace(':slug', c.slug)}
-            onClick={() => setInputValue('')}
-            className="flex items-center w-full"
-          >
-            <span className="mr-2">
-              <Avatar src={c.avatarUrl} size={24} className="mr-2" />
-            </span>
-            <h4 className="truncate !m-0">{c.name}</h4>
-          </Link>
-        ),
-      }))
-    );
-    setLoading(false);
-  };
-
   const searchInsideCommunity = (val: string) => {
     if (!slug || !communityCache) return;
     dispatch(
@@ -86,12 +62,71 @@ const TopHeader = () => {
     );
   };
 
+  const normalSearch = async (val: string) => {
+    setLoading(true);
+    setInputValue(val);
+
+    const communityPromise = CommunityOp.search(val);
+    const userPromise = UserOp._searchUser(val, 1);
+
+    const [communityResult, userResult] = await Promise.allSettled([communityPromise, userPromise]);
+
+    const newOptions: DefaultOptionType[] = [];
+
+    // Community results
+    if (communityResult.status === 'fulfilled' && communityResult.value?.data?.length) {
+      const communityOptions: DefaultOptionType[] = communityResult.value.data.map((c: any) => ({
+        value: `r/${c.name}`,
+        label: (
+          <Link
+            to={getRoutePath('COMMUNITY').replace(':slug', c.slug)}
+            onClick={() => setInputValue('')}
+            className="flex items-center"
+          >
+            <Avatar src={c.avatarUrl} size={24} className="" />
+            <span className="!ml-1">r/{c.name}</span>
+          </Link>
+        ),
+      }));
+
+      newOptions.push({
+        label: <span className="text-xs text-gray-500">Communities</span>,
+        options: communityOptions,
+      });
+    }
+
+    // User results
+    if (userResult.status === 'fulfilled' && userResult.value?.data?.length) {
+      const userOptions: DefaultOptionType[] = userResult.value.data.map((u: any) => ({
+        value: `u/${u.username}`,
+        label: (
+          <Link
+            to={getRoutePath('USER_PROFILE').replace(':username', u.username)}
+            onClick={() => setInputValue('')}
+            className="flex items-center"
+          >
+            <Avatar src={u.profilePicture} size={24} className="" />
+            <span className="!ml-1">u/{u.username}</span>
+          </Link>
+        ),
+      }));
+
+      newOptions.push({
+        label: <span className="text-xs text-gray-500">Users</span>,
+        options: userOptions,
+      });
+    }
+
+    setOptions(newOptions);
+    setLoading(false);
+  };
+
   const recentSearchOptions = useMemo(
     () =>
       recentSearches.map((s) => ({
         value: s.string,
         label: (
-          <div className="flex justify-between items-center px-2">
+          <div className="flex items-center justify-between px-2">
             <span
               onClick={() => {
                 setInputValue(s.string);
@@ -106,7 +141,7 @@ const TopHeader = () => {
                 e.stopPropagation();
                 dispatch(clearRecentSearches(s.string));
               }}
-              className="ml-2 text-gray-400 hover:text-red-500 cursor-pointer text-xs"
+              className="ml-2 cursor-pointer text-xs text-gray-400 hover:text-red-500"
             />
           </div>
         ),
@@ -130,31 +165,33 @@ const TopHeader = () => {
   ];
 
   return (
-    <div className="flex items-center gap-6 ml-auto w-full h-full">
+    <div className="ml-auto flex h-full w-full items-center gap-6">
       <div
-        className="text-2xl !px-4 flex justify-center items-center my-3 cursor-pointer"
+        className="my-3 flex cursor-pointer items-center justify-center !px-4 text-2xl"
         onClick={() => navigate(getExactRoutePath('APP'))}
       >
         StudenHub
       </div>
 
-      <div className="top-header_search w-full h-full flex items-center justify-center">
+      <div className="top-header_search flex h-full w-full items-center justify-center">
         <AutoComplete
-          className="rounded-2xl flex items-center justify-center"
+          className="flex items-center justify-center rounded-2xl"
           style={{ width: '80%', height: '70%' }}
-          options={options.length && inputValue ? options : recentSearchOptions}
+          options={
+            options.length && inputValue ? options : (recentSearchOptions as DefaultOptionType[])
+          }
           value={inputValue}
-          disabled={!enableSearch}
+          // disabled={!enableSearch}
           onChange={(val: string) => {
             setInputValue(val);
-            if (!slug) searchCommunity(val);
+            if (!slug) normalSearch(val);
           }}
-          onSearch={(val: string) => (!slug ? searchCommunity(val) : searchInsideCommunity(val))}
+          onSearch={(val: string) => (!slug ? normalSearch(val) : searchInsideCommunity(val))}
         >
           <Input
-            className="w-full !h-[90%]"
+            className="!h-[90%] w-full"
             style={{ borderRadius: '999px' }}
-            disabled={!enableSearch}
+            // disabled={!enableSearch}
             addonBefore={
               slug && (
                 <Tag
@@ -168,13 +205,19 @@ const TopHeader = () => {
                     navigate(getRoutePath('APP'));
                   }}
                 >
-                  r/{slug}
+                  r/{slug}dfs
                 </Tag>
               )
             }
             allowClear
             placeholder={slug ? `Search in ${slug}` : 'Search Communities'}
             value={inputValue}
+            onPressEnter={(e) => {
+              e.preventDefault();
+              const value = (e.target as HTMLInputElement).value.trim();
+              if (!value.trim()) return;
+              navigate(withQuery(getRoutePath('SEARCH'), { query: value.trim() }));
+            }}
           />
         </AutoComplete>
       </div>

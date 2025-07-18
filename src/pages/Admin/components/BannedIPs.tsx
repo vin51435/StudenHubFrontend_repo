@@ -53,7 +53,7 @@ function BanIPForm({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <Form form={form} layout="inline" onFinish={handleBan} className="mb-4">
+    <Form form={form} layout="inline" onFinish={handleBan} className="mb-">
       <Form.Item name="ip" rules={[{ required: true, message: 'Please enter an IP address' }]}>
         <Input placeholder="IP Address" />
       </Form.Item>

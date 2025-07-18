@@ -50,12 +50,12 @@ export function timeAgo(input: string | Date): string {
 export type ExtractKeyValues<T, K extends string> = T extends readonly any[]
   ? ExtractKeyValues<T[number], K>
   : T extends object
-  ? K extends keyof T
-    ? T[K] | (T extends { children: any } ? ExtractKeyValues<T['children'], K> : never)
-    : T extends { children: any }
-    ? ExtractKeyValues<T['children'], K>
-    : never
-  : never;
+    ? K extends keyof T
+      ? T[K] | (T extends { children: any } ? ExtractKeyValues<T['children'], K> : never)
+      : T extends { children: any }
+        ? ExtractKeyValues<T['children'], K>
+        : never
+    : never;
 
 /**
  * Recursively searches through an array of nested objects to find an object
@@ -187,16 +187,19 @@ export const groupArrayOfObjects = <T extends Record<string, any>>(
   key: string,
   name?: string
 ): Record<string, T[]> => {
-  return array.reduce((acc, item) => {
-    let group = item[key];
-    if (!group) return acc;
-    if (name) group = name;
-    if (!acc[group]) {
-      acc[group] = [];
-    }
-    acc[group].push(item);
-    return acc;
-  }, {} as Record<string, T[]>);
+  return array.reduce(
+    (acc, item) => {
+      let group = item[key];
+      if (!group) return acc;
+      if (name) group = name;
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(item);
+      return acc;
+    },
+    {} as Record<string, T[]>
+  );
 };
 
 /**
@@ -227,3 +230,19 @@ export const matchRoute = (route: string, pathname: string) => {
 
   return null;
 };
+
+/**
+ * Appends query parameters to a given URL path.
+ *
+ * @param path - The base URL path to which query parameters should be appended.
+ * @param queryObj - An object representing key-value pairs to be converted into query parameters.
+ * @returns The complete URL string with the appended query parameters.
+ *
+ * @example
+ * withQuery('/api/users', { id: '123', name: 'John' })
+ * // returns '/api/users?id=123&name=John'
+ */
+export function withQuery(path: string, queryObj: Record<string, string>) {
+  const params = new URLSearchParams(queryObj);
+  return `${path}?${params.toString()}`;
+}

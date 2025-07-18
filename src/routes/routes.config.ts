@@ -44,6 +44,7 @@ const ROUTES = [
     title: 'Home',
     children: [{ name: 'CREATE_COMMUNITY', path: '/create' }],
   },
+  { name: 'SEARCH', path: '/search' },
   { name: 'CHATS', path: '/chats' },
   {
     name: 'USER',
