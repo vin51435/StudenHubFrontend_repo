@@ -29,7 +29,7 @@ async function fetchData(
 > {
   if (type === 'overview') {
     const post = UserOp.getPosts(page, userId);
-    const comments = UserOp.getComments(page);
+    const comments = UserOp.getComments(page, userId);
 
     const [postResponse, commentsResponse] = await Promise.all([post, comments]);
     const data = [...postResponse.data, ...commentsResponse.data].sort(
