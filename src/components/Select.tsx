@@ -107,6 +107,12 @@ const CustomSelect = ({
   );
 
   useEffect(() => {
+    if (defaultData) {
+      setData(defaultData);
+    }
+  }, [defaultData]);
+
+  useEffect(() => {
     fetchData('', 1);
   }, [fetchData]);
 

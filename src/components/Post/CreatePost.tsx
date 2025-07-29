@@ -33,19 +33,16 @@ const quillModules = {
 };
 
 const CreatePost = () => {
-  const [options,setOptions] =useState<ICommunity[]>([])
+  const [options, setOptions] = useState<ICommunity[]>([]);
   const [selectedCommunity, setSelectedCommunity] = useState<ICommunity | null>(null);
   const [load, setLoad] = useState(false);
 
   const { slug } = useParams<{ slug: string }>();
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    getAllFollowedCommunities()
-  },[])
 
   useEffect(() => {
+    if (!options.length) getAllFollowedCommunities();
     getCommunity();
   }, [slug]);
 
@@ -55,7 +52,7 @@ const CreatePost = () => {
       setOptions(res?.data);
     }
   }
-  
+
   async function getCommunity() {
     const res = await CommunityOp.fetchCommunityDetails(slug);
     if (!res?.data || !res?.data?.isFollowing) {
@@ -118,7 +115,7 @@ const CreatePost = () => {
   };
 
   return (
-    <Card className="p-4 rounded-xl max-w-3xl !mx-auto create-post_container dark:!bg-[var(--primary-dark)]">
+    <Card className="create-post_container !mx-auto max-w-3xl rounded-xl p-4 dark:!bg-[var(--primary-dark)]">
       <Title level={4} className="text-start">
         Create a Post
       </Title>

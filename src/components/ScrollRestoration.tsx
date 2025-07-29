@@ -43,7 +43,7 @@ const ScrollRestoration = () => {
 
       requestAnimationFrame(() => {
         container.scrollTo(0, y);
-        console.log('restored', keyId, y);
+        // console.log('restored', keyId, y);
       });
     });
 

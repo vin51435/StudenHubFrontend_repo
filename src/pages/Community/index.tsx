@@ -148,10 +148,10 @@ export default function CommunityOverview() {
           )}
         </div>
 
-        <div className="ml-3 flex flex-1 justify-between">
-          <Title level={1} className="!m-0 font-extrabold">
+        <div className="my-auto ml-3 flex max-h-full flex-1 items-center">
+          <h2 className="!m-0 overflow-hidden text-3xl !font-semibold text-ellipsis whitespace-nowrap">
             r/{community.name}
-          </Title>
+          </h2>
           <div className="ml-auto flex items-center gap-4">
             <Button
               className="mr-2 !bg-transparent"
