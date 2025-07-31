@@ -1,16 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-export type NotificationType = 'newChat' | 'newMessage' | string;
-
-interface Notification {
-  _id: string;
-  type: NotificationType;
-  [key: string]: unknown;
-}
+import { INotif, INotifType } from '@src/types/app';
 
 interface NotificationState {
   notifications: {
-    [key in NotificationType]: Notification[];
+    [key in INotifType]: INotif[];
   };
 }
 
@@ -25,7 +18,7 @@ const notificationSlice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    receiveNotification: (state, action: PayloadAction<Notification>) => {
+    receiveNotification: (state, action: PayloadAction<INotif>) => {
       const { type, _id } = action.payload;
       const existing = state.notifications[type] || [];
       const existingIndex = existing.findIndex((n) => n._id === _id);
@@ -42,7 +35,7 @@ const notificationSlice = createSlice({
     deleteNotification: (
       state,
       action: PayloadAction<{
-        type: NotificationType;
+        type: INotifType;
         notificationIds: string[];
       }>
     ) => {
@@ -59,7 +52,7 @@ const notificationSlice = createSlice({
     markAsRead: (
       state,
       action: PayloadAction<{
-        type: NotificationType;
+        type: INotifType;
         notificationIds: string[];
       }>
     ) => {
@@ -82,7 +75,7 @@ const notificationSlice = createSlice({
       return state;
     },
 
-    clearNotifications: (state, action: PayloadAction<{ type?: NotificationType }>) => {
+    clearNotifications: (state, action: PayloadAction<{ type?: INotifType }>) => {
       const { type } = action.payload || {};
       if (type && state.notifications[type]) {
         state.notifications[type] = [];
@@ -93,7 +86,7 @@ const notificationSlice = createSlice({
       }
     },
 
-    loadNotifications: (state, action: PayloadAction<Notification[]>) => {
+    loadNotifications: (state, action: PayloadAction<INotif[]>) => {
       const notificationsArray = action.payload;
 
       // Reset existing

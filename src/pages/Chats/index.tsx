@@ -3,23 +3,25 @@ import InboxList from './components/Inbox';
 import Chat from './components/Chat';
 import { useSocketChat } from '@src/hooks/useSocketChat';
 import { useAppDispatch, useAppSelector } from '@src/redux/hook';
-import { fetchInbox, InboxState } from '@src/redux/reducers/cache/inbox.slice';
+import { fetchInbox, InboxState, setChatsLoading } from '@src/redux/reducers/cache/inbox.slice';
 
 const Chats = () => {
   const chatData = useAppSelector((state) => state.chatInboxCache);
   const { user: currentUser } = useAppSelector((state) => state.auth);
+  const chatIds = useAppSelector((state) => state.auth?.user?.chats?.chatIds || []);
   const { chatNotifications } = useSocketChat();
   const dispatch = useAppDispatch();
 
   const [selectedChat, setSelectedChat] = useState<InboxState | null>(null);
 
-  const chatIds = currentUser?.chats?.chatIds || [];
-
   // 1. Load all chat participants
   useEffect(() => {
+    console.log('chatids', chatIds);
     // would be better to match cached chatIds to new chatIds
-    if (!chatIds || !chatIds.length) return;
-    console.log('chatIds', chatIds);
+    if (chatIds && chatIds.length === 0) {
+      dispatch(setChatsLoading(false));
+      return;
+    }
     dispatch(fetchInbox(chatIds));
   }, [chatIds]);
 

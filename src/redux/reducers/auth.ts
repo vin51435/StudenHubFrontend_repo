@@ -28,6 +28,29 @@ const authSlice = createSlice({
         };
       }
     },
+    updateUserChats: (
+      state,
+      action: PayloadAction<{ chatIds?: string[]; groupChatIds?: string[] }>
+    ) => {
+      if (state.user) {
+        state.user.chats.chatIds = action.payload.chatIds || [];
+        state.user.chats.groupChatIds = action.payload.groupChatIds || [];
+      }
+    },
+    deleteUserChats: (
+      state,
+      action: PayloadAction<{ chatIds?: string[]; groupChatIds?: string[] }>
+    ) => {
+      if (state.user) {
+        state.user.chats.chatIds =
+          state.user.chats.chatIds?.filter((chatId) => !action.payload.chatIds?.includes(chatId)) ||
+          [];
+        state.user.chats.groupChatIds =
+          state.user.chats.groupChatIds?.filter(
+            (chatId) => !action.payload.groupChatIds?.includes(chatId)
+          ) || [];
+      }
+    },
     loginSuccess: (state, action: PayloadAction<LoginPayload>) => {
       state.user = action.payload.user;
       state.redirectUrl = action.payload.redirectUrl ?? null;
@@ -51,7 +74,14 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logoutSuccess, setRedirectUrl, updateUser } = authSlice.actions;
+export const {
+  loginSuccess,
+  logoutSuccess,
+  setRedirectUrl,
+  updateUser,
+  updateUserChats,
+  deleteUserChats,
+} = authSlice.actions;
 export const selectAuthToken = (state: RootState) => state.auth.token;
 
 const authReducer = authSlice.reducer;

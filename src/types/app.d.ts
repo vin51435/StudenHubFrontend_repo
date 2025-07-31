@@ -121,6 +121,25 @@ export interface IPost {
   updatedAt?: string;
 }
 
+export type INotifType = 'newChat' | 'newMessage' | string;
+
+export interface INotif {
+  __v: number;
+  _id: string;
+  content: string;
+  createdAt: string;
+  isPushSent: boolean;
+  isRead: boolean;
+  relatedChatId: string | null;
+  relatedGroupId: string | null;
+  senderId: string;
+  senderName: string;
+  senderUsername: string;
+  type: INotifType;
+  updatedAt: string;
+  userId: string;
+}
+
 export interface LogEntry {
   _id: string;
   ip: string;

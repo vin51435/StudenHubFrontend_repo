@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { deleteResource, post } from '@src/libs/apiConfig';
 import { USER_ENDPOINTS } from '@src/libs/apiEndpoints';
 import { IUser } from '@src/types/app';
@@ -34,7 +34,14 @@ export const deleteChat = createAsyncThunk('inbox/deleteChat', async (chatId: st
 const inboxSlice = createSlice({
   name: 'inbox',
   initialState,
-  reducers: {},
+  reducers: {
+    setChatsLoading: (state, action: PayloadAction<boolean>) => {
+      state.chatsLoading = action.payload;
+    },
+    deleteChatId: (state, action: PayloadAction<string>) => {
+      state.chats = state.chats.filter((chat) => chat.chatId !== action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchInbox.pending, (state) => {
@@ -56,6 +63,8 @@ const inboxSlice = createSlice({
       });
   },
 });
+
+export const { setChatsLoading, deleteChatId } = inboxSlice.actions;
 
 const inboxReducer = inboxSlice.reducer;
 export default inboxReducer;

@@ -1,10 +1,8 @@
+import SockCommOp from '@src/api/socketCommandOperations';
 import { post } from '@src/libs/apiConfig';
 import { activeHost } from '@src/libs/apiEndpoints';
-import {
-  markAsRead,
-  NotificationType,
-  receiveNotification,
-} from '@src/redux/reducers/notifications';
+import { markAsRead, receiveNotification } from '@src/redux/reducers/notifications';
+import { INotifType } from '@src/types/app';
 import { SocketContextType } from '@src/types/SocketContext.type';
 import { useContext, createContext, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -47,8 +45,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('Socket error:', error);
     });
 
+    s.on('command', (data) => {
+      console.log('Command received:', data);
+      SockCommOp.processCommand(data);
+    });
+
     s.on('newNotification', (notification) => {
       console.log('New message notification received:', notification);
+      SockCommOp.processNotif(notification);
       dispatch(receiveNotification(notification));
     });
 
@@ -96,7 +100,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  function readNotification(notificationIds: string[], type: NotificationType) {
+  function readNotification(notificationIds: string[], type: INotifType) {
     if (socketRef.current) {
       socketRef.current.emit('readNotification', notificationIds);
       dispatch(markAsRead({ type, notificationIds }));

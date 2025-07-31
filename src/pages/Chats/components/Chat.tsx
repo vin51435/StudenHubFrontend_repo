@@ -100,7 +100,11 @@ const Chat: React.FC<ChatProps> = ({ chatId, userB, height = 400, userA, handleU
           cancelText="No"
           placement="bottom"
         >
-          <Button type="text" icon={<MdDelete className="text-red" size="middle" color="red" />} />
+          <Button
+            className="!text-red"
+            classNames={{ icon: ' !w-full' }}
+            icon={<MdDelete className="!text-red" size="middle" color="red" />}
+          />
         </Popconfirm>
       </div>
 
