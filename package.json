@@ -55,6 +55,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "husky": "^9.1.7",
     "jsdom": "^26.1.0",
     "path": "^0.12.7",
     "prettier": "^3.6.2",
@@ -73,6 +74,12 @@
     ],
     "@styles/*": [
       "src/assets/styles/*"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx,json,css,scss,md}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }
