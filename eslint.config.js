@@ -1,4 +1,3 @@
-// eslint.config.ts
 import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -35,20 +34,11 @@ export default tseslint.config(
       ...js.configs.recommended.rules,
       ...tseslint.configs.recommended[0].rules,
       ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'import/order': [
         'error',
         {
-          groups: [
-            ['builtin', 'external'],
-            ['internal'],
-            ['parent'],
-            ['sibling'],
-            ['index'],
-          ],
+          groups: [['builtin', 'external'], ['internal'], ['parent'], ['sibling'], ['index']],
           pathGroups: [
             {
               pattern: '@src/**',
